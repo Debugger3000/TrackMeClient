@@ -19,9 +19,15 @@ const registerSubmit = async () => {
     console.log("form data: ",registerForm.value);
     console.log(`url route fetching: ${import.meta.env.VITE_SERVER_API}/register`);
     try {
+
+      const accessToken = localStorage.getItem("access_token");
+
+
     const res = await fetch(`${import.meta.env.VITE_SERVER_API}/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',
+        "Authorization": `Bearer ${accessToken}`,  // ✅ standard pattern
+       },
       body: JSON.stringify({
         username: registerForm.value.username,
         password: registerForm.value.password
@@ -30,14 +36,23 @@ const registerSubmit = async () => {
     });
 
     if (!res.ok) {
-      throw new Error('Login failed');
+      const errBody = await res.json(); // server's JSON error response
+  throw new Error(errBody || "Unknown error from server");
     }
 
     const data = await res.json();
+    console.log('Login response object:', res);
+    console.log("header access token: ", res.headers.get("x-access-token"));
     console.log('Login success:', data);
+
+    if (res.headers.get("x-access-token")) {
+  localStorage.setItem("access_token", token);  // ✅ store in localStorage
+}
     // optionally store data in Pinia or localStorage
   } catch (err) {
     errorMessage.value = err.message || 'Something went wrong';
+    console.log("Caught error: ",err.message);
+    console.log("Caught error: ",err);
   }
 
 };
