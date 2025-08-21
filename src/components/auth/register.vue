@@ -1,8 +1,14 @@
 
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { useFetch } from "../../api/authFetch";
+import { useRouter } from "vue-router";
+import { routeTo } from "../../router";
+import type { IAuthResponse } from "../../types/Iauth";
+import { useLoggedStore } from "../../stores/globalStore";
 
+const router = useRouter();
 // reactive state
 const count = ref(0);
 
@@ -20,38 +26,43 @@ const registerSubmit = async () => {
     console.log(`url route fetching: ${import.meta.env.VITE_SERVER_API}/register`);
     try {
 
-      const accessToken = localStorage.getItem("access_token");
-
-
-    const res = await fetch(`${import.meta.env.VITE_SERVER_API}/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json',
-        "Authorization": `Bearer ${accessToken}`,  // ✅ standard pattern
-       },
-      body: JSON.stringify({
+      const res = await useFetch<IAuthResponse>("/auth/register","POST",{
         username: registerForm.value.username,
         password: registerForm.value.password
-      }),
-    //   credentials: 'include' // only if your server uses cookies
-    });
+      });
 
-    if (!res.ok) {
-      const errBody = await res.json(); // server's JSON error response
-  throw new Error(errBody || "Unknown error from server");
-    }
+      console.log('res object after useFetch ', res);
 
-    const data = await res.json();
-    console.log('Login response object:', res);
-    console.log("header access token: ", res.headers.get("x-access-token"));
-    console.log('Login success:', data);
+      // bad 401 
+      // shouldnt have to technially check for bad 401 response
+      if(res === 401){
+        routeTo('/login', router)
+      }
+      else if(res === undefined){
+        throw new Error();
+      }
+      // good
+      else{
+        // check for success
+        if(res.success){
+          const log = useLoggedStore();
+          log.login();
+          routeTo('/home', router)
+        }
+        else{
+          errorMessage.value = res.message || "Something went wrong";
+        }
+      }
 
-    if (res.headers.get("x-access-token")) {
-  localStorage.setItem("access_token", token);  // ✅ store in localStorage
-}
+      
+    
     // optionally store data in Pinia or localStorage
-  } catch (err) {
-    errorMessage.value = err.message || 'Something went wrong';
-    console.log("Caught error: ",err.message);
+  } catch (err: unknown) {
+    if(err instanceof Error){
+      errorMessage.value = err.message || 'Something went wrong';
+      console.log("Caught error: ",err.message);
+    }
+    
     console.log("Caught error: ",err);
   }
 
@@ -89,6 +100,10 @@ onMounted(() => {
             </div>
         </section>
     </form>
+
+    <div class="flex justify-center mt-5 border-top">
+  <button @click="routeTo('/login', router)">Login</button>
+    </div>
   
   <!-- <button @click="increment">Count is: {{ count }}</button> -->
 </template>

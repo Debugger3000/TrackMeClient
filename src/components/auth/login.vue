@@ -1,8 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { routeTo } from "../../router";
+import { useLoggedStore } from "../../stores/globalStore";
+import { useFetch } from "../../api/authFetch";
+import type { IAuthResponse } from "../../types/Iauth";
 
-// reactive state
-const count = ref(0);
+const router = useRouter();
+
+// handle login error message
+const errorMessage = ref("");
 
 const loginForm = ref({
     username: "",
@@ -10,17 +17,95 @@ const loginForm = ref({
 });
 
 const login = async () => {
+  try {
+
+      const res = await useFetch<IAuthResponse>("/auth/login","POST", {
+        username: loginForm.value.username,
+        password: loginForm.value.password
+      });
+
+      console.log('res object after useFetch ', res);
+
+      // bad 401 
+      // shouldnt have to technially check for bad 401 response
+      if(res === 401){
+        routeTo('/login', router)
+      }
+      else if(res === undefined){
+        throw new Error();
+      }
+      // good
+      else{
+        // check for success
+        if(res.success){
+          const log = useLoggedStore();
+          log.login();
+          routeTo('/home', router)
+        }
+        else{
+          errorMessage.value = res.message || "Something went wrong";
+        }
+      }
+    
+    // optionally store data in Pinia or localStorage
+  } catch (err: unknown) {
+    if(err instanceof Error){
+      errorMessage.value = err.message || 'Something went wrong';
+      console.log("Caught error: ",err.message);
+    }
+    
+    console.log("Caught error: ",err);
+  }
 
 };
 
-// functions that mutate state and trigger updates
-function increment() {
-  count.value++;
+async function checkRefreshTokenOnLoad() {
+
+  try {
+
+      const res = await useFetch<IAuthResponse>("/auth/onLoadTokenCheck","POST", undefined);
+
+      console.log('res object after useFetch checkRefreshTokenOnLoad', res);
+
+      // bad 401 
+      // shouldnt have to technially check for bad 401 response
+      if(res === 401){
+        // routeTo('/login', router)
+      }
+      else if(res === undefined){
+        throw new Error();
+      }
+      // good refresh
+      // log user in and go to home
+      else{
+        // check for success
+        if(res.success){
+          const log = useLoggedStore();
+          log.login();
+          routeTo('/home', router)
+          console.log("refresh token detected: ", res);
+        }
+        else{
+          // nothing happens
+          console.log("refresh token NOT detected: ", res);
+        }
+      }
+    
+    // optionally store data
+  } catch (err: unknown) {
+    console.log("Caught error: ",err);
+  }
+
 }
+
 
 // lifecycle hooks
 onMounted(() => {
-  console.log(`The initial count is ${count.value}.`);
+
+  // on page mount, we check "/launchTokenCheck" route to see if we can log user in without login form
+  checkRefreshTokenOnLoad();
+  
+  
 });
 </script>
 
@@ -30,15 +115,19 @@ onMounted(() => {
     
 
     <!-- form -->
-    <form  class="flex flex-col justify-center border rounded p-4">
+    <form @submit.prevent="login" class="flex flex-col justify-center border rounded p-4">
         <legend class="font-semibold text-4xl text-green-800">Login</legend>
         <!-- username -->
         <h4 class="font-semibold mb-1 mt-5">Username</h4>
-        <input type="text" class="border rounded p-1"></input>
+        <input v-model="loginForm.username" type="text" class="border rounded p-1"></input>
 
         <!-- password -->
         <h4 class="font-semibold mb-1 mt-5">Password</h4>
-        <input type="text" class="border rounded p-1"></input>
+        <input v-model="loginForm.password" type="text" class="border rounded p-1"></input>
+        
+        <!-- error message -->
+         <div v-if="errorMessage"><h4 class="text-red-600">{{ errorMessage }}</h4></div>
+        
         <!-- submit -->
         <section class="mt-5 flex justify-center">
             <div class="">
@@ -47,6 +136,13 @@ onMounted(() => {
         </section>
 
     </form>
+
+    <!-- To login button -->
+    <div class="flex justify-center mt-5 border-top">
+  <button @click="routeTo('/register', router)">Register</button>
+    </div>
+    
+
   </section>
-  <button @click="increment">Count is: {{ count }}</button>
+
 </template>
