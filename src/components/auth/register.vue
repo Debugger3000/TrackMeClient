@@ -45,8 +45,9 @@ const registerSubmit = async () => {
       else{
         // check for success
         if(res.success){
-          const log = useLoggedStore();
-          log.login();
+          localStorage.setItem("isLoggedIn","true");
+          // const log = useLoggedStore();
+          // log.login();
           routeTo('/home', router)
         }
         else{
