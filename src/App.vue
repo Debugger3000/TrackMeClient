@@ -7,12 +7,21 @@ import { useFetch } from "./api/authFetch";
 import type { IAuthResponse } from "./types/Iauth";
 import { useRouter } from "vue-router";
 import { routeTo } from "./router";
-import { useLoggedStore } from "./stores/globalStore";
+import { useLoggedStore, useUserStore } from "./stores/globalStore";
+import { storeToRefs } from "pinia";
 
 const router = useRouter();
 
 const globalPopUp = ref("");
-const log = useLoggedStore();
+// const log = useLoggedStore();
+// const userStore = useUserStore();
+
+// const { username } = storeToRefs(userStore);
+
+const username = localStorage.getItem("username");
+const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+// global variables
 
 function controlPopUp(message: string, time: number) {
   globalPopUp.value = message;
@@ -28,7 +37,10 @@ async function logout() {
   } else if (res === 401) {
     console.log("401 from logout");
   } else {
-    log.isLoggedIn = false;
+    localStorage.setItem("isLoggedIn", "false");
+    localStorage.setItem("username", "");
+    setTimeout(() => {}, 500);
+    // log.isLoggedIn = false;
     routeTo("/login", router);
     controlPopUp(res.message, 2000);
   }
@@ -38,14 +50,20 @@ async function logout() {
 </script>
 
 <template>
-  <nav class="bg-gray-800 opacity-50 flex p-2 justify-between">
-    <div>
-      <h4 class="text-3xl text-green-800">TrackMe</h4>
-    </div>
-    <div v-if="log.isLoggedIn" class="bg-blue-700 p-2 rounded border">
-      <button @click="logout">Logout</button>
-    </div>
-  </nav>
+  <!-- header -->
+  <header>
+    <nav class="bg-gray-800 opacity-50 flex p-2 justify-between">
+      <div>
+        <h4 class="text-3xl text-green-800">TrackMe</h4>
+      </div>
+      <div v-if="username">
+        <h4 class="text-3xl text-red-800">{{ username }}</h4>
+      </div>
+      <div v-if="isLoggedIn === 'true'" class="bg-blue-700 p-2 rounded border">
+        <button @click="logout">Logout</button>
+      </div>
+    </nav>
+  </header>
   <main class="">
     <!-- global pop up... -->
     <section
@@ -54,6 +72,7 @@ async function logout() {
       <h4>Message:</h4>
       <h4>{{ globalPopUp }}</h4>
     </section>
+    <!-- Main router view here -->
     <RouterView />
   </main>
 

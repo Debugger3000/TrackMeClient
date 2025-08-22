@@ -9,9 +9,11 @@ export async function useFetch<T>(
     const res = await fetch(`${import.meta.env.VITE_SERVER_API}${route}`, {
       method: `${method}`,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: body ? JSON.stringify(body) : undefined,
       credentials: "include", // only if your server uses cookies
     });
+
+    console.log(`Just fetched for route: ${route}`);
 
     // bad credentials, Tokens. Send user back to login, to re log in.
     if (res.status === 401) {
