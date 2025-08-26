@@ -14,11 +14,11 @@ export async function useFetch<T>(
     });
 
     console.log(`Just fetched for route: ${route}`);
-
+    console.log("res right after return: ", res);
     // bad credentials, Tokens. Send user back to login, to re log in.
     if (res.status === 401) {
       // send user back to login
-      useRouter().replace("/login");
+      // useRouter().replace("/login");
       return 401;
     }
 
