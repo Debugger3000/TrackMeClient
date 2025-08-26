@@ -19,22 +19,8 @@ function increment() {
 }
 
 async function getUserData() {
-  console.log("calling useFetch for getUserData");
+  console.log("Grabbing stats for user");
   try {
-    const res = await useFetch<IUser>("/user/userinfo", "GET", undefined);
-
-    if (res === 401) {
-      routeTo("/login", router);
-    } else if (res === undefined) {
-      throw new Error("Error from getUserDAta res, is undefined");
-    }
-    // good response...
-    else {
-      // set local Storage for username
-      // userStore.setUser(res);
-      localStorage.setItem("username", res.username);
-      localStorage.setItem("id", res.id.toString());
-    }
   } catch (error) {
     console.log("Error in getUserData in Home component: ", error);
   }
@@ -42,14 +28,8 @@ async function getUserData() {
 
 // lifecycle hooks
 onMounted(() => {
+  console.log("Stats page just mounted");
   // call get user info...
-  const callGet = async () => {
-    await getUserData();
-  };
-
-  callGet();
-
-  console.log(`The initial count is ${count.value}.`);
 });
 </script>
 
@@ -58,7 +38,7 @@ onMounted(() => {
   <section class="p-2">
     <!-- little title intro -->
     <div class="flex justify-center mt-4 pb-4 border-b border-green-900">
-      <h2 class="text-3xl">Welcome, {{ username }}</h2>
+      <h2 class="text-3xl">Welcome, to stats page !!!</h2>
     </div>
   </section>
 </template>

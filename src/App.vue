@@ -7,8 +7,8 @@ import { useFetch } from "./api/authFetch";
 import type { IAuthResponse } from "./types/Iauth";
 import { useRouter } from "vue-router";
 import { routeTo } from "./router";
-import { useLoggedStore, useUserStore } from "./stores/globalStore";
-import { storeToRefs } from "pinia";
+// import { useLoggedStore, useUserStore } from "./stores/globalStore";
+// import { storeToRefs } from "pinia";
 
 const router = useRouter();
 
@@ -18,8 +18,18 @@ const globalPopUp = ref("");
 
 // const { username } = storeToRefs(userStore);
 
+// let selectedTab: string = "home";
+let selectedTab = ref("home");
+
 const username = localStorage.getItem("username");
 const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+// control menu click
+function menuClicked(tabClicked: string) {
+  selectedTab.value = tabClicked;
+  routeTo(tabClicked, router);
+  console.log("selected Tab value: ", selectedTab);
+}
 
 // global variables
 
@@ -50,31 +60,103 @@ async function logout() {
 </script>
 
 <template>
-  <!-- header -->
-  <header>
-    <nav class="bg-gray-800 opacity-50 flex p-2 justify-between">
-      <div>
-        <h4 class="text-3xl text-green-800">TrackMe</h4>
+  <section class="h-screen grid grid-rows-[auto_1fr_auto]">
+    <!-- header -->
+    <header>
+      <nav class="bg-gray-800 opacity-50 flex p-2 justify-between">
+        <div class="flex items-center">
+          <h4 class="text-2xl text-green-600">TrackMe</h4>
+        </div>
+        <div v-if="username">
+          <h4 class="text-2xl text-red-800">{{ username }}</h4>
+        </div>
+        <div
+          v-if="isLoggedIn === 'true'"
+          class="bg-blue-700 p-1 rounded border">
+          <button @click="logout">Logout</button>
+        </div>
+      </nav>
+    </header>
+    <main class="">
+      <!-- global pop up... -->
+      <section
+        v-if="globalPopUp"
+        class="absolute border rounded p-2 flex flex-row gap-3">
+        <h4>Message:</h4>
+        <h4>{{ globalPopUp }}</h4>
+      </section>
+
+      <section>
+        <!-- Main router view here -->
+        <RouterView />
+      </section>
+    </main>
+    <!-- Navigation bar at bottom of screen -->
+    <section class="grid grid-cols-4 bg-gray-800">
+      <!-- home tab -->
+      <div
+        @click="
+          {
+            menuClicked('home');
+          }
+        "
+        class="flex justify-center items-center p-1"
+        :class="{
+          'bg-gray-700': selectedTab.valueOf() === 'home',
+          'bg-gray-800': selectedTab.valueOf() !== 'home',
+        }">
+        <i class="bi bi-house text-2xl text-white"></i>
+        <!-- <i class="bi bi-house-fill"></i> -->
       </div>
-      <div v-if="username">
-        <h4 class="text-3xl text-red-800">{{ username }}</h4>
+
+      <!-- start sesssion tab -->
+      <div
+        @click="
+          {
+            menuClicked('start');
+          }
+        "
+        class="flex justify-center items-center p-1"
+        :class="{
+          'bg-gray-700': selectedTab.valueOf() === 'start',
+          'bg-gray-800': selectedTab.valueOf() !== 'start',
+        }">
+        <i class="bi bi-alarm text-2xl text-white"></i>
       </div>
-      <div v-if="isLoggedIn === 'true'" class="bg-blue-700 p-2 rounded border">
-        <button @click="logout">Logout</button>
+
+      <!-- stats tab -->
+      <!-- start sesssion tab -->
+      <div
+        @click="
+          {
+            menuClicked('stats');
+          }
+        "
+        class="flex justify-center items-centerp-1"
+        :class="{
+          'bg-gray-700': selectedTab.valueOf() === 'stats',
+          'bg-gray-800': selectedTab.valueOf() !== 'stats',
+        }">
+        <i class="bi bi-bar-chart text-2xl text-white"></i>
       </div>
-    </nav>
-  </header>
-  <main class="">
-    <!-- global pop up... -->
-    <section
-      v-if="globalPopUp"
-      class="absolute border rounded p-2 flex flex-row gap-3">
-      <h4>Message:</h4>
-      <h4>{{ globalPopUp }}</h4>
+
+      <!-- profile tab -->
+      <!-- start sesssion tab -->
+      <div
+        @click="
+          {
+            menuClicked('profile');
+          }
+        "
+        class="flex justify-center items-center p-1"
+        :class="{
+          'bg-gray-700': selectedTab.valueOf() === 'profile',
+          'bg-gray-800': selectedTab.valueOf() !== 'profile',
+        }">
+        <i class="bi bi-person text-2xl text-white"></i>
+      </div>
     </section>
-    <!-- Main router view here -->
-    <RouterView />
-  </main>
+  </section>
 
   <!-- <div>
     <a href="https://vite.dev" target="_blank">
