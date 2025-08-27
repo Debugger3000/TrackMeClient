@@ -1,0 +1,49 @@
+.svg-range {
+  width: 800px;
+  height: 600px;
+  border: 2px solid #333;
+  background: #f0f0f0;
+}
+
+.shot-path {
+  fill: none;
+  stroke: gray;
+  stroke-width: 1;
+  /* stroke-dasharray: 4 4; dotted line */
+}
+
+.straight {
+  opacity: 0.5;
+}
+
+.fade {
+  stroke: green;
+}
+
+.draw {
+  stroke: red;
+}
+
+.push {
+  stroke: teal;
+}
+
+.pull {
+  stroke: blue;
+}
+
+.slice {
+  stroke: purple;
+}
+
+.push-slice {
+  stroke: rgb(72, 255, 0);
+}
+
+.pull-hook {
+  stroke: rgb(132, 4, 21);
+}
+
+.hook {
+  stroke: rgb(244, 205, 34);
+}
