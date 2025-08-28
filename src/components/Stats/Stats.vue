@@ -4,19 +4,19 @@ import { useFetch } from "../../api/authFetch";
 import type { IUser } from "../../types/user";
 import { routeTo } from "../../router";
 import { useRouter } from "vue-router";
-import { useUserStore } from "../../stores/globalStore";
+import type { IShotPaths } from "../../types/shot";
+import shape from "./shape.vue";
 
 const router = useRouter();
-// reactive state
-const count = ref(0);
+
+// club type
+let clubType = ref();
+
+// current shot path
+let curShotPath = ref<IShotPaths>("straight");
 
 // const userStore = useUserStore();
 const username = localStorage.getItem("username");
-
-// functions that mutate state and trigger updates
-function increment() {
-  count.value++;
-}
 
 async function getUserData() {
   console.log("Grabbing stats for user");
@@ -24,6 +24,12 @@ async function getUserData() {
   } catch (error) {
     console.log("Error in getUserData in Home component: ", error);
   }
+}
+
+// ----------------------
+
+function changePath(path: IShotPaths) {
+  curShotPath.value = path;
 }
 
 // lifecycle hooks
@@ -43,31 +49,97 @@ onMounted(() => {
       <h2 class="text-3xl">Welcome, to stats page !!!</h2>
     </div> -->
 
-    <svg viewBox="0 0 200 400" class="svg-range">
-      <!-- Front mat / tee box -->
-      <polygon points="60,390 140,390 130,370 70,370" fill="#8bc34a" />
+    <!-- contains specs of form (shotpath, contact, clubtype) -->
+    <section class="p-2">
+      <!-- shot path div -->
+      <div class="rounded-2xl">
+        <shape :shotShape="curShotPath" />
+      </div>
 
-      <!-- Back mat / landing area -->
-      <polygon points="80,150 120,150 115,140 85,140" fill="#4caf50" />
+      <!-- <shape :shotShape="curShotPath" /> -->
 
-      <!-- Straight -->
-      <path d="M100,380 C100,300 100,200 100,75" class="shot-path straight" />
-      <!-- Fade (curves gently to the right) -->
-      <path d="M100,380 C120,50 150,10 100,145" class="shot-path fade" />
-      <!-- Draw (curves gently to the left) -->
-      <path d="M100,380 C65,50 70,10 100, 145" class="shot-path draw" />
+      <!-- control buttons for club shot path -->
+      <section class="grid grid-cols-4 gap-1 rounded mt-2">
+        <div
+          class="shot-path-buttons"
+          :class="{ 'bg-gray-400': curShotPath === 'pullHook' }">
+          <button @click="changePath('pullHook')" class="w-full h-full">
+            Pull-Hook
+          </button>
+        </div>
 
-      <path d="M100,380 C125,50 150,5 140, 145" class="shot-path push" />
+        <div class="shot-path-buttons">
+          <button
+            @click="changePath('hook')"
+            class="w-full h-full"
+            :class="{ 'bg-gray-400': curShotPath === 'hook' }">
+            Hook
+          </button>
+        </div>
 
-      <path d="M100,380 C75,50 50,5 60,145" class="shot-path pull" />
-      <!-- <path d="M100,380 C80,320 70,180 60,20" class="shot-path draw" /> -->
-      <!-- Slice (sharp curve right) -->
-      <path d="M100,380 C25,200 10,10 160,145" class="shot-path slice" />
+        <div class="shot-path-buttons">
+          <button
+            @click="changePath('pull')"
+            class="w-full h-full"
+            :class="{ 'bg-gray-400': curShotPath === 'pull' }">
+            Pull
+          </button>
+        </div>
 
-      <path d="M100,380 C110,50 130,75 180,145" class="shot-path push-slice" />
-      <!-- Hook (sharp curve left) -->
-      <path d="M100,380 C175,200 190,10 40,145" class="shot-path hook" />
-      <path d="M100,380 C90,50 70,75 20,145" class="shot-path pull-hook" />
-    </svg>
+        <div class="shot-path-buttons">
+          <button
+            @click="changePath('fade')"
+            class="w-full h-full"
+            :class="{ 'bg-gray-400': curShotPath === 'fade' }">
+            Fade
+          </button>
+        </div>
+
+        <div class="shot-path-buttons">
+          <button
+            @click="changePath('straight')"
+            class="w-full h-full"
+            :class="{ 'bg-gray-400': curShotPath === 'straight' }">
+            Straight
+          </button>
+        </div>
+
+        <div class="shot-path-buttons">
+          <button
+            @click="changePath('draw')"
+            class="w-full h-full"
+            :class="{ 'bg-gray-400': curShotPath === 'draw' }">
+            Draw
+          </button>
+        </div>
+
+        <div class="shot-path-buttons">
+          <button
+            @click="changePath('push')"
+            class="w-full h-full"
+            :class="{ 'bg-gray-400': curShotPath === 'push' }">
+            Push
+          </button>
+        </div>
+
+        <div class="shot-path-buttons">
+          <button
+            @click="changePath('slice')"
+            class="w-full h-full"
+            :class="{ 'bg-gray-400': curShotPath === 'slice' }">
+            Slice
+          </button>
+        </div>
+
+        <div class="shot-path-buttons">
+          <button
+            @click="changePath('pushSlice')"
+            class="w-full h-full"
+            :class="{ 'bg-gray-400': curShotPath === 'pushSlice' }">
+            Push-Slice
+          </button>
+        </div>
+      </section>
+    </section>
   </section>
 </template>
