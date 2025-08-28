@@ -7,11 +7,19 @@ import { useRouter } from "vue-router";
 import { useUserStore } from "../../stores/globalStore";
 
 const router = useRouter();
+
+const props = defineProps<{
+  username: String;
+  isLoggedIn: Boolean;
+  syncStorage?: (username: string) => void;
+}>();
+
 // reactive state
 const count = ref(0);
 
 // const userStore = useUserStore();
-const username = localStorage.getItem("username");
+// let username = ref();
+// username.value = localStorage.getItem("username");
 
 // functions that mutate state and trigger updates
 function increment() {
@@ -32,6 +40,7 @@ async function getUserData() {
     else {
       // set local Storage for username
       // userStore.setUser(res);
+      props.syncStorage?.(res.username);
       localStorage.setItem("username", res.username);
       localStorage.setItem("id", res.id.toString());
     }
@@ -59,6 +68,7 @@ onMounted(() => {
     <!-- little title intro -->
     <div class="flex justify-center mt-4 pb-4 border-b border-green-900">
       <h2 class="text-3xl">Welcome, {{ username }}</h2>
+      <h2 class="text-2xl">islogger, {{ isLoggedIn }}</h2>
     </div>
   </section>
 </template>

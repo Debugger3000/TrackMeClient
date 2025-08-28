@@ -21,8 +21,9 @@ const globalPopUp = ref("");
 // let selectedTab: string = "home";
 let selectedTab = ref("home");
 
-const username = localStorage.getItem("username");
-const isLoggedIn = localStorage.getItem("isLoggedIn");
+// refs for username and logged in
+let username = ref("");
+let isLoggedIn = ref("");
 
 // control menu click
 function menuClicked(tabClicked: string) {
@@ -49,6 +50,8 @@ async function logout() {
   } else {
     localStorage.setItem("isLoggedIn", "false");
     localStorage.setItem("username", "");
+    isLoggedIn.value = "false";
+    username.value = "";
     setTimeout(() => {}, 500);
     // log.isLoggedIn = false;
     routeTo("/login", router);
@@ -57,21 +60,39 @@ async function logout() {
 
   // do a little pop up on screen for if logout was successful
 }
+
+// sync app.vue with user data after home calls it
+function syncStorage(usernameRef: string) {
+  // username.value = localStorage.getItem("username");
+  console.log("sync storage from parent has ran !");
+  // set username ref for app.vue
+  // home grabs the data and calls this function
+  username.value = usernameRef;
+
+  // isLoggedIn.value = localStorage.getItem("isLoggedIn");
+}
+
+// router guard, check whether user is logged in before every re route
+router.beforeEach((to, from, next) => {
+  // syncStorage(); // re-sync before navigating
+  isLoggedIn.value = localStorage.getItem("isLoggedIn") || "";
+  next();
+});
 </script>
 
 <template>
   <section class="h-screen grid grid-rows-[auto_1fr_auto]">
     <!-- header -->
-    <header>
+    <header v-if="isLoggedIn.valueOf() === 'true'">
       <nav class="bg-gray-800 opacity-50 flex p-2 justify-between">
         <div class="flex items-center">
           <h4 class="text-2xl text-green-600">TrackMe</h4>
         </div>
-        <div v-if="username">
-          <h4 class="text-2xl text-red-800">{{ username }}</h4>
+        <div v-if="username.valueOf()">
+          <h4 class="text-2xl text-red-800">{{ username.valueOf() }}</h4>
         </div>
         <div
-          v-if="isLoggedIn === 'true'"
+          v-if="isLoggedIn.valueOf() === 'true'"
           class="bg-blue-700 p-1 rounded border">
           <button @click="logout">Logout</button>
         </div>
@@ -88,11 +109,16 @@ async function logout() {
 
       <section>
         <!-- Main router view here -->
-        <RouterView />
+        <RouterView
+          :username="username"
+          :isLoggedIn="isLoggedIn"
+          :syncStorage="syncStorage" />
       </section>
     </main>
     <!-- Navigation bar at bottom of screen -->
-    <section class="grid grid-cols-4 bg-gray-800">
+    <section
+      v-if="isLoggedIn.valueOf() === 'true'"
+      class="grid grid-cols-4 bg-gray-800">
       <!-- home tab -->
       <div
         @click="

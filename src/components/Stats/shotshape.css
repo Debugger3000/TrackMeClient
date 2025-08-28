@@ -7,13 +7,14 @@
 
 .shot-path {
   fill: none;
-  stroke: gray;
-  stroke-width: 1;
+  opacity: 0.9;
+  stroke-width: 2;
+  stroke: red;
   /* stroke-dasharray: 4 4; dotted line */
 }
 
-.straight {
-  opacity: 0.5;
+/* .straight {
+  stroke: rgb(122, 117, 118);
 }
 
 .fade {
@@ -21,7 +22,7 @@
 }
 
 .draw {
-  stroke: red;
+  
 }
 
 .push {
@@ -46,4 +47,15 @@
 
 .hook {
   stroke: rgb(244, 205, 34);
+} */
+
+/* styles for shape.vue stuff */
+
+.shot-path-buttons {
+  border: 1px solid gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 }
