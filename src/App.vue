@@ -25,6 +25,14 @@ let selectedTab = ref("home");
 let username = ref("");
 let isLoggedIn = ref("");
 
+// nav bar at bottom
+const navBar: { page: string; icon: string }[] = [
+  { page: "home", icon: "bi-bar-chart" },
+  { page: "start", icon: "bi-alarm" },
+  { page: "stats", icon: "bi-bar-chart" },
+  { page: "profile", icon: "bi-person" },
+];
+
 // control menu click
 function menuClicked(tabClicked: string) {
   selectedTab.value = tabClicked;
@@ -98,18 +106,19 @@ router.beforeEach((to, from, next) => {
         </div>
       </nav>
     </header>
-    <main class="">
+    <main class="relative overflow-y-auto">
       <!-- global pop up... -->
       <section
         v-if="globalPopUp"
-        class="absolute border rounded p-2 flex flex-row gap-3">
+        class="absolute border rounded p-4 flex flex-row gap-3 top-1/2 left-1/2 z-99 bg-[#242424] opacity-[0.9]">
         <h4>Message:</h4>
         <h4>{{ globalPopUp }}</h4>
       </section>
 
-      <section>
+      <section class="min-h-full">
         <!-- Main router view here -->
         <RouterView
+          class="my-5 p-2"
           :username="username"
           :isLoggedIn="isLoggedIn"
           :syncStorage="syncStorage" />
@@ -121,93 +130,19 @@ router.beforeEach((to, from, next) => {
       class="grid grid-cols-4 bg-gray-800">
       <!-- home tab -->
       <div
+        v-for="value in navBar"
         @click="
           {
-            menuClicked('home');
+            menuClicked(value.page);
           }
         "
         class="flex justify-center items-center p-1"
         :class="{
-          'bg-gray-700': selectedTab.valueOf() === 'home',
-          'bg-gray-800': selectedTab.valueOf() !== 'home',
+          'bg-gray-700': selectedTab.valueOf() === `${value.page}`,
+          'bg-gray-800': selectedTab.valueOf() !== `${value.page}`,
         }">
-        <i class="bi bi-house text-2xl text-white"></i>
-        <!-- <i class="bi bi-house-fill"></i> -->
-      </div>
-
-      <!-- start sesssion tab -->
-      <div
-        @click="
-          {
-            menuClicked('start');
-          }
-        "
-        class="flex justify-center items-center p-1"
-        :class="{
-          'bg-gray-700': selectedTab.valueOf() === 'start',
-          'bg-gray-800': selectedTab.valueOf() !== 'start',
-        }">
-        <i class="bi bi-alarm text-2xl text-white"></i>
-      </div>
-
-      <!-- stats tab -->
-      <!-- start sesssion tab -->
-      <div
-        @click="
-          {
-            menuClicked('stats');
-          }
-        "
-        class="flex justify-center items-centerp-1"
-        :class="{
-          'bg-gray-700': selectedTab.valueOf() === 'stats',
-          'bg-gray-800': selectedTab.valueOf() !== 'stats',
-        }">
-        <i class="bi bi-bar-chart text-2xl text-white"></i>
-      </div>
-
-      <!-- profile tab -->
-      <!-- start sesssion tab -->
-      <div
-        @click="
-          {
-            menuClicked('profile');
-          }
-        "
-        class="flex justify-center items-center p-1"
-        :class="{
-          'bg-gray-700': selectedTab.valueOf() === 'profile',
-          'bg-gray-800': selectedTab.valueOf() !== 'profile',
-        }">
-        <i class="bi bi-person text-2xl text-white"></i>
+        <i class="bi text-2xl text-white" :class="value.icon"></i>
       </div>
     </section>
   </section>
-
-  <!-- <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div> -->
-  <!-- <login /> -->
-  <!-- <Register /> -->
-  <!-- <HelloWorld msg="Vite + Vue" /> -->
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
