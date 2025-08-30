@@ -26,12 +26,14 @@ function increment() {
   count.value++;
 }
 
+// standardized way of making REST API calls, and handling 401s / 200s
 async function getUserData() {
   console.log("calling useFetch for getUserData");
   try {
     const res = await useFetch<IUser>("/user/userinfo", "GET", undefined);
 
     if (res === 401) {
+      localStorage.setItem("isLoggedIn", "false");
       routeTo("/login", router);
     } else if (res === undefined) {
       throw new Error("Error from getUserDAta res, is undefined");
