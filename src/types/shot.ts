@@ -25,15 +25,15 @@ export const CLUBTYPE = {
 } as const;
 
 export const SHOTPATH = {
-  Straight: "straight",
+  PullHook: "pullHook",
+  Hook: "hook",
+  Pull: "pull",
   Draw: "draw",
+  Straight: "straight",
+  Fade: "fade",
   Push: "push",
   Slice: "slice",
   PushSlice: "pushSlice",
-  Fade: "fade",
-  Pull: "pull",
-  Hook: "hook",
-  PullHook: "pullHook",
 } as const;
 
 export const SHOTCONTACT = {
@@ -117,7 +117,7 @@ export const SHOTPATHSVG = {
     class: "slice",
   },
   pushSlice: {
-    d: "M100,380 C75,50 50,5 60,145",
+    d: "M100,380 C110,50 130,75 180,145",
     class: "push-slice",
   },
   hook: {

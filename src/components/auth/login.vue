@@ -71,6 +71,7 @@ async function checkRefreshTokenOnLoad() {
       // bad 401 
       // shouldnt have to technially check for bad 401 response
       if(res === 401){
+        // do nothing, we are on page we should be on
         // routeTo('/login', router)
       }
       else if(res === undefined){
@@ -81,8 +82,8 @@ async function checkRefreshTokenOnLoad() {
       else{
         // check for success
         if(res.success){
-          const log = useLoggedStore();
-          log.login();
+          // const log = useLoggedStore();
+          // log.login();
           routeTo('/home', router)
           console.log("refresh token detected: ", res);
         }

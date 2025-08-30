@@ -19,6 +19,7 @@ export async function useFetch<T>(
     if (res.status === 401) {
       // send user back to login
       // useRouter().replace("/login");
+      console.log("API request threw a 401");
       return 401;
     }
 
