@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useFetch } from "../../api/authFetch";
 import type { IUser } from "../../types/user";
 import { routeTo } from "../../router";
@@ -11,25 +11,35 @@ import {
   SHOTPATH,
   SHOTCONTACT,
   type IShotContact,
+  type IShot,
 } from "../../types/shot";
 import shape from "./shape.vue";
+import { errorMessages } from "vue/compiler-sfc";
 
 const router = useRouter();
 
-// club type
+// club type - no default - user will have to interact before submit can be pressed...
 let curClubType = ref<IShotType>();
 const clubs = Object.entries(CLUBTYPE);
 
-// current shot path
+// current shot path - default path to 'straight'
 let curShotPath = ref<IShotPaths>("straight");
 const paths = Object.entries(SHOTPATH);
 
-// contact
+// contact - default contact type to 'center'
 let curContactType = ref<IShotContact>("center");
 const contacts = Object.entries(SHOTCONTACT);
 
+// error message
+let message = ref("");
+let loading = ref(false);
+
+// interval
+let intervalId: number | null = null;
+
 // const userStore = useUserStore();
 const username = localStorage.getItem("username");
+const userId = localStorage.getItem("id");
 
 async function getUserData() {
   console.log("Grabbing stats for user");
@@ -51,31 +61,119 @@ function changeContact(contact: IShotContact) {
   curContactType.value = contact;
 }
 
+async function sendShotData() {
+  try {
+    // grab shot data
+    const shotData: IShot[] = JSON.parse(localStorage.getItem("shotQ") || "[]");
+
+    if (shotData.length > 0) {
+      const res = await useFetch<IShot[]>("/data/shot", "POST", shotData);
+
+      if (res === 401) {
+        localStorage.setItem("isLoggedIn", "false");
+        routeTo("/login", router);
+      } else if (res === undefined) {
+        throw new Error("Error from getUserDAta res, is undefined");
+      }
+      // good response...
+      else {
+        // set queue to zero
+        localStorage.setItem("shotQ", "[]");
+        console.log("sendShotData request successful !");
+      }
+    } else {
+      console.log("queue is empty. No data sent");
+    }
+  } catch (error) {
+    console.log("Error in stats send shot data request ", error);
+  }
+}
+
+// submit shot
+function submitShot() {
+  console.log("submit shot clicked ");
+  loading.value = true;
+  // make sure club was selected, and userId exists in memory
+  if (curClubType.value && userId) {
+    const data: IShot = {
+      userId: userId,
+      clubType: curClubType.value,
+      shotContact: curContactType.value,
+      shotPath: curShotPath.value,
+    };
+
+    let postLen = 0;
+    const curQ = localStorage.getItem("shotQ");
+    console.log("curQ value: ", curQ);
+
+    // push data to queue in localStorage
+    if (curQ === null || curQ === "[]") {
+      localStorage.setItem("shotQ", JSON.stringify([data]));
+      console.log("just created new Q");
+
+      // queue has been created, start interval now
+      // 5 minute poll right now
+    }
+    // array already a thing
+    else {
+      if (curQ) {
+        console.log("gonna add new shot to Q");
+        let curQArray: IShot[] = JSON.parse(curQ);
+        const prevLen = curQArray.length;
+        curQArray.push(data);
+        postLen = curQArray.length;
+
+        console.log("new shot pushed to Q");
+
+        // tell user shot was added
+        if (postLen - prevLen === 1) {
+          message.value = "Shot has been added !";
+          displayMessage();
+        }
+      }
+    }
+  } else {
+    message.value = "Please choose a club !";
+    displayMessage();
+  }
+}
+
+function displayMessage() {
+  setTimeout(() => {
+    message.value = "";
+    loading.value = false;
+  }, 3000);
+}
+
 // lifecycle hooks
 onMounted(() => {
   console.log("Stats page just mounted");
+
+  // can just start poll on launch since items may alreaady be in Q
+
+  intervalId = setInterval(sendShotData, 1 * 60 * 1000);
+  console.log("shotQ created: setInterval started. ", intervalId);
   // call get user info...
+});
+
+onUnmounted(() => {
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
 });
 </script>
 
 <style src="./shotshape.css"></style>
 
 <template>
-  <!-- Home page -->
+  <!-- Stats page page -->
   <section class="">
-    <!-- little title intro -->
-    <!-- <div class="flex justify-center mt-4 pb-4 border-b border-green-900">
-      <h2 class="text-3xl">Welcome, to stats page !!!</h2>
-    </div> -->
-
     <!-- contains specs of form (shotpath, contact, clubtype) -->
     <section class="">
       <!-- shot path div -->
       <div class="">
         <shape :shotShape="curShotPath" />
       </div>
-
-      <!-- <shape :shotShape="curShotPath" /> -->
 
       <!-- control buttons for club shot path -->
       <section class="grid grid-cols-4 gap-1 rounded mt-2">
@@ -113,9 +211,20 @@ onMounted(() => {
         </div>
       </section>
 
+      <!-- error -->
+      <section class="p-2">
+        <h4 v-if="message" class="font-semibold text-red-800">{{ message }}</h4>
+      </section>
+
       <!-- submit button -->
       <section class="flex justify-center mt-4">
-        <button class="p-4 rounded-xl bg-red-800 mt-4">Submit</button>
+        <button
+          :disabled="loading"
+          @click="submitShot"
+          class="p-4 rounded-xl mt-4"
+          :class="{ 'bg-gray-400': loading, 'bg-red-800': !loading }">
+          Submit
+        </button>
       </section>
     </section>
   </section>
