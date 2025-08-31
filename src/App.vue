@@ -56,8 +56,11 @@ async function logout() {
   } else if (res === 401) {
     console.log("401 from logout");
   } else {
+    // set on login.vue
     localStorage.setItem("isLoggedIn", "false");
+    // set on home.vue
     localStorage.setItem("username", "");
+    localStorage.setItem("id", "");
     isLoggedIn.value = "false";
     username.value = "";
     setTimeout(() => {}, 500);

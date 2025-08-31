@@ -1,6 +1,8 @@
 // CONST values to use as ENUMS
 // -------------------------------------------
 
+import type { StringLiteral } from "typescript";
+
 export const CLUBTYPE = {
   Driver: "Dr",
   ThreeWood: "3w",
@@ -47,6 +49,7 @@ export const SHOTCONTACT = {
 // Interfaces -
 // ----------------------------------
 export interface IShot {
+  userId: string;
   clubType: IShotType;
   shotContact: IShotContact;
   shotPath: IShotPaths;
