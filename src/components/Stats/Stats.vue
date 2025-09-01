@@ -96,7 +96,7 @@ function submitShot() {
   // make sure club was selected, and userId exists in memory
   if (curClubType.value && userId) {
     const data: IShot = {
-      userId: userId,
+      userId: Number(userId),
       clubType: curClubType.value,
       shotContact: curContactType.value,
       shotPath: curShotPath.value,
@@ -111,6 +111,9 @@ function submitShot() {
       localStorage.setItem("shotQ", JSON.stringify([data]));
       console.log("just created new Q");
 
+      message.value = "Q started, and item added !";
+      displayMessage();
+
       // queue has been created, start interval now
       // 5 minute poll right now
     }
@@ -122,6 +125,9 @@ function submitShot() {
         const prevLen = curQArray.length;
         curQArray.push(data);
         postLen = curQArray.length;
+
+        // set new itme into array
+        localStorage.setItem("shotQ", JSON.stringify(curQArray));
 
         console.log("new shot pushed to Q");
 
@@ -159,6 +165,7 @@ onMounted(() => {
 onUnmounted(() => {
   if (intervalId) {
     clearInterval(intervalId);
+    console.log("Post shots, unmounted.. interval cleared..");
   }
 });
 </script>

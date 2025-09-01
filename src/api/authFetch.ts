@@ -3,7 +3,7 @@ import { useRouter } from "vue-router";
 export async function useFetch<T>(
   route: string,
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
-  body: unknown | undefined
+  body?: unknown | undefined
 ): Promise<T | 401 | undefined> {
   try {
     const res = await fetch(`${import.meta.env.VITE_SERVER_API}${route}`, {
