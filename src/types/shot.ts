@@ -49,7 +49,7 @@ export const SHOTCONTACT = {
 // Interfaces -
 // ----------------------------------
 export interface IShot {
-  userId: string;
+  userId: number;
   clubType: IShotType;
   shotContact: IShotContact;
   shotPath: IShotPaths;
