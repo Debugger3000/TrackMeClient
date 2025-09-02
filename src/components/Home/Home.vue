@@ -5,8 +5,21 @@ import type { IUser } from "../../types/user";
 import { routeTo } from "../../router";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../../stores/globalStore";
-import { Chart, type ChartData } from "chart.js";
-import { CLUBTYPE, type IShot, type IShotType } from "../../types/shot";
+import {
+  BarController,
+  BarElement,
+  CategoryScale,
+  Chart,
+  LinearScale,
+  type ChartData,
+} from "chart.js";
+import {
+  CLUBTYPE,
+  SHOTPATH_ITER,
+  type IShot,
+  type IShotIncoming,
+  type IShotType,
+} from "../../types/shot";
 
 const router = useRouter();
 
@@ -20,54 +33,49 @@ const props = defineProps<{
 const count = ref(0);
 
 // this will be used to filter chart to ONE CLUB at a time...
-let selectedClub = ref<IShotType>(CLUBTYPE.Driver);
+let selectedClub = ref<IShotType>(CLUBTYPE.ThreeWood);
 
 // chart stats data
-let shotsData = ref<IShot[]>([]);
-// filtered sub array of main shot data
-let filteredShotData = ref<IShot[]>();
+let shotsData = ref<IShotIncoming>({
+  clubType: selectedClub.value,
+  dataSet: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+});
+
+let charter: Chart<
+  "bar",
+  [number, number, number, number, number, number, number, number, number],
+  string
+> | null = null;
+
+Chart.register(BarController, BarElement, CategoryScale, LinearScale);
+
+let chartItem = ref<HTMLCanvasElement | null>(null);
 
 function filterShotData(clubType: IShotType) {}
 
-const datasets: ChartData<"bar", IShot[]> = {
+const datasets = {
   datasets: [
     {
-      data: shotsData.value,
-      parsing: {
-        // xAxisKey: "shotPath",
-      },
+      label: "SHOTTERS",
+      data: shotsData.value!.dataSet,
+      backgroundColor: "#f9f9f9",
     },
   ],
 };
-
-const chartDiv = document.getElementById("charter")! as HTMLCanvasElement;
-
-// Bar chart for shot stats
-new Chart(chartDiv, {
-  type: "bar",
-  data: datasets,
-  options: {
-    parsing: {
-      // xAxisKey: "shotPath",
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-    onClick: (e) => {},
-  },
-});
 
 // const userStore = useUserStore();
 // let username = ref();
 // username.value = localStorage.getItem("username");
 
 // functions that mutate state and trigger updates
+// Per club data...
 async function getStatsData() {
   console.log("getStatsData function ran");
   try {
-    const res = await useFetch<IShot[]>("/data/shot", "GET");
+    const res = await useFetch<IShotIncoming>(
+      `/data/shot/${selectedClub.value}`,
+      "GET"
+    );
 
     if (res === 401) {
       localStorage.setItem("isLoggedIn", "false");
@@ -79,7 +87,13 @@ async function getStatsData() {
     else {
       // set stats data
       shotsData.value = res;
-      console.log("shot data: ", Array.from(shotsData.value));
+
+      if (charter) {
+        charter.data.datasets[0].data = shotsData.value.dataSet;
+        charter!.update();
+      }
+
+      console.log("shot data: ", shotsData.value);
       filterShotData(CLUBTYPE.Driver);
     }
   } catch (error) {
@@ -126,6 +140,40 @@ onMounted(() => {
   };
   callData();
 
+  const chartDiv = document.getElementById("charter")! as HTMLCanvasElement;
+  chartItem.value = chartDiv;
+  // init chart
+  // Bar chart for shot stats
+  if (chartItem.value) {
+    charter = new Chart(chartItem.value, {
+      type: "bar",
+      data: {
+        datasets: [
+          {
+            data: shotsData.value.dataSet,
+            borderColor: "#36A2EB",
+            backgroundColor: "#9BD0F5",
+          },
+        ],
+        labels: SHOTPATH_ITER,
+      },
+      options: {
+        parsing: {
+          // xAxisKey: "shotPath",
+        },
+        scales: {
+          y: {
+            // beginAtZero: true,
+            ticks: {
+              stepSize: 1,
+            },
+          },
+        },
+        onClick: (e) => {},
+      },
+    });
+  }
+
   console.log(`The initial count is ${count.value}.`);
 });
 </script>
@@ -140,7 +188,8 @@ onMounted(() => {
     </div>
 
     <!-- display stats -->
-    <section>
+    <section class="rounded mt-10 bg-gray-300">
+      <h4 class="ml-4 text-gray-800 text-center">{{ selectedClub }}</h4>
       <canvas id="charter"></canvas>
     </section>
   </section>

@@ -38,6 +38,20 @@ export const SHOTPATH = {
   PushSlice: "pushSlice",
 } as const;
 
+export const SHOTPATH_ITER: string[] = Object.values(SHOTPATH);
+
+type ShotDataSet = [
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number
+];
+
 export const SHOTCONTACT = {
   Center: "center",
   Fat: "fat",
@@ -46,13 +60,30 @@ export const SHOTCONTACT = {
   Heel: "heel",
 } as const;
 
+type ContactDataSet = [number, number, number, number, number];
+
 // Interfaces -
 // ----------------------------------
+// outgoing, and how the database should store the data
 export interface IShot {
   userId: number;
   clubType: IShotType;
   shotContact: IShotContact;
   shotPath: IShotPaths;
+}
+
+// how the data should be retrieved, for easy access into barChart
+// returns shots for a club
+export interface IShotIncoming {
+  clubType: IShotType;
+  dataSet: ShotDataSet;
+}
+
+// data for shot contact. Will be a donut / circle graph
+export interface IShotContactIncoming {
+  total: number;
+  dataSet: ContactDataSet;
+  createdAt: string;
 }
 
 // Types
