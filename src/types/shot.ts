@@ -26,6 +26,8 @@ export const CLUBTYPE = {
   Sixty: "60",
 } as const;
 
+export const CLUBTYPE_ITER: IShotType[] = Object.values(CLUBTYPE);
+
 export const SHOTPATH = {
   PullHook: "pullHook",
   Hook: "hook",
@@ -61,6 +63,7 @@ export const SHOTCONTACT = {
 } as const;
 
 type ContactDataSet = [number, number, number, number, number];
+export const CONTACT_ITER: string[] = Object.values(SHOTCONTACT);
 
 // Interfaces -
 // ----------------------------------
@@ -70,6 +73,13 @@ export interface IShot {
   clubType: IShotType;
   shotContact: IShotContact;
   shotPath: IShotPaths;
+}
+
+// ----------------------------------------------------------------------
+
+export interface IShotMaster {
+  ishot: IShotIncoming;
+  icontact: IShotContactIncoming;
 }
 
 // how the data should be retrieved, for easy access into barChart
@@ -83,8 +93,9 @@ export interface IShotIncoming {
 export interface IShotContactIncoming {
   total: number;
   dataSet: ContactDataSet;
-  createdAt: string;
 }
+
+// ------------------------------------------------------------
 
 // Types
 // -------------------------------
