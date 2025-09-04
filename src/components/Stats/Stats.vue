@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import { useFetch } from "../../api/authFetch";
-import type { IUser } from "../../types/user";
 import { routeTo } from "../../router";
 import { useRouter } from "vue-router";
 import {
@@ -14,7 +13,6 @@ import {
   type IShot,
 } from "../../types/shot";
 import shape from "./shape.vue";
-import { errorMessages } from "vue/compiler-sfc";
 
 const router = useRouter();
 
@@ -38,16 +36,7 @@ let loading = ref(false);
 let intervalId: number | null = null;
 
 // const userStore = useUserStore();
-const username = localStorage.getItem("username");
 const userId = localStorage.getItem("id");
-
-async function getUserData() {
-  console.log("Grabbing stats for user");
-  try {
-  } catch (error) {
-    console.log("Error in getUserData in Home component: ", error);
-  }
-}
 
 // ----------------------
 
@@ -185,7 +174,7 @@ onUnmounted(() => {
       <!-- control buttons for club shot path -->
       <section class="grid grid-cols-4 gap-1 rounded mt-2">
         <div
-          v-for="[value, path] in paths"
+          v-for="[_, path] in paths"
           class="shot-path-buttons"
           :class="{ 'bg-gray-400': curShotPath === `${path}` }">
           <button @click="changePath(path)" class="w-full h-full">
@@ -198,7 +187,7 @@ onUnmounted(() => {
       <section class="grid grid-cols-5 gap-1 mt-4 py-4 border-t border-b">
         <div
           class="shot-path-buttons"
-          v-for="[value, club] in clubs"
+          v-for="[_, club] in clubs"
           :class="{ 'bg-gray-400': curClubType === `${club}` }">
           <button @click="changeClub(club)" class="w-full h-full">
             {{ club }}
@@ -210,7 +199,7 @@ onUnmounted(() => {
       <section class="grid grid-cols-4 gap-1 mt-4 pb-8 border-b">
         <div
           class="shot-path-buttons"
-          v-for="[value, contact] in contacts"
+          v-for="[_, contact] in contacts"
           :class="{ 'bg-gray-400': curContactType === `${contact}` }">
           <button @click="changeContact(contact)" class="w-full h-full">
             {{ contact }}

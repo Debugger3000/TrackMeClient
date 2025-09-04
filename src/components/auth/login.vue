@@ -2,7 +2,6 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { routeTo } from "../../router";
-import { useLoggedStore } from "../../stores/globalStore";
 import { useFetch } from "../../api/authFetch";
 import type { IAuthResponse } from "../../types/Iauth";
 
