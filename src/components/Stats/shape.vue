@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
-import { useFetch } from "../../api/authFetch";
-import type { IUser } from "../../types/user";
-import { routeTo } from "../../router";
-import { useRouter } from "vue-router";
+import { onMounted } from "vue";
+
 import { SHOTPATHSVG } from "../../types/shot";
 
 const props = defineProps<{

@@ -1,8 +1,6 @@
 // CONST values to use as ENUMS
 // -------------------------------------------
 
-import type { StringLiteral } from "typescript";
-
 export const CLUBTYPE = {
   Driver: "Dr",
   ThreeWood: "3w",

@@ -4,24 +4,13 @@ import { useFetch } from "../../api/authFetch";
 import type { IUser } from "../../types/user";
 import { routeTo } from "../../router";
 import { useRouter } from "vue-router";
-import { useUserStore } from "../../stores/globalStore";
 
 import selectClub from "./selectClub.vue";
 import bar from "./bar.vue";
 
 import {
-  BarController,
-  BarElement,
-  CategoryScale,
-  Chart,
-  LinearScale,
-  type ChartData,
-} from "chart.js";
-import {
   CLUBTYPE,
   type IShotContactIncoming,
-  SHOTPATH_ITER,
-  type IShot,
   type IShotIncoming,
   type IShotType,
   type IShotMaster,
