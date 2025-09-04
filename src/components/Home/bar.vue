@@ -1,26 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import {
-  CLUBTYPE,
-  SHOTPATH_ITER,
-  CLUBTYPE_ITER,
-  type IShot,
-  type IShotContactIncoming,
-  type IShotType,
-  type IShotIncoming,
-  type IShotMaster,
-} from "../../types/shot";
+import { SHOTPATH_ITER, type IShotIncoming } from "../../types/shot";
 
 import {
   BarController,
   BarElement,
   CategoryScale,
   Chart,
-  ArcElement,
-  Tooltip,
-  Legend,
   LinearScale,
-  type ChartData,
 } from "chart.js";
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale);
@@ -95,7 +82,9 @@ onMounted(() => {
             },
           },
         },
-        onClick: (e) => {},
+        onClick: (e) => {
+          console.log("e", e);
+        },
       },
     });
   }
