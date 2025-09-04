@@ -7,6 +7,7 @@ import { useRouter } from "vue-router";
 import { useUserStore } from "../../stores/globalStore";
 
 import selectClub from "./selectClub.vue";
+import bar from "./bar.vue";
 
 import {
   BarController,
@@ -35,9 +36,6 @@ const props = defineProps<{
   syncStorage?: (username: string) => void;
 }>();
 
-// reactive state
-const count = ref(0);
-
 // this will be used to filter chart to ONE CLUB at a time...
 let selectedClub = ref<IShotType>(CLUBTYPE.ThreeWood);
 
@@ -57,25 +55,11 @@ let shotsData = ref<IShotIncoming>({
   dataSet: [0, 0, 0, 0, 0, 0, 0, 0, 0],
 });
 
-// donut chart contact data
+// // donut chart contact data
 let contactData = ref<IShotContactIncoming>({
   total: 5,
   dataSet: [1, 1, 1, 1, 1],
 });
-
-let charter: Chart<
-  "bar",
-  [number, number, number, number, number, number, number, number, number],
-  string
-> | null = null;
-
-Chart.register(BarController, BarElement, CategoryScale, LinearScale);
-
-let chartItem = ref<HTMLCanvasElement | null>(null);
-
-// const userStore = useUserStore();
-// let username = ref();
-// username.value = localStorage.getItem("username");
 
 // functions that mutate state and trigger updates
 // Per club data...
@@ -96,15 +80,12 @@ async function getStatsData() {
     // good response...
     else {
       // set stats data
+      // shotDataMaster.value = res;
       shotsData.value = res.ishot;
       contactData.value = res.icontact;
 
-      if (charter) {
-        charter.data.datasets[0].data = shotsData.value.dataSet;
-        charter!.update();
-      }
-
-      console.log("shot data: ", shotsData.value);
+      console.log("contact data data: ", shotsData.value.dataSet);
+      console.log("shotter data data: ", contactData.value.dataSet);
     }
   } catch (error) {
     console.log("getStatsData function threw error: ", error);
@@ -149,50 +130,6 @@ onMounted(() => {
     await getStatsData();
   };
   callData();
-
-  const chartDiv = document.getElementById("charter")! as HTMLCanvasElement;
-  chartItem.value = chartDiv;
-  // init chart
-  // Bar chart for shot stats
-  if (chartItem.value) {
-    charter = new Chart(chartItem.value, {
-      type: "bar",
-      data: {
-        datasets: [
-          {
-            data: shotsData.value.dataSet,
-            borderColor: "#36A2EB",
-            backgroundColor: "#9BD0F5",
-          },
-        ],
-        labels: SHOTPATH_ITER,
-      },
-      options: {
-        maintainAspectRatio: false, // allows it to fill parent div height
-        responsive: true,
-        layout: {
-          padding: {
-            left: 20, // adjust until all labels show
-          },
-        },
-        indexAxis: "y",
-        parsing: {
-          // xAxisKey: "shotPath",
-        },
-        scales: {
-          x: {
-            // beginAtZero: true,
-            ticks: {
-              stepSize: 1,
-            },
-          },
-        },
-        onClick: (e) => {},
-      },
-    });
-  }
-
-  console.log(`The initial count is ${count.value}.`);
 });
 </script>
 
@@ -200,21 +137,38 @@ onMounted(() => {
   <!-- Home page -->
   <section class="p-2">
     <!-- little title intro -->
-    <div class="flex justify-center mt-4 pb-4 border-b border-green-900">
+    <!-- <div class="flex justify-center mt-4 pb-4">
       <h2 class="text-3xl">Welcome, {{ username }}</h2>
       <h2 class="text-2xl">islogger, {{ isLoggedIn }}</h2>
-    </div>
+    </div> -->
 
-    <!-- select club to show stats for... -->
-    <!-- callback to this component to set selected Club... -->
-    <selectClub :change-club="selectClubCallBack" />
+    <section class="flex justify-between items-center mb-1">
+      <!-- select club to show stats for... -->
+      <!-- callback to this component to set selected Club... -->
+      <selectClub :change-club="selectClubCallBack" />
 
-    <!-- display stats -->
-    <section class="rounded mt-10 bg-gray-300 h-[500px]">
-      <!-- <h4 class="ml-4 text-gray-800 text-center">{{ selectedClub }}</h4> -->
-      <canvas id="charter" class=""></canvas>
+      <div class="flex items-center gap-1 p-2">
+        <h4 class="font-semibold text-gray-400">Total Shots:</h4>
+        <h4 class="font-semibold">
+          {{ contactData.total }}
+        </h4>
+      </div>
     </section>
 
-    <donut :contact-data="contactData" />
+    <section class="mt-5">
+      <div class="border-b pb-1">
+        <h4 class="font-semibold text-3xl text-gray-200">Path</h4>
+      </div>
+      <!-- display path stats -->
+      <bar :path-data="shotsData" />
+    </section>
+
+    <!-- display contact stats -->
+    <section class="mt-5">
+      <div class="border-b pb-1">
+        <h4 class="font-semibold text-3xl text-gray-200">Contact</h4>
+      </div>
+      <donut :contact-data="contactData" />
+    </section>
   </section>
 </template>

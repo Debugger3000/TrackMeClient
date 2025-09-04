@@ -14,6 +14,7 @@ let toggleMenu = ref<boolean>(false);
 function changeClubLocal(club: IShotType) {
   console.log("changing club local...");
   selectedClub.value = club;
+  callToggleMenu();
 
   // change variable in parent so it can call data for that club...
   props.changeClub(club);
@@ -46,7 +47,7 @@ onMounted(() => {});
 
       <section
         v-if="toggleMenu"
-        class="grid grid-cols-5 absolute z-99 border rounded bg-gray-800">
+        class="grid grid-cols-4 absolute z-99 border rounded bg-gray-800 w-full">
         <div
           v-for="value in CLUBTYPE_ITER"
           class="flex justify-center border p-1"

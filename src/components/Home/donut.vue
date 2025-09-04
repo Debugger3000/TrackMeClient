@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import {
   CLUBTYPE,
   CLUBTYPE_ITER,
   CONTACT_ITER,
   type IShot,
   type IShotContactIncoming,
+  type IShotMaster,
   type IShotType,
 } from "../../types/shot";
 
@@ -36,45 +37,37 @@ const props = defineProps<{
   contactData: IShotContactIncoming;
 }>();
 
-// this will be used to filter chart to ONE CLUB at a time...
-let selectedClub = ref<IShotType>(CLUBTYPE.ThreeWood);
-let toggleMenu = ref<boolean>(false);
-
-// Per club data...
-function changeClubLocal(club: IShotType) {
-  console.log("changing club local...");
-  selectedClub.value = club;
-
-  // change variable in parent so it can call data for that club...
-  //   props.changeClub(club);
-}
-
-function callToggleMenu() {
-  toggleMenu.value = !toggleMenu.value;
-}
-
-let donutData = ref<IShotContactIncoming>({
-  total: 0,
-  dataSet: [1, 1, 1, 0, 0],
-});
-
 let chartItem = ref<HTMLCanvasElement | null>(null);
 
-let charter: Chart<
+let charterDonut: Chart<
   "doughnut",
   [number, number, number, number, number],
   string
 > | null = null;
 
+watch(
+  () => props.contactData,
+  () => {
+    console.log("weatch trggiar, DONUT");
+    if (charterDonut) {
+      console.log("donut update: ", props.contactData.dataSet);
+      charterDonut.data.datasets[0].data = props.contactData.dataSet;
+      charterDonut.update();
+    }
+  }
+);
+
 // lifecycle hooks
 onMounted(() => {
-  console.log("donut data received: ", props.contactData);
+  console.log("donut ON MOUNTED......");
+
+  console.log("donut data received: ", props.contactData!.dataSet);
 
   const chartDiv = document.getElementById("donut")! as HTMLCanvasElement;
   chartItem.value = chartDiv;
 
   if (chartItem) {
-    charter = new Chart(chartItem.value, {
+    charterDonut = new Chart(chartItem.value, {
       type: "doughnut",
       data: {
         datasets: [
@@ -104,7 +97,6 @@ onMounted(() => {
 <template>
   <!-- Home page -->
   <section class="p-2 h-[500px]">
-    <h4 class="font-semibold text-2xl">{{ props.contactData.total }}</h4>
     <canvas id="donut"></canvas>
   </section>
 </template>
