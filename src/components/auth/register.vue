@@ -6,7 +6,6 @@ import { useFetch } from "../../api/authFetch";
 import { useRouter } from "vue-router";
 import { routeTo } from "../../router";
 import type { IAuthResponse } from "../../types/Iauth";
-import { useLoggedStore } from "../../stores/globalStore";
 
 const router = useRouter();
 // reactive state
@@ -69,10 +68,6 @@ const registerSubmit = async () => {
 
 };
 
-// functions that mutate state and trigger updates
-function increment() {
-  count.value++;
-}
 
 // lifecycle hooks
 onMounted(() => {

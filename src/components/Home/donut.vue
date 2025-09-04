@@ -1,17 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import {
-  CLUBTYPE,
-  CLUBTYPE_ITER,
-  CONTACT_ITER,
-  type IShot,
-  type IShotContactIncoming,
-  type IShotMaster,
-  type IShotType,
-} from "../../types/shot";
+import { CONTACT_ITER, type IShotContactIncoming } from "../../types/shot";
 
 import {
-  BarController,
   BarElement,
   CategoryScale,
   Chart,
@@ -20,7 +11,6 @@ import {
   Legend,
   LinearScale,
   DoughnutController,
-  type ChartData,
 } from "chart.js";
 
 Chart.register(
@@ -87,7 +77,9 @@ onMounted(() => {
       options: {
         maintainAspectRatio: false, // allows it to fill parent div height
         responsive: true,
-        onClick: (e) => {},
+        onClick: (e) => {
+          console.log("e", e);
+        },
       },
     });
   }
