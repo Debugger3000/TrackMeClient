@@ -137,7 +137,7 @@ onMounted(() => {
       <selectClub :change-club="selectClubCallBack" />
 
       <div class="flex items-center gap-1 p-2">
-        <h4 class="font-semibold text-gray-400">Total Shots:</h4>
+        <h4 class="font-semibold text-gray-800">Total Shots:</h4>
         <h4 class="font-semibold">
           {{ contactData.total }}
         </h4>
@@ -146,7 +146,7 @@ onMounted(() => {
 
     <section class="mt-5">
       <div class="border-b pb-1">
-        <h4 class="font-semibold text-3xl text-gray-200">Path</h4>
+        <h4 class="font-semibold text-3xl">Path</h4>
       </div>
       <!-- display path stats -->
       <bar :path-data="shotsData" />
