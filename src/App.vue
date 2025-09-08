@@ -28,7 +28,7 @@ let isLoggedIn = ref("");
 // nav bar at bottom
 const navBar: { page: string; icon: string }[] = [
   { page: "home", icon: "bi-bar-chart" },
-  { page: "start", icon: "bi-alarm" },
+  { page: "games", icon: "bi-controller" },
   { page: "stats", icon: "bi-bar-chart" },
   { page: "profile", icon: "bi-person" },
 ];
@@ -50,26 +50,9 @@ function controlPopUp(message: string, time: number) {
   }, time);
 }
 
-async function logout() {
-  const res = await useFetch<IAuthResponse>("/auth/logout", "POST", undefined);
-  if (res === undefined) {
-  } else if (res === 401) {
-    console.log("401 from logout");
-  } else {
-    // set on login.vue
-    localStorage.setItem("isLoggedIn", "false");
-    // set on home.vue
-    localStorage.setItem("username", "");
-    localStorage.setItem("id", "");
-    isLoggedIn.value = "false";
-    username.value = "";
-    setTimeout(() => {}, 500);
-    // log.isLoggedIn = false;
-    routeTo("/login", router);
-    controlPopUp(res.message, 2000);
-  }
-
-  // do a little pop up on screen for if logout was successful
+// send to profile
+function setIsLoggedIn() {
+  isLoggedIn.value = "false";
 }
 
 // sync app.vue with user data after home calls it
@@ -92,10 +75,10 @@ router.beforeEach((_to, _from, next) => {
 </script>
 
 <template>
-  <section class="h-screen grid grid-rows-[auto_1fr_auto]">
+  <section class="h-screen grid grid-rows-[1fr_auto]">
     <!-- header -->
-    <header v-if="isLoggedIn.valueOf() === 'true'">
-      <nav class="bg-gray-800 opacity-50 flex p-2 justify-between">
+    <!-- <header v-if="isLoggedIn.valueOf() === 'true'">
+      <nav class="flex p-2 justify-between">
         <div class="flex items-center">
           <h4 class="text-2xl text-green-600">TrackMe</h4>
         </div>
@@ -108,7 +91,7 @@ router.beforeEach((_to, _from, next) => {
           <button @click="logout">Logout</button>
         </div>
       </nav>
-    </header>
+    </header> -->
     <main class="relative overflow-y-auto">
       <!-- global pop up... -->
       <section
@@ -121,10 +104,12 @@ router.beforeEach((_to, _from, next) => {
       <section class="min-h-full">
         <!-- Main router view here -->
         <RouterView
-          class="my-5 p-2"
+          class=""
           :username="username"
           :isLoggedIn="isLoggedIn"
-          :syncStorage="syncStorage" />
+          :syncStorage="syncStorage"
+          :setLogged="setIsLoggedIn"
+          :setPopUp="controlPopUp" />
       </section>
     </main>
     <!-- Navigation bar at bottom of screen -->
