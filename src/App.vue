@@ -3,8 +3,6 @@
 // import login from "./components/auth/login.vue";
 // import Register from "./components/auth/register.vue";
 import { ref } from "vue";
-import { useFetch } from "./api/authFetch";
-import type { IAuthResponse } from "./types/Iauth";
 import { useRouter } from "vue-router";
 import { routeTo } from "./router";
 // import { useLoggedStore, useUserStore } from "./stores/globalStore";
