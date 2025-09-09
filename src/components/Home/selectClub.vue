@@ -32,11 +32,11 @@ onMounted(() => {});
   <!-- Home page -->
   <section class="p-2">
     <!-- select club to show stats for... -->
-    <section class="relative">
+    <section class="relative w-full">
       <div
         @click="callToggleMenu"
         class="flex items-center gap-3 border rounded bg-gray-600 w-fit p-1 hover:cursor-pointer">
-        <h4 class="font-semibold text-xl">{{ selectedClub }}</h4>
+        <h4 class="font-semibold text-xl text-white">{{ selectedClub }}</h4>
         <i
           v-if="!toggleMenu"
           class="bi bi-arrow-down text-xl text-white border-l"></i>
@@ -47,10 +47,10 @@ onMounted(() => {});
 
       <section
         v-if="toggleMenu"
-        class="grid grid-cols-4 absolute z-99 border rounded bg-gray-800 w-full">
+        class="grid grid-cols-4 absolute z-99 -left-4 border rounded bg-gray-800 w-screen">
         <div
           v-for="value in CLUBTYPE_ITER"
-          class="flex justify-center border p-1"
+          class="flex justify-center border p-1 py-4 text-white"
           @click="changeClubLocal(value)">
           <h4 class="text-2xl">{{ value }}</h4>
         </div>
