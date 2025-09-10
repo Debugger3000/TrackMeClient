@@ -1,8 +1,10 @@
-export async function useFetch<T>(
+import type { IAuthResponse } from "../types/Iauth";
+
+export async function useFetch<TResponse, TBody = undefined>(
   route: string,
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
-  body?: unknown | undefined
-): Promise<T | 401 | undefined> {
+  body?: TBody
+): Promise<TResponse | 401 | undefined> {
   try {
     const res = await fetch(`${import.meta.env.VITE_SERVER_API}${route}`, {
       method: `${method}`,
@@ -21,12 +23,7 @@ export async function useFetch<T>(
       return 401;
     }
 
-    // if (!res.ok) {
-    //   const errBody = await res.json(); // server's JSON error response
-    //   throw new Error(errBody || "Unknown error from server");
-    // }
-
-    return (await res.json()) as T;
+    return (await res.json()) as TResponse;
   } catch (error) {
     console.log("fetch error caught: ", error);
     return undefined;

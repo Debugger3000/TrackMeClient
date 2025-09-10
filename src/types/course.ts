@@ -137,6 +137,6 @@ export interface ICourse<TScoreCard = nine_hole_card | eighteen_hole_card> {
   holes: THoles;
   par: number;
   location: string;
-  course: string | null;
+  course_name: string | null;
   score_card: TScoreCard;
 }

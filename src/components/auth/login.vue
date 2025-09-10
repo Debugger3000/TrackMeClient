@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { routeTo } from "../../router";
 import { useFetch } from "../../api/authFetch";
-import type { IAuthResponse } from "../../types/Iauth";
+import type { IAuthResponse, IUserCredentials } from "../../types/Iauth";
 
 const router = useRouter();
 
@@ -18,7 +18,7 @@ const loginForm = ref({
 const login = async () => {
   try {
 
-      const res = await useFetch<IAuthResponse>("/auth/login","POST", {
+      const res = await useFetch<IAuthResponse,IUserCredentials>("/auth/login","POST", {
         username: loginForm.value.username,
         password: loginForm.value.password
       });

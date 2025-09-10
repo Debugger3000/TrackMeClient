@@ -3,3 +3,8 @@ export interface IAuthResponse {
   success: true;
   message: string;
 }
+
+export interface IUserCredentials {
+  username: string;
+  password: string;
+}
