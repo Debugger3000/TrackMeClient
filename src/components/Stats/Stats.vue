@@ -13,6 +13,7 @@ import {
   type IShot,
 } from "../../types/shot";
 import shape from "./shape.vue";
+import type { IAuthResponse } from "../../types/Iauth";
 
 const router = useRouter();
 
@@ -56,7 +57,11 @@ async function sendShotData() {
     const shotData: IShot[] = JSON.parse(localStorage.getItem("shotQ") || "[]");
 
     if (shotData.length > 0) {
-      const res = await useFetch<IShot[]>("/data/shot", "POST", shotData);
+      const res = await useFetch<IAuthResponse, IShot[]>(
+        "/data/shot",
+        "POST",
+        shotData
+      );
 
       if (res === 401) {
         localStorage.setItem("isLoggedIn", "false");

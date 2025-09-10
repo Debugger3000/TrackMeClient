@@ -3,6 +3,9 @@ import { ref, onMounted } from "vue";
 import { routeTo } from "../../router";
 import { useRouter } from "vue-router";
 import {  NINE_HOLES, type ICourse, type THoles, EIGHTEEN_HOLES, NINE_ARRAY, EIGHTEEN_ARRAY, EIGHTEEN_HOLES_MAP, NINE_HOLES_MAP, type T9_MAP, type T18_MAP, type TEIGHTEEN_HOLES } from "../../types/course";
+import { useFetch } from "../../api/authFetch";
+import alertMessage from "../helper/alertMessage.vue";
+import type { IAuthResponse } from "../../types/Iauth";
 
 const router = useRouter();
 
@@ -12,27 +15,27 @@ let refMap = ref<T9_MAP | T18_MAP>(EIGHTEEN_HOLES_MAP);
 let curArray = ref<Number[]>(EIGHTEEN_ARRAY);
 
 
+// message 
+let message = ref("");
+
+
 function changeHoleData() {
   if (curHoles.value === 18) {
     curHoles.value = 9;
     courseForm.value.score_card = NINE_HOLES as any;
     refMap.value = NINE_HOLES_MAP;
     curArray.value = NINE_ARRAY;
+    courseForm.value.holes = 9;
   } else {
     curHoles.value = 18;
     courseForm.value.score_card = EIGHTEEN_HOLES as any;
     refMap.value = EIGHTEEN_HOLES_MAP;
     curArray.value = EIGHTEEN_ARRAY;
+    courseForm.value.holes = 18;
   }
   console.log("cur holes selected: ", curHoles.value);
 }
 
-function setScoreIndex(index: number, value: number) {
-  console.log("index of score clicked: ", index );
-  console.log("value given on score: ", value);
-
-
-}
 
 
 
@@ -45,7 +48,7 @@ const courseForm = ref<ICourse<TEIGHTEEN_HOLES>>({
   holes: 18,
   par: 0,
   location: "",
-  course: null,
+  course_name: null,
   score_card: EIGHTEEN_HOLES
 });
 
@@ -55,10 +58,36 @@ const courseForm = ref<ICourse<TEIGHTEEN_HOLES>>({
 // submit course data
 // 
 // Potentially, add Country, and City
-function submitCourseData() {
+async function submitCourseData() {
 
-  console.log("Test output of scorecard submit: ", courseForm.value);
+      try {
+      const res = await useFetch<IAuthResponse,ICourse>("/course/add","POST",courseForm.value);
 
+      // bad 401 
+      // shouldnt have to technially check for bad 401 response
+      if(res === 401){
+        routeTo('/login', router)
+      }
+      else if(res === undefined){
+        throw new Error();
+      }
+      // good
+      else{
+        // check for success
+        if(res.success){
+          message.value = res.message;
+          // success route back to games
+          routeTo('/games', router);
+        }
+        else{
+          message.value = res.message;
+
+        }
+      }
+       console.log("Test output of scorecard submit: ", courseForm.value);
+      } catch (error) {
+        console.log("error in submit Course Data: ", error);
+      } 
 }
 
 
@@ -107,7 +136,7 @@ onMounted(() => {
 
             <!-- course -->
             <h4 class="font-semibold mb-1 mt-5">Course</h4>
-            <input v-model="courseForm.course" type="text" id="course" class="border rounded p-1"></input>
+            <input v-model="courseForm.course_name" type="text" id="course" class="border rounded p-1"></input>
 
             <!-- Par -->
             <h4 class="font-semibold mb-1 mt-5">Par</h4>
@@ -134,7 +163,7 @@ onMounted(() => {
                 <input
                 :id="`hole_${index + 1}`"
                 v-model="courseForm.score_card[refMap[index]]"
-                class="flex justify-center w-full text-center border focus:outline-none" type="number" @input="setScoreIndex(index, Number(($event.target as HTMLInputElement).value))"></input>
+                class="flex justify-center w-full text-center border focus:outline-none" type="number"></input>
                 <!-- <h4 class="flex justify-center text-xl border">{{ value }}</h4> -->
               </div>
             </div>
@@ -153,6 +182,8 @@ onMounted(() => {
 
 
         </form>
+
+        <alert-message :message="message"/>
 
 
         
