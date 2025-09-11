@@ -6,6 +6,7 @@ import Stats from "../components/Stats/Stats.vue";
 import games from "../components/games/games.vue";
 import profile from "../components/profile/profile.vue";
 import createCourse from "../components/games/create-course.vue";
+import createGame from "../components/games/create-game.vue";
 
 const routes = [
   { path: "/", redirect: "login" },
@@ -16,6 +17,7 @@ const routes = [
   { path: "/games", name: "games", component: games },
   { path: "/profile", name: "profile", component: profile },
   { path: "/create-course", name: "create-course", component: createCourse },
+  { path: "/create-game", name: "create-game", component: createGame },
 ];
 
 const router = createRouter({

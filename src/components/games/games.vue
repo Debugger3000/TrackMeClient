@@ -52,6 +52,18 @@ onMounted(() => {
             <i class="bi bi-plus text-2xl text-white"></i>
           </button>
         </div>
+        <div class="border border-white rounded">
+          <button
+            @click="
+              {
+                routeToHere('create-game');
+              }
+            "
+            class="font-semibold text-xs rounded border text-white bg-green-700">
+            Game
+            <i class="bi bi-plus text-2xl text-white"></i>
+          </button>
+        </div>
       </section>
     </section>
 
