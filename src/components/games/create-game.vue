@@ -5,11 +5,13 @@ import { useRouter } from "vue-router";
 import { useFetch } from "../../api/authFetch";
 import type { ICourseView } from "../../types/course";
 import courseOverview from "./game-components/course-overview.vue";
+import type { ICreate_Game_Return } from "../../types/game";
 
 const router = useRouter();
 
 // message
 let courseData = ref<ICourseView[]>([{
+  id: -99,
   club_name: "",
   holes: 9,
   par: 0,
@@ -69,11 +71,36 @@ function coursePicked(index: number) {
     // display course picked...
     courseSelected.value = true;
     selectedCourse.value = courseData.value[index];
-
 }
 
 
 // create game object, route to /games/id or /games/current/id
+
+async function createGame() {
+  try {
+    
+  // should return new game object ID so i can use it in params for new route
+  const res = await useFetch<ICreate_Game_Return, ICourseView>("/game/create","POST", selectedCourse.value);
+
+  if (res === 401) {
+    localStorage.setItem("isLoggedIn", "false");
+    routeTo("/login", router);
+  } else if (res === undefined) {
+    throw new Error("Error from getcoursebySearch res, is undefined");
+  }
+  // good response...
+  else {
+    // set course view data...
+    console.log("Create game response: ", res);
+    routeTo(`/game-view/${res.id}`, router);
+  }
+
+  } catch (error) {
+    console.log("Error in getCourseBySearch in create Game...", error);
+  }
+
+
+}
 
 // lifecycle hooks
 onMounted(() => {
@@ -122,7 +149,7 @@ onMounted(() => {
 
       <!-- button - START GAME -->
       <div class="flex justify-center mt-3">
-        <button class="p-2 border bg-red-600 text-white" type="button">Start Game</button>
+        <button class="p-2 border bg-red-600 text-white" type="button" @click="createGame">Create Game</button>
       </div>
       </section>
 

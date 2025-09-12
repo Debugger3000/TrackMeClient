@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, watch } from "vue";
 import type { ICourseView } from "../../../types/course";
+import type { IGameView } from "../../../types/game";
 
 const props = defineProps<{
   courseData?: ICourseView[];
