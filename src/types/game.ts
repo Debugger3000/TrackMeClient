@@ -1,5 +1,16 @@
-import type { eighteen_hole_card, nine_hole_card } from "./course";
+import type {
+  eighteen_hole_card,
+  ICourse,
+  ICourseView,
+  nine_hole_card,
+} from "./course";
 import type { IShot } from "./shot";
+
+export interface ICreate_Game_Return {
+  success: true;
+  message: string;
+  id: string;
+}
 
 type Status = "IN-PROGRESS" | "COMPLETE";
 
@@ -102,7 +113,7 @@ export interface IGame<
   T_Hole_Type = Nine_Hole_Data | Eighteen_Hole_Data,
   TScore_card_type = nine_hole_card | eighteen_hole_card
 > {
-  course_id: number;
+  course: ICourseView;
   user_id: number;
   course_score_card: TScore_card_type;
   status: Status;
@@ -113,6 +124,20 @@ export interface IGame<
   hole_data: T_Hole_Type;
   hole_state: number | null;
   notes: string | null;
+}
+
+// data type that game overview will have, doesnt need all the extra, stuff
+// club_name is joined into the query...
+export interface IGameView {
+  id: number;
+  course_id: number;
+  user_id: number;
+  status: Status;
+  date: string;
+  score: number;
+  club_name: string;
+  par: number;
+  holes: number;
 }
 
 // do i build a whole game object when game is created ? YES

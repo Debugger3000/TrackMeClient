@@ -2,10 +2,16 @@
 import { ref, onMounted } from "vue";
 import { routeTo } from "../../router";
 import { useRouter } from "vue-router";
+import { useFetch } from "../../api/authFetch";
+import type { IGameView } from "../../types/game";
+import gameOverview from "./game-components/game-overview.vue";
 
 const router = useRouter();
 
 let curData = ref<"games" | "stats">("games");
+
+// hold in progress games
+let inProgressGames = ref<IGameView[]>();
 
 function changeData() {
   if (curData.value === "games") {
@@ -19,6 +25,29 @@ function routeToHere(tabClicked: string) {
   routeTo(tabClicked, router);
 }
 
+// get inprogress games
+async function getCurrentGames() {
+  try {
+    // should return new game object ID so i can use it in params for new route
+    const res = await useFetch<IGameView[]>("/game/in-progress", "GET");
+
+    if (res === 401) {
+      localStorage.setItem("isLoggedIn", "false");
+      routeTo("/login", router);
+    } else if (res === undefined) {
+      throw new Error("Error from getcoursebySearch res, is undefined");
+    }
+    // good response...
+    else {
+      // set course view data...
+      console.log("Getting in progress games response: ", res);
+      inProgressGames.value = res;
+    }
+  } catch (error) {
+    console.log("Error in get in progress games on games page", error);
+  }
+}
+
 // call users game data and fill game data table
 // function getUsersGamesData() {
 
@@ -27,6 +56,11 @@ function routeToHere(tabClicked: string) {
 // lifecycle hooks
 onMounted(() => {
   // call get user info...
+  // grab in-progress games
+  const callCurGames = async () => {
+    await getCurrentGames();
+  };
+  callCurGames();
 });
 </script>
 
@@ -81,6 +115,14 @@ onMounted(() => {
             </button>
           </div>
         </div>
+      </section>
+
+      <!-- in-progress games right here -->
+      <section
+        v-if="inProgressGames?.length && curData === 'games'"
+        class="mt-5">
+        <h4 class="font-semibold pb-1">In-Progress Games</h4>
+        <game-overview :game-data="inProgressGames" />
       </section>
 
       <!-- GAMES table / stats -->
