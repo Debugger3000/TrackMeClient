@@ -43,8 +43,9 @@ type Land_Type =
 
 // each individual golf shot
 // ishot data will need to be expanded out for this game_shot_data table in SQL
-type Game_Shot_Data = {
+export type Game_Shot_Data = {
   hole_id: number;
+  user_id: number;
   shot_count: number;
   shot: IShot;
   start_coordinates: Coordinates | null;
@@ -56,17 +57,19 @@ type Game_Shot_Data = {
 
 // each individual hole data
 // grabs data from 'courses' like PAR + HOLE_NUMBER
-type Hole_Data = {
+export type Hole_Data = {
+  id: number;
   game_id: number;
+  user_id: number;
   hole_number: number;
   putt_count: number;
   par: number;
   score: number;
   notes: string | null;
-  hole_shot_data: [Game_Shot_Data];
+  hole_shot_data: Game_Shot_Data[] | null;
 };
 
-type Nine_Hole_Data = {
+export type Nine_Hole_Data = {
   hole_one: Hole_Data;
   hole_two: Hole_Data;
   hole_three: Hole_Data;
@@ -78,7 +81,7 @@ type Nine_Hole_Data = {
   hole_nine: Hole_Data;
 };
 
-type Eighteen_Hole_Data = {
+export type Eighteen_Hole_Data = {
   hole_one: Hole_Data;
   hole_two: Hole_Data;
   hole_three: Hole_Data;
@@ -113,17 +116,18 @@ export interface IGame<
   T_Hole_Type = Nine_Hole_Data | Eighteen_Hole_Data,
   TScore_card_type = nine_hole_card | eighteen_hole_card
 > {
-  course: ICourseView;
-  user_id: number;
-  course_score_card: TScore_card_type;
-  status: Status;
-  date: string;
-  score: number;
-  par: number;
-  holes: number;
-  hole_data: T_Hole_Type;
-  hole_state: number | null;
-  notes: string | null;
+  final_game_object: {
+    id: number;
+    course: ICourseView;
+    user_id: number;
+    course_score_card: TScore_card_type;
+    status: Status;
+    date: string;
+    score: number;
+    hole_data: T_Hole_Type;
+    hole_state: number | null;
+    notes: string | null;
+  };
 }
 
 // data type that game overview will have, doesnt need all the extra, stuff
@@ -151,3 +155,44 @@ export interface IGameView {
 // hole data is saved when COMPLETE is clicked...
 
 // Last hole, will say COMPLETE GAME, then hole is saved, and game is completed, and status is changed to 'COMPLETE'
+
+// I game data object empty object
+const empty_hole: Hole_Data = {
+  id: 0,
+  game_id: 0,
+  user_id: 0,
+  hole_number: 0,
+  putt_count: 0,
+  par: 0,
+  score: 0,
+  notes: null,
+  hole_shot_data: null,
+};
+
+const game_data = {
+  club_name: "",
+  holes: 9,
+  par: 0,
+  location: "",
+  course_name: null,
+  id: 0,
+  user_id: 0,
+  course_id: 0,
+  status: "IN-PROGRESS" as Status,
+  date: new Date().toISOString(),
+  score: 0,
+  hole_state: 1,
+  notes: null,
+  hole_data: {
+    hole_one: { ...empty_hole },
+    hole_two: { ...empty_hole },
+    hole_three: { ...empty_hole },
+    hole_four: { ...empty_hole },
+    hole_five: { ...empty_hole },
+    hole_six: { ...empty_hole },
+    hole_seven: { ...empty_hole },
+    hole_eight: { ...empty_hole },
+    hole_nine: { ...empty_hole },
+  },
+  course_score_card: {} as eighteen_hole_card | nine_hole_card,
+} as const;
