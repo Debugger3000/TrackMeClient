@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { routeTo } from "../../router";
 import { useRoute, useRouter } from "vue-router";
 import type {
   Eighteen_Hole_Data,
+  HoleType,
   IGame,
+  IGameStrict,
   Nine_Hole_Data,
 } from "../../types/game";
 import { useFetch } from "../../api/authFetch";
@@ -14,6 +16,8 @@ import type {
   THoles,
 } from "../../types/course";
 
+import nineScoreBoard from "./game-components/scoreBoards/nine-score-board.vue";
+import holeComponent from "./game-components/hole+shot/hole-component.vue";
 const router = useRouter();
 
 const route = useRoute();
@@ -22,18 +26,13 @@ const route = useRoute();
 const game_id = route.params.game_id;
 const holes: THoles = Number(route.query.holes as string | undefined) as 9 | 18;
 
-type HoleType<H extends THoles> = H extends 18
-  ? IGame<Eighteen_Hole_Data, eighteen_hole_card>
-  : IGame<Nine_Hole_Data, nine_hole_card>;
-
+// ------------
 // current GAME DATA all here. Feed to other minor components. Shouldn't have to re fetch any game data.
-const game_data = ref<HoleType<typeof holes>>();
+const game_data = ref<IGameStrict>();
+// ---------------
 
-const props = defineProps<{
-  //   courseData?: ICourseView[];
-  //   courseSelector?: (index: number) => void;
-  //   course?: ICourseView;
-}>();
+// this can be changed by clicking on whatever hole on the scoreboard
+let currentHole = ref<number | null>();
 
 watch(
   () => game_data,
@@ -43,16 +42,15 @@ watch(
 );
 
 // course selected to create game on
-
-function routeToHere(tabClicked: string) {
-  routeTo(`/${tabClicked}`, router);
+function score_board_change_hole(index: number) {
+  currentHole.value = index;
 }
 
 // if else to break between
 async function getGameData() {
   console.log("calling useFetch for getGameData");
   try {
-    const res = await useFetch<HoleType<typeof holes>>(
+    const res = await useFetch<IGameStrict>(
       `/game/data/${game_id}?holes=${holes}`,
       "GET",
       undefined
@@ -68,11 +66,16 @@ async function getGameData() {
     else {
       console.log("Game data retrieved here: ", res);
       game_data.value = res;
+      currentHole.value = res.final_game_object.hole_state;
       // Object.assign(game_data, res);
     }
   } catch (error) {
     console.log("Error in getGameData in game-view component: ", error);
   }
+}
+
+function routeToHere(tabClicked: string) {
+  routeTo(`/${tabClicked}`, router);
 }
 
 // -------------
@@ -114,11 +117,49 @@ onMounted(() => {
     <!-- main section of page... -->
     <section class="mt-5 p-4">
       <!-- display general course info -->
-      <h4>club name: {{ game_data?.final_game_object.course.club_name }}</h4>
+      <section class="me-border p-2">
+        <h4 class="text-3xl">
+          {{ game_data?.final_game_object.course.club_name }}
+        </h4>
+        <h4
+          v-if="game_data?.final_game_object.course.course_name"
+          class="text-2xl">
+          {{ game_data?.final_game_object.course.course_name }}
+        </h4>
+        <h4 class="text-xl">
+          {{ game_data?.final_game_object.course.location }}
+        </h4>
+        <h4 class="text-xl">
+          Par: {{ game_data?.final_game_object.course.par }}
+        </h4>
+      </section>
 
       <!-- Display scorecard, probably 9 over 9 for mobile -->
+      <section v-if="game_data" class="mt-5">
+        <nineScoreBoard
+          v-if="game_data.final_game_object.course.holes === 9"
+          :nine-data="{
+            cardData: game_data.final_game_object.course_score_card as nine_hole_card,
+            holeData: game_data.final_game_object.hole_data as Nine_Hole_Data,
+          }"
+          :holes="holes"
+          :score_board_change_hole="score_board_change_hole" />
+
+        <nineScoreBoard
+          v-if="game_data.final_game_object.course.holes === 18"
+          :eight-data="{
+            cardData: game_data.final_game_object.course_score_card as eighteen_hole_card,
+            holeData: game_data.final_game_object.hole_data as Eighteen_Hole_Data,
+          }"
+          :holes="holes"
+          :score_board_change_hole="score_board_change_hole" />
+      </section>
 
       <!-- Hole data, depending on what hole you are currently on... -->
+      <section class="mt-5">
+        <h4 class="text-2xl">Hole {{ currentHole }}</h4>
+        <hole-component />
+      </section>
 
       <!-- shot data... I believe shot data will embed within hole data... -->
     </section>

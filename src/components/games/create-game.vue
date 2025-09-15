@@ -4,7 +4,7 @@ import { routeTo } from "../../router";
 import { useRouter } from "vue-router";
 import { useFetch } from "../../api/authFetch";
 import type { ICourseView } from "../../types/course";
-import courseOverview from "./game-components/course-overview.vue";
+import courseOverview from "./game-components/overviews/course-overview.vue";
 import type { ICreate_Game_Return } from "../../types/game";
 
 const router = useRouter();
