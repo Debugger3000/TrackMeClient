@@ -3,6 +3,7 @@ import type {
   ICourse,
   ICourseView,
   nine_hole_card,
+  THoles,
 } from "./course";
 import type { IShot } from "./shot";
 
@@ -144,6 +145,43 @@ export interface IGameView {
   holes: number;
 }
 
+//
+export type HoleType<H extends THoles> = H extends 18
+  ? IGame<Eighteen_Hole_Data, eighteen_hole_card>
+  : IGame<Nine_Hole_Data, nine_hole_card>;
+
+export interface IGameNine {
+  final_game_object: {
+    id: number;
+    course: ICourseView;
+    user_id: number;
+    course_score_card: nine_hole_card;
+    status: Status;
+    date: string;
+    score: number;
+    hole_data: Nine_Hole_Data;
+    hole_state: number | null;
+    notes: string | null;
+  };
+}
+
+export interface IGameEighteen {
+  final_game_object: {
+    id: number;
+    course: ICourseView;
+    user_id: number;
+    course_score_card: eighteen_hole_card;
+    status: Status;
+    date: string;
+    score: number;
+    hole_data: Eighteen_Hole_Data;
+    hole_state: number | null;
+    notes: string | null;
+  };
+}
+
+export type IGameStrict = IGameNine | IGameEighteen;
+
 // do i build a whole game object when game is created ? YES
 
 // build hole per entry into HOLE, complete a hole to move to next hole, CREATE next HOLE, once at end
@@ -156,43 +194,43 @@ export interface IGameView {
 
 // Last hole, will say COMPLETE GAME, then hole is saved, and game is completed, and status is changed to 'COMPLETE'
 
-// I game data object empty object
-const empty_hole: Hole_Data = {
-  id: 0,
-  game_id: 0,
-  user_id: 0,
-  hole_number: 0,
-  putt_count: 0,
-  par: 0,
-  score: 0,
-  notes: null,
-  hole_shot_data: null,
-};
+// // I game data object empty object
+// const empty_hole: Hole_Data = {
+//   id: 0,
+//   game_id: 0,
+//   user_id: 0,
+//   hole_number: 0,
+//   putt_count: 0,
+//   par: 0,
+//   score: 0,
+//   notes: null,
+//   hole_shot_data: null,
+// };
 
-const game_data = {
-  club_name: "",
-  holes: 9,
-  par: 0,
-  location: "",
-  course_name: null,
-  id: 0,
-  user_id: 0,
-  course_id: 0,
-  status: "IN-PROGRESS" as Status,
-  date: new Date().toISOString(),
-  score: 0,
-  hole_state: 1,
-  notes: null,
-  hole_data: {
-    hole_one: { ...empty_hole },
-    hole_two: { ...empty_hole },
-    hole_three: { ...empty_hole },
-    hole_four: { ...empty_hole },
-    hole_five: { ...empty_hole },
-    hole_six: { ...empty_hole },
-    hole_seven: { ...empty_hole },
-    hole_eight: { ...empty_hole },
-    hole_nine: { ...empty_hole },
-  },
-  course_score_card: {} as eighteen_hole_card | nine_hole_card,
-} as const;
+// const game_data = {
+//   club_name: "",
+//   holes: 9,
+//   par: 0,
+//   location: "",
+//   course_name: null,
+//   id: 0,
+//   user_id: 0,
+//   course_id: 0,
+//   status: "IN-PROGRESS" as Status,
+//   date: new Date().toISOString(),
+//   score: 0,
+//   hole_state: 1,
+//   notes: null,
+//   hole_data: {
+//     hole_one: { ...empty_hole },
+//     hole_two: { ...empty_hole },
+//     hole_three: { ...empty_hole },
+//     hole_four: { ...empty_hole },
+//     hole_five: { ...empty_hole },
+//     hole_six: { ...empty_hole },
+//     hole_seven: { ...empty_hole },
+//     hole_eight: { ...empty_hole },
+//     hole_nine: { ...empty_hole },
+//   },
+//   course_score_card: {} as eighteen_hole_card | nine_hole_card,
+// } as const;

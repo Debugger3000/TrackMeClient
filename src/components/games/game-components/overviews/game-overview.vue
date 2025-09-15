@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, watch } from "vue";
-import type { ICourseView } from "../../../types/course";
-import type { IGameView } from "../../../types/game";
-import { routeTo } from "../../../router";
+import type { ICourseView } from "../../../../types/course";
+import type { IGameView } from "../../../../types/game";
+import { routeTo } from "../../../../router";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -37,6 +37,7 @@ function gameSelected(game_id: number, holes: number) {
 //
 onMounted(() => {
   // call get user info...
+  console.log("Hole in game-overview: ", props.gameData);
 });
 </script>
 
