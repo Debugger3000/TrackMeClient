@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { routeTo } from "../../router";
 import { useRoute, useRouter } from "vue-router";
 import type {
   Eighteen_Hole_Data,
+  Hole_Data,
   HoleType,
   IGame,
+  IGameEighteen,
+  IGameNine,
   IGameStrict,
   Nine_Hole_Data,
 } from "../../types/game";
 import { useFetch } from "../../api/authFetch";
-import type {
-  eighteen_hole_card,
-  nine_hole_card,
-  THoles,
+import {
+  EIGHTEEN_HOLES_MAP,
+  NINE_HOLES_MAP,
+  type eighteen_hole_card,
+  type EightHoleKey,
+  type nine_hole_card,
+  type NineHoleKey,
+  type THoles,
 } from "../../types/course";
 
 import nineScoreBoard from "./game-components/scoreBoards/nine-score-board.vue";
@@ -24,19 +31,33 @@ const route = useRoute();
 
 // This will be a string by default
 const game_id = route.params.game_id;
+
+const eight_hole: 18 = 18;
+const nine_hole: 9 = 9;
 const holes: THoles = Number(route.query.holes as string | undefined) as 9 | 18;
+
+const hole = ref<Hole_Data>();
 
 // ------------
 // current GAME DATA all here. Feed to other minor components. Shouldn't have to re fetch any game data.
-const game_data = ref<IGameStrict>();
+const game_data = ref<IGameStrict<typeof holes>>();
+// const game_data_eight = ref<IGameEighteen>();
 // ---------------
 
 // this can be changed by clicking on whatever hole on the scoreboard
-let currentHole = ref<number | null>();
+let currentHole = ref<number>(1);
+let holeKey = ref<NineHoleKey>("hole_one");
+
+let keyyer = ref<EightHoleKey>("hole_one");
 
 watch(
-  () => game_data,
-  () => {
+  () => currentHole.value,
+  (newHole) => {
+    if (holes === 18) {
+      keyyer.value = EIGHTEEN_HOLES_MAP[newHole - 1];
+    } else {
+      holeKey.value = NINE_HOLES_MAP[newHole - 1];
+    }
     console.log("game view update triggers hopefully watcher triggered");
   }
 );
@@ -50,7 +71,7 @@ function score_board_change_hole(index: number) {
 async function getGameData() {
   console.log("calling useFetch for getGameData");
   try {
-    const res = await useFetch<IGameStrict>(
+    const res = await useFetch<IGameStrict<typeof holes>>(
       `/game/data/${game_id}?holes=${holes}`,
       "GET",
       undefined
@@ -66,7 +87,10 @@ async function getGameData() {
     else {
       console.log("Game data retrieved here: ", res);
       game_data.value = res;
-      currentHole.value = res.final_game_object.hole_state;
+      if (res.final_game_object.hole_state) {
+        currentHole.value = res.final_game_object.hole_state;
+      }
+
       // Object.assign(game_data, res);
     }
   } catch (error) {
@@ -157,8 +181,18 @@ onMounted(() => {
 
       <!-- Hole data, depending on what hole you are currently on... -->
       <section class="mt-5">
-        <h4 class="text-2xl">Hole {{ currentHole }}</h4>
-        <hole-component />
+        <hole-component
+          v-if="holes === 18"
+          :game-status="game_data?.final_game_object.status!"
+          :current-hole="currentHole"
+          :holes="holes"
+          :eight-hole-data="game_data?.final_game_object.hole_data as Eighteen_Hole_Data" />
+        <hole-component
+          v-if="holes === 9"
+          :game-status="game_data?.final_game_object.status!"
+          :holes="holes"
+          :current-hole="currentHole"
+          :nine-hole-data="game_data?.final_game_object.hole_data" />
       </section>
 
       <!-- shot data... I believe shot data will embed within hole data... -->
