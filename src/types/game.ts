@@ -13,7 +13,7 @@ export interface ICreate_Game_Return {
   id: string;
 }
 
-type Status = "IN-PROGRESS" | "COMPLETE";
+export type GameStatus = "IN-PROGRESS" | "COMPLETE";
 
 type Coordinates = {
   longitude: number;
@@ -70,6 +70,13 @@ export type Hole_Data = {
   hole_shot_data: Game_Shot_Data[] | null;
 };
 
+export type Hole_Submit = {
+  id: number;
+  putt_count: number;
+  score: number;
+  notes: string | null;
+};
+
 export type Nine_Hole_Data = {
   hole_one: Hole_Data;
   hole_two: Hole_Data;
@@ -122,7 +129,7 @@ export interface IGame<
     course: ICourseView;
     user_id: number;
     course_score_card: TScore_card_type;
-    status: Status;
+    status: GameStatus;
     date: string;
     score: number;
     hole_data: T_Hole_Type;
@@ -137,7 +144,7 @@ export interface IGameView {
   id: number;
   course_id: number;
   user_id: number;
-  status: Status;
+  status: GameStatus;
   date: string;
   score: number;
   club_name: string;
@@ -156,7 +163,7 @@ export interface IGameNine {
     course: ICourseView;
     user_id: number;
     course_score_card: nine_hole_card;
-    status: Status;
+    status: GameStatus;
     date: string;
     score: number;
     hole_data: Nine_Hole_Data;
@@ -171,7 +178,7 @@ export interface IGameEighteen {
     course: ICourseView;
     user_id: number;
     course_score_card: eighteen_hole_card;
-    status: Status;
+    status: GameStatus;
     date: string;
     score: number;
     hole_data: Eighteen_Hole_Data;
@@ -180,7 +187,11 @@ export interface IGameEighteen {
   };
 }
 
-export type IGameStrict = IGameNine | IGameEighteen;
+// export type IGameStrict = IGameNine | IGameEighteen;
+
+export type IGameStrict<H extends 9 | 18> = H extends 9
+  ? IGameNine
+  : IGameEighteen;
 
 // do i build a whole game object when game is created ? YES
 

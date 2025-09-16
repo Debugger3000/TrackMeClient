@@ -168,19 +168,30 @@ onUnmounted(() => {
 
 <template>
   <!-- Stats page page -->
-  <section class="">
+  <section class="overflow-x-auto">
     <!-- contains specs of form (shotpath, contact, clubtype) -->
-    <section class="">
+    <section class="overflow-x-auto">
       <!-- shot path div -->
-      <div class="">
-        <shape :shotShape="curShotPath" />
+      <div class="grid grid-cols-8">
+        <!-- Contact type -->
+        <section class="col-start-1 col-span-2 grid grid-rows-5 mt-4 mb-4">
+          <div
+            class="shot-path-buttons"
+            v-for="[_, contact] in contacts"
+            :class="{ 'bg-gray-400': curContactType === `${contact}` }">
+            <button @click="changeContact(contact)" class="w-full h-full">
+              {{ contact }}
+            </button>
+          </div>
+        </section>
+        <shape :shotShape="curShotPath" class="col-start-4 col-span-8" />
       </div>
 
       <!-- control buttons for club shot path -->
-      <section class="grid grid-cols-4 gap-1 rounded mt-2">
+      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll py-2">
         <div
           v-for="[_, path] in paths"
-          class="shot-path-buttons"
+          class="shot-path-buttons min-w-[75px]"
           :class="{ 'bg-gray-400': curShotPath === `${path}` }">
           <button @click="changePath(path)" class="w-full h-full">
             {{ path }}
@@ -189,25 +200,13 @@ onUnmounted(() => {
       </section>
 
       <!-- club type selection -->
-      <section class="grid grid-cols-5 gap-1 mt-4 py-4 border-t border-b">
+      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll py-2">
         <div
-          class="shot-path-buttons"
+          class="shot-path-buttons min-w-[75px]"
           v-for="[_, club] in clubs"
           :class="{ 'bg-gray-400': curClubType === `${club}` }">
           <button @click="changeClub(club)" class="w-full h-full">
             {{ club }}
-          </button>
-        </div>
-      </section>
-
-      <!-- Contact type -->
-      <section class="grid grid-cols-4 gap-1 mt-4 pb-8 border-b">
-        <div
-          class="shot-path-buttons"
-          v-for="[_, contact] in contacts"
-          :class="{ 'bg-gray-400': curContactType === `${contact}` }">
-          <button @click="changeContact(contact)" class="w-full h-full">
-            {{ contact }}
           </button>
         </div>
       </section>
@@ -222,7 +221,7 @@ onUnmounted(() => {
         <button
           :disabled="loading"
           @click="submitShot"
-          class="p-4 rounded-xl mt-4"
+          class="p-4 rounded-xl mt-4 text-white"
           :class="{ 'bg-gray-400': loading, 'bg-red-800': !loading }">
           Submit
         </button>
