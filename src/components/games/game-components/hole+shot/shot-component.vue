@@ -1,16 +1,35 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 
-import type { Game_Shot_Data } from "../../../../types/game";
+import type { Game_Shot_Data, Hole_Data } from "../../../../types/game";
 import { useRouter } from "vue-router";
 
-import stats from "../../../Stats/Stats.vue";
+import gameShot from "./game-shot.vue";
+import type { THoles } from "../../../../types/course";
 
 // const router = useRouter();
 
 const props = defineProps<{
-  shots: Game_Shot_Data[] | null | undefined;
+  shots: Hole_Data | null | undefined;
+  updateNewShot: (
+    shot_data: Game_Shot_Data,
+    hole: number,
+    score_card: THoles
+  ) => void;
 }>();
+
+watch(
+  () => props.shots,
+  () => {
+    if (props.shots) {
+      holeData.value = props.shots;
+    }
+
+    console.log("update hole data for shot component: ", holeData.value);
+  }
+);
+
+let holeData = ref<Hole_Data>();
 
 // drop downs
 let shotDrop = ref<boolean>(true);
@@ -20,6 +39,9 @@ let addShotDrop = ref<boolean>(true);
 // value for current shot
 let currentShot = ref<Game_Shot_Data>();
 
+// current shot count
+let shotCount = ref<number>(1);
+
 // course selected to create game on
 function dropDown(type: string) {
   if (type === "addShot") {
@@ -27,9 +49,11 @@ function dropDown(type: string) {
   }
 }
 
-// change putt count
+// change curren shot
 function changeCurrentShot(count: number) {
-  currentShot.value = props.shots![count];
+  if (props.shots?.hole_shot_data) {
+    currentShot.value = props.shots?.hole_shot_data[count];
+  }
 }
 
 // form for hole data
@@ -40,13 +64,19 @@ const holeForm = ref({
   hole_shot_data: [],
 });
 
+function shotAddCall(shot_data: Game_Shot_Data) {}
+
 // -----------------
 // Display games as card / list view to click on complete game for stats, or in-progress game
 // --------
 //
 onMounted(() => {
   // call get user info...
-  console.log("SHOT comp: ", currentShot.value);
+  console.log("SHOT comp: ", props.shots);
+
+  if (props.shots?.hole_shot_data) {
+    shotCount.value = props.shots.hole_shot_data.length + 1;
+  }
 });
 </script>
 
@@ -57,9 +87,9 @@ onMounted(() => {
     </div> -->
 
     <!-- display list of shots (block 1, block 2, block 3) -->
-    <div class="flex flex-row">
+    <div v-if="props.shots?.hole_shot_data" class="flex flex-row">
       <div
-        v-for="(value, index) in props.shots"
+        v-for="(value, index) in props.shots?.hole_shot_data"
         class="p-2 flex justify-center items-center"
         @click="changeCurrentShot(index)">
         {{ value.shot_count }}
@@ -85,7 +115,12 @@ onMounted(() => {
       </div>
 
       <div v-if="addShotDrop" class="border border-0.5">
-        <stats />
+        <gameShot
+          :update-new-shot="shotAddCall"
+          :hole_id="props.shots?.id"
+          :user_id="props.shots?.user_id"
+          :game_id="props.shots?.game_id"
+          :shot_count="shotCount" />
       </div>
     </section>
 

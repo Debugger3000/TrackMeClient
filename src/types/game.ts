@@ -5,7 +5,7 @@ import type {
   nine_hole_card,
   THoles,
 } from "./course";
-import type { IShot } from "./shot";
+import type { IShot, IShotContact, IShotPaths, IShotType } from "./shot";
 
 export interface ICreate_Game_Return {
   success: true;
@@ -19,7 +19,7 @@ type Coordinates = {
   longitude: number;
   latitude: number;
 };
-type Land_Type =
+export type Land_Type =
   | "fairway"
   | "rough"
   | "green"
@@ -27,6 +27,16 @@ type Land_Type =
   | "OB"
   | "land_hazard"
   | "water_hazard";
+
+export const LAND_TYPE = [
+  "fairway",
+  "rough",
+  "green",
+  "bunker",
+  "OB",
+  "land_hazard",
+  "water_hazard",
+] as const;
 
 //   export interface IShotGame {
 //     game_id: number;
@@ -52,6 +62,23 @@ export type Game_Shot_Data = {
   start_coordinates: Coordinates | null;
   end_coorindates: Coordinates | null;
   land_type: Land_Type;
+  yards: number | null;
+  metres: number | null;
+};
+
+export type Game_Shot_Data_Submit = {
+  hole_id: number;
+  user_id: number;
+  game_id: number;
+  shot_count: number;
+  club_type: IShotType | undefined;
+  shot_contact: IShotContact;
+  shot_path: IShotPaths;
+  start_lat: number | null;
+  start_lng: number | null;
+  end_lat: number | null;
+  end_lng: number | null;
+  land_type: Land_Type | null;
   yards: number | null;
   metres: number | null;
 };

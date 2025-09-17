@@ -1,0 +1,229 @@
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from "vue";
+import { useFetch } from "../../../../api/authFetch";
+import { routeTo } from "../../../../router";
+import { useRouter } from "vue-router";
+import {
+  type IShotPaths,
+  type IShotType,
+  CLUBTYPE,
+  SHOTPATH,
+  SHOTCONTACT,
+  type IShotContact,
+} from "../../../../types/shot";
+
+import shape from "../../../Stats/shape.vue";
+import type { IAuthResponse } from "../../../../types/Iauth";
+import {
+  LAND_TYPE,
+  type Game_Shot_Data,
+  type Game_Shot_Data_Submit,
+  type Land_Type,
+} from "../../../../types/game";
+
+const router = useRouter();
+
+const props = defineProps<{
+  //   shots: Game_Shot_Data[] | null | undefined;
+  updateNewShot: (shot_data: Game_Shot_Data) => void;
+  hole_id: number | undefined;
+  user_id: number | undefined;
+  shot_count: number | undefined;
+  game_id: number | undefined;
+}>();
+
+// club type - no default - user will have to interact before submit can be pressed...
+let curClubType = ref<IShotType>();
+const clubs = Object.entries(CLUBTYPE);
+
+// current shot path - default path to 'straight'
+let curShotPath = ref<IShotPaths>("straight");
+const paths = Object.entries(SHOTPATH);
+
+// contact - default contact type to 'center'
+let curContactType = ref<IShotContact>("center");
+const contacts = Object.entries(SHOTCONTACT);
+
+const land_types = Object.entries(LAND_TYPE);
+
+// error message
+let message = ref("");
+let loading = ref(false);
+
+// interval
+let intervalId: number | null = null;
+
+// const userStore = useUserStore();
+const userId = localStorage.getItem("id");
+
+// ----------------------
+
+function changePath(path: IShotPaths) {
+  shotDataForm.value.shot_path = path;
+}
+function changeClub(club: IShotType) {
+  shotDataForm.value.club_type = club;
+}
+function changeContact(contact: IShotContact) {
+  shotDataForm.value.shot_contact = contact;
+}
+function changeLandType(land: Land_Type) {
+  shotDataForm.value.land_type = land;
+}
+
+let shotDataForm = ref<Game_Shot_Data_Submit>({
+  hole_id: props.hole_id!,
+  user_id: props.user_id!,
+  game_id: props.game_id!,
+  shot_count: props.shot_count!,
+  club_type: undefined,
+  shot_contact: "center",
+  shot_path: "straight",
+  start_lat: null,
+  start_lng: null,
+  end_lat: null,
+  end_lng: null,
+  land_type: null,
+  yards: null,
+  metres: null,
+});
+
+async function sendShotData() {
+  try {
+    // check to make sure a club was selected, land type was selected, and distance...
+    if (shotDataForm.value.club_type && shotDataForm.value.land_type) {
+      console.log("outgoing game shot object: ", shotDataForm.value);
+      const res = await useFetch<IAuthResponse, Game_Shot_Data_Submit>(
+        "/data/game-shot",
+        "POST",
+        shotDataForm.value
+      );
+
+      if (res === 401) {
+        localStorage.setItem("isLoggedIn", "false");
+        routeTo("/login", router);
+      } else if (res === undefined) {
+        throw new Error("Error from getUserDAta res, is undefined");
+      }
+      // good response...
+      else {
+        // set queue to zero
+
+        console.log("send GAMEShotData request successful !");
+      }
+    }
+  } catch (error) {
+    console.log("Error in stats send shot data request ", error);
+  }
+}
+
+function displayMessage() {
+  setTimeout(() => {
+    message.value = "";
+    loading.value = false;
+  }, 3000);
+}
+
+// lifecycle hooks
+onMounted(() => {
+  console.log("Stats page just mounted");
+
+  // can just start poll on launch since items may alreaady be in Q
+
+  //   intervalId = setInterval(sendShotData, 1 * 60 * 1000);
+  console.log("shotQ created: setInterval started. ", intervalId);
+  // call get user info...
+});
+
+onUnmounted(() => {
+  //   if (intervalId) {
+  //     clearInterval(intervalId);
+  //     console.log("Post shots, unmounted.. interval cleared..");
+  //   }
+});
+</script>
+
+<style src="../../../Stats/shotshape.css"></style>
+
+<template>
+  <!-- Stats page page -->
+  <section class="overflow-x-auto">
+    <!-- contains specs of form (shotpath, contact, clubtype) -->
+    <section class="overflow-x-auto">
+      <!-- shot path div -->
+      <div class="grid grid-cols-8 h-[300px] p-1 border border-0.5 mb-3">
+        <!-- club type selection -->
+        <section
+          class="grid grid-cols-2 col-start-1 col-span-3 overflow-y-scroll">
+          <div
+            class="shot-path-buttons"
+            v-for="[_, club] in clubs"
+            :class="{ 'bg-gray-400': shotDataForm.club_type === `${club}` }">
+            <button @click="changeClub(club)" class="w-full h-full">
+              {{ club }}
+            </button>
+          </div>
+        </section>
+
+        <shape :shotShape="curShotPath" class="col-start-5 col-span-8" />
+      </div>
+
+      <!-- control buttons for club shot path -->
+      <h4 class="text-xl mb-1">Shot Shape</h4>
+      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll mb-3">
+        <div
+          v-for="[_, path] in paths"
+          class="shot-path-buttons min-w-[75px]"
+          :class="{ 'bg-gray-400': shotDataForm.shot_path === `${path}` }">
+          <button @click="changePath(path)" class="w-full h-full">
+            {{ path }}
+          </button>
+        </div>
+      </section>
+
+      <!-- Contact type -->
+      <h4 class="text-xl mb-1">Contact Type</h4>
+      <section class="grid grid-cols-5 mb-3">
+        <div
+          class="shot-path-buttons"
+          v-for="[_, contact] in contacts"
+          :class="{
+            'bg-gray-400': shotDataForm.shot_contact === `${contact}`,
+          }">
+          <button @click="changeContact(contact)" class="w-full h-full">
+            {{ contact }}
+          </button>
+        </div>
+      </section>
+
+      <!-- Land Type (fairway, green, rough... OB)-->
+      <h4 class="text-xl mb-1">Land Type</h4>
+      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll mb-3">
+        <div
+          v-for="[_, path] in land_types"
+          class="shot-path-buttons min-w-[75px]"
+          :class="{ 'bg-gray-400': shotDataForm.land_type === `${path}` }">
+          <button @click="changeLandType(path)" class="w-full h-full">
+            {{ path }}
+          </button>
+        </div>
+      </section>
+
+      <!-- error -->
+      <section class="p-2">
+        <h4 v-if="message" class="font-semibold text-red-800">{{ message }}</h4>
+      </section>
+
+      <!-- submit button -->
+      <section class="flex justify-center mt-4">
+        <button
+          :disabled="loading"
+          @click="sendShotData"
+          class="p-4 rounded-xl mt-4 text-white"
+          :class="{ 'bg-gray-400': loading, 'bg-red-800': !loading }">
+          Submit
+        </button>
+      </section>
+    </section>
+  </section>
+</template>

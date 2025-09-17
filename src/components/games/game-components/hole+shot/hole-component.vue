@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
 import {
-  EIGHTEEN_ARRAY,
-  EIGHTEEN_HOLES,
   EIGHTEEN_HOLES_MAP,
-  holes,
   NINE_HOLES_MAP,
   type EightHoleKey,
-  type ICourseView,
   type NineHoleKey,
+  type T18_MAP,
   type THoles,
 } from "../../../../types/course";
 import type {
@@ -17,15 +14,13 @@ import type {
   GameStatus,
   Hole_Data,
   Hole_Submit,
-  IGameView,
   Nine_Hole_Data,
 } from "../../../../types/game";
-import { routeTo } from "../../../../router";
 import { useRouter } from "vue-router";
 
 import shotComponent from "./shot-component.vue";
 
-const router = useRouter();
+// const router = useRouter();
 
 const props = defineProps<{
   gameStatus: GameStatus;
@@ -42,18 +37,30 @@ const props = defineProps<{
 const putts: number[] = [1, 2, 3, 4, 5, 6];
 
 let hole = ref<Hole_Data>();
+// current hole key
+let curHoleKeyEight = ref<EightHoleKey>();
+// let curHoleKeyNine = ref<NineHoleKey>();
 
 watch(
   () => props.currentHole,
   () => {
     if (props.holes === 18 && props.eightHoleData && props.currentHole) {
-      const hole_data =
-        props.eightHoleData[EIGHTEEN_HOLES_MAP[props.currentHole - 1]];
+      const curHoleKeyy = EIGHTEEN_HOLES_MAP[props.currentHole - 1];
+      const hole_data = props.eightHoleData[curHoleKeyy];
+      // set values
+      console.log("before hole set");
       hole.value = hole_data;
-
+      curHoleKeyEight.value = curHoleKeyy;
       holeForm.value.id = hole_data.id;
+      console.log("after hole set ", hole.value);
     } else if (props.holes === 9 && props.nineHoleData && props.currentHole) {
+      const curHoleKeyy = NINE_HOLES_MAP[props.currentHole - 1];
+      const hole_data = props.nineHoleData[curHoleKeyy];
+
+      // set current key, so i can add shot data locally
+      curHoleKeyEight.value = curHoleKeyy;
       hole.value = props.nineHoleData[NINE_HOLES_MAP[props.currentHole - 1]];
+      holeForm.value.id = hole_data.id;
     }
     console.log("game view update triggers hopefully watcher triggered");
   }
@@ -77,6 +84,22 @@ function changePuttCount(count: number) {
   holeForm.value.putt_count = count;
 }
 
+// locally update shot array for whatever hole when shot is upload, so we dont have to refetch data everytime.
+// if user has to refresh game-view page, then data will update on that too
+function updateNewShot(
+  shot_data: Game_Shot_Data,
+  hole_number: number,
+  score_card: THoles
+) {
+  // update hole and props.eight or nine
+
+  if (score_card === 18) {
+    // update 18 array
+    // hole.value = hole.value?.hole_shot_data?.push(shot_data)
+  } else {
+  }
+}
+
 // form for hole data
 const holeForm = ref<Hole_Submit>({
   id: 0,
@@ -91,6 +114,7 @@ const holeForm = ref<Hole_Submit>({
 //
 onMounted(() => {
   // call get user info...
+  console.log("hole data on hole componnt: ", hole);
 });
 </script>
 
@@ -131,8 +155,17 @@ onMounted(() => {
     <section class="mt-5" @click="dropDown('shot')">
       <h4 class="text-2xl mb-1">Shots</h4>
       <div class="">
-        <shot-component :shots="hole?.hole_shot_data" />
+        <shot-component :shots="hole" :update-new-shot="updateNewShot" />
       </div>
+    </section>
+
+    <!-- notes -->
+    <section class="mt-5">
+      <h4 class="text-2xl mb-1">Notes</h4>
+      <textarea
+        v-model="holeForm.notes"
+        class="p-1 rounded border border-0.5 w-full"
+        placeholder="Hole notes..."></textarea>
     </section>
 
     <!-- current holes stats ??? -->
