@@ -16,8 +16,10 @@ export interface ICreate_Game_Return {
 export type GameStatus = "IN-PROGRESS" | "COMPLETE";
 
 type Coordinates = {
-  longitude: number;
-  latitude: number;
+  start_lat: number | null;
+  start_lng: number | null;
+  end_lat: number | null;
+  end_lng: number | null;
 };
 export type Land_Type =
   | "fairway"
@@ -59,8 +61,8 @@ export type Game_Shot_Data = {
   user_id: number;
   shot_count: number;
   shot: IShot;
-  start_coordinates: Coordinates | null;
-  end_coorindates: Coordinates | null;
+  stroke: number;
+  coordinates: Coordinates | null;
   land_type: Land_Type;
   yards: number | null;
   metres: number | null;
@@ -71,6 +73,7 @@ export type Game_Shot_Data_Submit = {
   user_id: number;
   game_id: number;
   shot_count: number;
+  stroke: number;
   club_type: IShotType | undefined;
   shot_contact: IShotContact;
   shot_path: IShotPaths;
