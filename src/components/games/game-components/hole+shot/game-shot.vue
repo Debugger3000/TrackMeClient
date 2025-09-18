@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import { useFetch } from "../../../../api/authFetch";
 import { routeTo } from "../../../../router";
 import { useRouter } from "vue-router";
@@ -31,6 +31,16 @@ const props = defineProps<{
   shot_count: number | undefined;
   game_id: number | undefined;
 }>();
+
+watch(
+  () => props.hole_id,
+  () => {
+    // updateData(props.holes);
+
+    console.log("game-shot updated  hole id....", props.hole_id);
+    console.log("game-shot updated user_id....", props.game_id);
+  }
+);
 
 // club type - no default - user will have to interact before submit can be pressed...
 let curClubType = ref<IShotType>();
@@ -71,11 +81,14 @@ function changeLandType(land: Land_Type) {
   shotDataForm.value.land_type = land;
 }
 
+// need to add strokes, cause shots can be 1 stroke or 2 stroke
+
 let shotDataForm = ref<Game_Shot_Data_Submit>({
   hole_id: props.hole_id!,
   user_id: props.user_id!,
   game_id: props.game_id!,
   shot_count: props.shot_count!,
+  stroke: 1,
   club_type: undefined,
   shot_contact: "center",
   shot_path: "straight",
@@ -92,6 +105,15 @@ async function sendShotData() {
   try {
     // check to make sure a club was selected, land type was selected, and distance...
     if (shotDataForm.value.club_type && shotDataForm.value.land_type) {
+      // check land type before final shot data object is sent out
+      if (
+        shotDataForm.value.land_type === "OB" ||
+        shotDataForm.value.land_type === "water_hazard" ||
+        shotDataForm.value.land_type === "land_hazard"
+      ) {
+        shotDataForm.value.stroke = 2;
+      }
+
       console.log("outgoing game shot object: ", shotDataForm.value);
       const res = await useFetch<IAuthResponse, Game_Shot_Data_Submit>(
         "/data/game-shot",
@@ -108,6 +130,32 @@ async function sendShotData() {
       // good response...
       else {
         // set queue to zero
+
+        // update parent components with new data in memory
+        const shot_for_update: Game_Shot_Data = {
+          hole_id: shotDataForm.value.hole_id,
+          user_id: shotDataForm.value.user_id,
+          shot_count: shotDataForm.value.shot_count,
+          stroke: shotDataForm.value.stroke,
+          shot: {
+            userId: shotDataForm.value.user_id,
+            clubType: shotDataForm.value.club_type,
+            shotContact: shotDataForm.value.shot_contact,
+            shotPath: shotDataForm.value.shot_path,
+          },
+
+          coordinates: {
+            start_lat: null,
+            start_lng: null,
+            end_lat: null,
+            end_lng: null,
+          },
+
+          land_type: shotDataForm.value.land_type,
+          yards: shotDataForm.value.yards,
+          metres: shotDataForm.value.metres,
+        };
+        props.updateNewShot(shot_for_update);
 
         console.log("send GAMEShotData request successful !");
       }
@@ -131,7 +179,7 @@ onMounted(() => {
   // can just start poll on launch since items may alreaady be in Q
 
   //   intervalId = setInterval(sendShotData, 1 * 60 * 1000);
-  console.log("shotQ created: setInterval started. ", intervalId);
+  // console.log("shotQ created: setInterval started. ", intervalId);
   // call get user info...
 });
 

@@ -11,11 +11,7 @@ import type { THoles } from "../../../../types/course";
 
 const props = defineProps<{
   shots: Hole_Data | null | undefined;
-  updateNewShot: (
-    shot_data: Game_Shot_Data,
-    hole: number,
-    score_card: THoles
-  ) => void;
+  updateNewShot: (shot_data: Game_Shot_Data, hole: number) => void;
 }>();
 
 watch(
@@ -34,7 +30,7 @@ let holeData = ref<Hole_Data>();
 // drop downs
 let shotDrop = ref<boolean>(true);
 // drop down for stats for shot to add
-let addShotDrop = ref<boolean>(true);
+let addShotDrop = ref<boolean>(false);
 
 // value for current shot
 let currentShot = ref<Game_Shot_Data>();
@@ -64,7 +60,13 @@ const holeForm = ref({
   hole_shot_data: [],
 });
 
-function shotAddCall(shot_data: Game_Shot_Data) {}
+// game-shot passes new shot data for this component...
+function shotAddCall(shot_data: Game_Shot_Data) {
+  // we call hole component from here to update
+  if (props.shots?.hole_number) {
+    props.updateNewShot(shot_data, props.shots?.hole_number - 1);
+  }
+}
 
 // -----------------
 // Display games as card / list view to click on complete game for stats, or in-progress game
@@ -77,6 +79,10 @@ onMounted(() => {
   if (props.shots?.hole_shot_data) {
     shotCount.value = props.shots.hole_shot_data.length + 1;
   }
+
+  if (props.shots) {
+    holeData.value = props.shots!;
+  }
 });
 </script>
 
@@ -87,9 +93,9 @@ onMounted(() => {
     </div> -->
 
     <!-- display list of shots (block 1, block 2, block 3) -->
-    <div v-if="props.shots?.hole_shot_data" class="flex flex-row">
+    <div v-if="holeData?.hole_shot_data" class="flex flex-row">
       <div
-        v-for="(value, index) in props.shots?.hole_shot_data"
+        v-for="(value, index) in holeData?.hole_shot_data"
         class="p-2 flex justify-center items-center"
         @click="changeCurrentShot(index)">
         {{ value.shot_count }}
@@ -117,9 +123,9 @@ onMounted(() => {
       <div v-if="addShotDrop" class="border border-0.5">
         <gameShot
           :update-new-shot="shotAddCall"
-          :hole_id="props.shots?.id"
-          :user_id="props.shots?.user_id"
-          :game_id="props.shots?.game_id"
+          :hole_id="holeData?.id"
+          :user_id="holeData?.user_id"
+          :game_id="holeData?.game_id"
           :shot_count="shotCount" />
       </div>
     </section>

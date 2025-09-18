@@ -23,17 +23,17 @@ import { routeTo } from "../../../../router";
 import { useRouter } from "vue-router";
 import type { AnyNode } from "postcss";
 
-type NineGameData = {
-  holes: 9;
-  cardData: nine_hole_card;
-  holeData: Nine_Hole_Data;
-};
-type EighteenGameData = {
-  holes: 18;
-  cardData: eighteen_hole_card;
-  holeData: Eighteen_Hole_Data;
-};
-type GameData = NineGameData | EighteenGameData;
+// type NineGameData = {
+//   holes: 9;
+//   cardData: nine_hole_card;
+//   holeData: Nine_Hole_Data;
+// };
+// type EighteenGameData = {
+//   holes: 18;
+//   cardData: eighteen_hole_card;
+//   holeData: Eighteen_Hole_Data;
+// };
+// type GameData = NineGameData | EighteenGameData;
 
 const router = useRouter();
 
@@ -52,6 +52,7 @@ const props = defineProps<{
       }
     | undefined;
   holes: THoles;
+  hole_state: number;
   // cardData?: nine_hole_card;
   // holeData?: Nine_Hole_Data;
   score_board_change_hole: (index: number) => void;
@@ -80,7 +81,10 @@ watch(
 function changeHole(hole: number) {
   // callback to parent to change current hole...
 
-  props.score_board_change_hole(hole + 1);
+  // only allow users to go backwards on holes... They shouldnt be allowed to add shots on hole 7 when they are currently on hole 3..
+  if (hole + 1 <= props.hole_state) {
+    props.score_board_change_hole(hole + 1);
+  }
 }
 
 // -----------------
