@@ -173,7 +173,7 @@ onMounted(() => {
         {{ props.eightHoleData[EIGHTEEN_HOLES_MAP[props.currentHole - 1]].par }}
       </h4>
       <h4
-        v-if="props.holes === 18 && props.nineHoleData && props.currentHole"
+        v-if="props.holes === 9 && props.nineHoleData && props.currentHole"
         class="text-2xl">
         Par: {{ props.nineHoleData[NINE_HOLES_MAP[props.currentHole - 1]].par }}
       </h4>
@@ -199,7 +199,7 @@ onMounted(() => {
     <section class="mt-5" @click="dropDown('shot')">
       <h4 class="text-2xl mb-1">Shots</h4>
       <div class="">
-        <shot-component :shots="hole" :update-new-shot="updateNewShot" />
+        <!-- <shot-component :shots="hole" :update-new-shot="updateNewShot" /> -->
       </div>
     </section>
 

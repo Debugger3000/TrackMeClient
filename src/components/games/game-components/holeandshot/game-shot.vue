@@ -81,6 +81,20 @@ function changeLandType(land: Land_Type) {
   shotDataForm.value.land_type = land;
 }
 
+function resetshotDataForm() {
+  shotDataForm.value.stroke = 1;
+  shotDataForm.value.club_type = undefined;
+  shotDataForm.value.shot_contact = "center";
+  shotDataForm.value.shot_path = "straight";
+  shotDataForm.value.start_lng = null;
+  shotDataForm.value.start_lat = null;
+  shotDataForm.value.end_lat = null;
+  shotDataForm.value.end_lng = null;
+  shotDataForm.value.land_type = null;
+  shotDataForm.value.yards = null;
+  shotDataForm.value.metres = null;
+}
+
 // need to add strokes, cause shots can be 1 stroke or 2 stroke
 
 let shotDataForm = ref<Game_Shot_Data_Submit>({
@@ -155,6 +169,11 @@ async function sendShotData() {
           yards: shotDataForm.value.yards,
           metres: shotDataForm.value.metres,
         };
+
+        // reset shot Form and close add shot,
+        resetshotDataForm();
+
+        // update parent components with new shot data
         props.updateNewShot(shot_for_update);
 
         console.log("send GAMEShotData request successful !");

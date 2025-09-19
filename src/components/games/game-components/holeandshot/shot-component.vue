@@ -11,6 +11,7 @@ import type { THoles } from "../../../../types/course";
 
 const props = defineProps<{
   shots: Hole_Data | null | undefined;
+  current_shots: Game_Shot_Data[];
   updateNewShot: (shot_data: Game_Shot_Data, hole: number) => void;
 }>();
 
@@ -64,6 +65,7 @@ const holeForm = ref({
 function shotAddCall(shot_data: Game_Shot_Data) {
   // we call hole component from here to update
   if (props.shots?.hole_number) {
+    dropDown("addShot");
     props.updateNewShot(shot_data, props.shots?.hole_number - 1);
   }
 }
@@ -76,8 +78,8 @@ onMounted(() => {
   // call get user info...
   console.log("SHOT comp: ", props.shots);
 
-  if (props.shots?.hole_shot_data) {
-    shotCount.value = props.shots.hole_shot_data.length + 1;
+  if (props.current_shots) {
+    shotCount.value = props.current_shots.length + 1;
   }
 
   if (props.shots) {
@@ -93,7 +95,7 @@ onMounted(() => {
     </div> -->
 
     <!-- display list of shots (block 1, block 2, block 3) -->
-    <div v-if="holeData?.hole_shot_data" class="flex flex-row">
+    <div v-if="props.current_shots" class="flex flex-row">
       <div
         v-for="(value, index) in holeData?.hole_shot_data"
         class="p-2 flex justify-center items-center"
