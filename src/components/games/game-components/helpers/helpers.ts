@@ -6,6 +6,14 @@ import {
   type THoles,
 } from "../../../../types/course";
 
+// hole number and not index
+export function getEightKeyFromIndex(hole_number: number) {
+  console.log("values given to get key for indexer: ", hole_number);
+
+  console.log("valuer: ", EIGHTEEN_HOLES_MAP[hole_number - 1]);
+  return EIGHTEEN_HOLES_MAP[hole_number - 1];
+}
+
 export function getKeyFromIndex(hole_number: number, holes: THoles) {
   console.log("values given to get key for indexer: ", hole_number, holes);
   if (holes === 18) {

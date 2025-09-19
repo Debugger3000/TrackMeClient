@@ -41,14 +41,14 @@ let curHoleKeyEight = ref<EightHoleKey>();
 watch(
   () => props.currentHole,
   () => {
-    updateData(props.holes);
+    updateData();
 
     console.log("game view update triggers hopefully watcher triggered");
   }
 );
 
-function updateData(holes: number) {
-  if (holes === 18 && props.eightHoleData && props.currentHole) {
+function updateData() {
+  if (props.eightHoleData && props.currentHole) {
     const curHoleKeyy = EIGHTEEN_HOLES_MAP[props.currentHole - 1];
     const hole_data = props.eightHoleData[curHoleKeyy];
     // set values
@@ -58,15 +58,6 @@ function updateData(holes: number) {
     holeForm.value.id = hole_data.id;
     console.log("after hole set ", hole.value);
   }
-  //   else if (holes === 9 && props.nineHoleData && props.currentHole) {
-  //     const curHoleKeyy = NINE_HOLES_MAP[props.currentHole - 1];
-  //     const hole_data = props.nineHoleData[curHoleKeyy];
-
-  //     // set current key, so i can add shot data locally
-  //     curHoleKeyEight.value = curHoleKeyy;
-  //     hole.value = props.nineHoleData[NINE_HOLES_MAP[props.currentHole - 1]];
-  //     holeForm.value.id = hole_data.id;
-  //   }
 
   // update game-view so scoreboard can update as well...
 }
@@ -115,7 +106,7 @@ const holeForm = ref<Hole_Submit>({
 //
 onMounted(() => {
   // call get user info...
-  updateData(props.holes);
+  updateData();
   console.log("hole data on hole componnt: ", hole);
 });
 </script>
@@ -152,7 +143,7 @@ onMounted(() => {
     <section class="mt-5" @click="dropDown('shot')">
       <h4 class="text-2xl mb-1">Shots</h4>
       <div class="">
-        <shot-component :shots="hole" :update-new-shot="updateNewShot" />
+        <!-- <shot-component :shots="hole" :update-new-shot="updateNewShot" /> -->
       </div>
     </section>
 

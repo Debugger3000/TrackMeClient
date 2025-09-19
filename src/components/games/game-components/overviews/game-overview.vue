@@ -24,11 +24,13 @@ watch(
 function gameSelected(game_id: number, holes: number) {
   // routeTo(`/game-view/${game_id}?`, router);
 
-  router.push({
-    name: "game-view",
-    params: { game_id },
-    query: { holes: holes }, // or whatever string you need
-  });
+  if (holes === 18) {
+    router.push({
+      name: "game-view-eight",
+      params: { game_id },
+    });
+  } else {
+  }
 }
 
 // -----------------

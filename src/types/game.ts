@@ -1,6 +1,7 @@
 import type {
   eighteen_hole_card,
   ICourse,
+  ICourseGameReturn,
   ICourseView,
   nine_hole_card,
   THoles,
@@ -235,43 +236,25 @@ export type IGameStrict<H extends 9 | 18> = H extends 9
 
 // Last hole, will say COMPLETE GAME, then hole is saved, and game is completed, and status is changed to 'COMPLETE'
 
-// // I game data object empty object
-// const empty_hole: Hole_Data = {
-//   id: 0,
-//   game_id: 0,
-//   user_id: 0,
-//   hole_number: 0,
-//   putt_count: 0,
-//   par: 0,
-//   score: 0,
-//   notes: null,
-//   hole_shot_data: null,
-// };
+export interface IGameObjectReturn {
+  id: number;
+  course: ICourseGameReturn;
+  user_id: number;
+  status: GameStatus;
+  date: string;
+  score: number;
+  hole_state: number | null;
+  notes: string | null;
+}
 
-// const game_data = {
-//   club_name: "",
-//   holes: 9,
-//   par: 0,
-//   location: "",
-//   course_name: null,
-//   id: 0,
-//   user_id: 0,
-//   course_id: 0,
-//   status: "IN-PROGRESS" as Status,
-//   date: new Date().toISOString(),
-//   score: 0,
-//   hole_state: 1,
-//   notes: null,
-//   hole_data: {
-//     hole_one: { ...empty_hole },
-//     hole_two: { ...empty_hole },
-//     hole_three: { ...empty_hole },
-//     hole_four: { ...empty_hole },
-//     hole_five: { ...empty_hole },
-//     hole_six: { ...empty_hole },
-//     hole_seven: { ...empty_hole },
-//     hole_eight: { ...empty_hole },
-//     hole_nine: { ...empty_hole },
-//   },
-//   course_score_card: {} as eighteen_hole_card | nine_hole_card,
-// } as const;
+export interface IGameReturnNine {
+  game_object: IGameObjectReturn;
+  score_card_data: nine_hole_card;
+  hole_data: Nine_Hole_Data;
+}
+
+export interface IGameReturnEight {
+  game_object: IGameObjectReturn;
+  score_card_data: eighteen_hole_card;
+  hole_data: Eighteen_Hole_Data;
+}

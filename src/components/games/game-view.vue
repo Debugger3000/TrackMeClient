@@ -1,22 +1,17 @@
 <script setup lang="ts">
-import { computed, mergeProps, onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { routeTo } from "../../router";
 import { useRoute, useRouter } from "vue-router";
 import type {
   Eighteen_Hole_Data,
   Game_Shot_Data,
   Hole_Data,
-  HoleType,
-  IGame,
-  IGameEighteen,
-  IGameNine,
   IGameStrict,
   Nine_Hole_Data,
 } from "../../types/game";
 import { useFetch } from "../../api/authFetch";
 import {
   EIGHTEEN_HOLES_MAP,
-  NINE_ARRAY,
   NINE_HOLES_MAP,
   type eighteen_hole_card,
   type EightHoleKey,
@@ -26,8 +21,9 @@ import {
 } from "../../types/course";
 
 import nineScoreBoard from "./game-components/scoreBoards/nine-score-board.vue";
-import eightScoreBoard from "./game-components/scoreBoards/eight-score-board.vue";
-import holeComponent from "./game-components/hole+shot/hole-component.vue";
+
+// import eightScoreBoard from "./game-components/scoreBoards/eight-score-board.vue";
+import holeComponent from "./game-components/holeandshot/hole-component.vue";
 import { getKeyFromIndex, isNineKey } from "./game-components/helpers/helpers";
 const router = useRouter();
 
@@ -36,11 +32,11 @@ const route = useRoute();
 // This will be a string by default
 const game_id = route.params.game_id;
 
-const eight_hole: 18 = 18;
-const nine_hole: 9 = 9;
+// const eight_hole: 18 = 18;
+// const nine_hole: 9 = 9;
 const holes: THoles = Number(route.query.holes as string | undefined) as 9 | 18;
 
-const hole = ref<Hole_Data>();
+// const hole = ref<Hole_Data>();
 
 // ------------
 // current GAME DATA all here. Feed to other minor components. Shouldn't have to re fetch any game data.
