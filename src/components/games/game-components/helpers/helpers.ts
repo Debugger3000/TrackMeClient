@@ -14,14 +14,10 @@ export function getEightKeyFromIndex(hole_number: number) {
   return EIGHTEEN_HOLES_MAP[hole_number - 1];
 }
 
-export function getKeyFromIndex(hole_number: number, holes: THoles) {
-  console.log("values given to get key for indexer: ", hole_number, holes);
-  if (holes === 18) {
-    console.log("valuer: ", EIGHTEEN_HOLES_MAP[hole_number - 1]);
-    return EIGHTEEN_HOLES_MAP[hole_number - 1];
-  } else if (holes === 9) {
-    return NINE_HOLES_MAP[hole_number - 1];
-  }
+export function getNineKeyFromIndex(hole_number: number) {
+  console.log("values given to get key for indexer: ", hole_number);
+
+  return NINE_HOLES_MAP[hole_number - 1];
 }
 
 export function isNineKey(key: NineHoleKey | EightHoleKey) {
