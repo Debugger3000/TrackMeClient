@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { inject, onMounted, ref, watch, type Ref } from "vue";
 import {
   EIGHTEEN_HOLES_MAP,
   NINE_HOLES_MAP,
@@ -11,6 +11,7 @@ import {
 import type {
   Eighteen_Hole_Data,
   Game_Shot_Data,
+  Game_Shot_Data_Submit,
   GameStatus,
   Hole_Data,
   Hole_Submit,
@@ -23,21 +24,29 @@ import { useRouter } from "vue-router";
 
 import shotComponent from "./shot-component.vue";
 import type { PropertySignature } from "typescript";
+import { useFetch } from "../../../../api/authFetch";
+import { routeTo } from "../../../../router";
+import type { IAuthResponse } from "../../../../types/Iauth";
 
-// const router = useRouter();
+const router = useRouter();
 
 const props = defineProps<{
   game_status: GameStatus;
   current_hole: Hole_Data;
-  current_shots: Game_Shot_Data[];
-  updateGameShots: (game_data: Game_Shot_Data) => void;
+  current_shots: Game_Shot_Data_Submit[];
+  updateGameShots: (game_data: Game_Shot_Data_Submit) => void;
   // gameData: IGameView[];
   //   courseSelector?: (index: number) => void;
   //   course?: ICourseView;
 }>();
 
+const current_hole_state = inject<Ref<number, number>>("current_hole_state");
+// const injector = inject<{ goNextHole: () => void }>("goNextHole");
+
+const goNextHole = inject<() => void>("goNextHole");
+
 // putt values
-const putts: number[] = [1, 2, 3, 4, 5, 6];
+const putts: number[] = [0, 1, 2, 3, 4, 5, 6];
 
 // current score in hole
 const current_hole_score = ref<number>(0);
@@ -54,13 +63,14 @@ watch(
   () => props.current_shots,
 
   () => {
+    console.log("current holes was pushed too hehehehehehe");
     // grab whatever shots are in hole shot array and tally strokes to display current hole score
     updateHoleScore();
   }
 );
 
 function updateHoleScore() {
-  if (props.current_shots) {
+  if (props.current_shots !== undefined) {
     let score_count = 0;
     props.current_shots.forEach((data) => {
       console.log("shottter: ", data);
@@ -119,25 +129,59 @@ function changePuttCount(count: number) {
   holeForm.value.putt_count = count;
 }
 
-// locally update shot array for whatever hole when shot is upload, so we dont have to refetch data everytime.
-// if user has to refresh game-view page, then data will update on that too
-function updateNewShot(shot_data: Game_Shot_Data) {
-  // update hole and props.eight or nine
-  props.updateGameShots(shot_data);
-  //   if (props.holes === 18) {
-  //     // pass data to game-view to update everything hopefully
-
-  //   } else {
-  //   }
-}
-
 // form for hole data
 const holeForm = ref<Hole_Submit>({
   id: 0,
   putt_count: 0,
   score: 0,
   notes: "",
+  game_id: 0,
+  hole_state: 0,
+  game_score: 0,
 });
+
+async function submitHole() {
+  // goNextHole?.();
+
+  const par_adjusted_score = current_hole_score.value - props.current_hole.par;
+  // set hole score (stroke)
+  holeForm.value.score = current_hole_score.value;
+  // set hole id
+  holeForm.value.id = props.current_hole.id;
+
+  // set game score (stroke - par)
+  holeForm.value.game_score = par_adjusted_score;
+  // set game _id
+  holeForm.value.game_id = props.current_hole.game_id;
+  // set hole state so we can easily move it to +1
+  holeForm.value.hole_state = current_hole_state?.value!;
+
+  try {
+    const res = await useFetch<IAuthResponse, Hole_Submit>(
+      "/game/hole",
+      "PATCH",
+      holeForm.value
+    );
+
+    if (res === 401) {
+      localStorage.setItem("isLoggedIn", "false");
+      routeTo("/login", router);
+    } else if (res === undefined) {
+      throw new Error("Error from getUserDAta res, is undefined");
+    }
+    // good response...
+    else {
+      console.log("hole was submitted, and patch properly !");
+      // now we set current hole to next hole, and we do a full data grab to update everything...
+      goNextHole?.();
+      console.log("Calling go next hole hehe");
+    }
+  } catch (error) {
+    console.log("error in Hole form submit: ", error);
+  }
+
+  console.log("holeForm value: ", holeForm.value);
+}
 
 // -----------------
 // Display games as card / list view to click on complete game for stats, or in-progress game
@@ -146,6 +190,8 @@ const holeForm = ref<Hole_Submit>({
 onMounted(() => {
   // grab whatever shots are in hole shot array and tally strokes to display current hole score
   updateHoleScore();
+
+  console.log("shots array in hole-comp: ", props.current_shots);
 });
 </script>
 
@@ -183,9 +229,8 @@ onMounted(() => {
       <h4 class="text-2xl mb-1">Shots</h4>
       <div class="">
         <shot-component
-          :shots="props.current_hole"
-          :current_shots="props.current_shots!"
-          :update-new-shot="updateNewShot" />
+          :hole_data="props.current_hole"
+          :current_shots="props.current_shots!" />
       </div>
     </section>
 
@@ -197,6 +242,12 @@ onMounted(() => {
         class="p-1 rounded border border-0.5 w-full"
         placeholder="Hole notes..."></textarea>
     </section>
+
+    <div>
+      <div class="p-1 bg-green-800">
+        <button type="button" @click="submitHole">Submit Hole</button>
+      </div>
+    </div>
 
     <!-- current holes stats ??? -->
   </section>

@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { inject, onMounted, ref, watch, type Ref } from "vue";
 
-import type { Game_Shot_Data, Hole_Data } from "../../../../types/game";
+import type {
+  Game_Shot_Data,
+  Game_Shot_Data_Submit,
+  Hole_Data,
+} from "../../../../types/game";
 import { useRouter } from "vue-router";
 
 import gameShot from "./game-shot.vue";
@@ -10,23 +14,27 @@ import type { THoles } from "../../../../types/course";
 // const router = useRouter();
 
 const props = defineProps<{
-  shots: Hole_Data | null | undefined;
-  current_shots: Game_Shot_Data[];
-  updateNewShot: (shot_data: Game_Shot_Data, hole: number) => void;
+  hole_data: Hole_Data | null | undefined;
+  current_shots: Game_Shot_Data_Submit[];
+  // updateNewShot: (shot_data: Game_Shot_Data, hole: number) => void;
 }>();
 
-watch(
-  () => props.shots,
-  () => {
-    if (props.shots) {
-      holeData.value = props.shots;
-    }
+const current_hole_state = inject<Ref<number, number>>("current_hole_state");
 
-    console.log("update hole data for shot component: ", holeData.value);
+watch(
+  () => props.current_shots,
+  () => {
+    // if (props.shots) {
+    //   holeData.value = props.shots;
+    // }
+    if (props.current_shots) {
+      shotCount.value = props.current_shots.length + 1;
+    }
+    console.log("update hole data for shot component: ", props.current_shots);
   }
 );
 
-let holeData = ref<Hole_Data>();
+// let holeData = ref<Hole_Data>();
 
 // drop downs
 let shotDrop = ref<boolean>(true);
@@ -34,7 +42,9 @@ let shotDrop = ref<boolean>(true);
 let addShotDrop = ref<boolean>(false);
 
 // value for current shot
-let currentShot = ref<Game_Shot_Data>();
+let currentShot = ref<number>(0);
+
+let displayShot = ref<boolean>(true);
 
 // current shot count
 let shotCount = ref<number>(1);
@@ -43,13 +53,21 @@ let shotCount = ref<number>(1);
 function dropDown(type: string) {
   if (type === "addShot") {
     addShotDrop.value = !addShotDrop.value;
+  } else if (type === "currentShot") {
+    displayShot.value = !displayShot.value;
   }
 }
 
-// change curren shot
-function changeCurrentShot(count: number) {
-  if (props.shots?.hole_shot_data) {
-    currentShot.value = props.shots?.hole_shot_data[count];
+// change current shot
+function changeCurrentShot(index: number) {
+  if (props.current_shots !== undefined) {
+    console.log("changing current shot displayer...");
+    currentShot.value = index;
+    if (!displayShot.value) {
+      dropDown("currentShot");
+    } else {
+      dropDown("currentShot");
+    }
   }
 }
 
@@ -62,11 +80,11 @@ const holeForm = ref({
 });
 
 // game-shot passes new shot data for this component...
-function shotAddCall(shot_data: Game_Shot_Data) {
+function dropAddShotMenu() {
   // we call hole component from here to update
-  if (props.shots?.hole_number) {
+  if (props.hole_data?.hole_number) {
     dropDown("addShot");
-    props.updateNewShot(shot_data, props.shots?.hole_number - 1);
+    // props.updateNewShot(shot_data, props.shots?.hole_number - 1);
   }
 }
 
@@ -76,15 +94,16 @@ function shotAddCall(shot_data: Game_Shot_Data) {
 //
 onMounted(() => {
   // call get user info...
-  console.log("SHOT comp: ", props.shots);
+  console.log("SHOT comp: ", props.hole_data);
 
+  console.log("current shots: ", props.current_shots);
   if (props.current_shots) {
     shotCount.value = props.current_shots.length + 1;
   }
 
-  if (props.shots) {
-    holeData.value = props.shots!;
-  }
+  // if (props.shots) {
+  //   holeData.value = props.shots!;
+  // }
 });
 </script>
 
@@ -97,12 +116,31 @@ onMounted(() => {
     <!-- display list of shots (block 1, block 2, block 3) -->
     <div v-if="props.current_shots" class="flex flex-row">
       <div
-        v-for="(value, index) in holeData?.hole_shot_data"
-        class="p-2 flex justify-center items-center"
-        @click="changeCurrentShot(index)">
+        v-for="(value, index) in props.current_shots"
+        class="grid grid-cols-auto p-2 justify-center items-center rounded border"
+        @click="changeCurrentShot(index)"
+        :class="{ 'bg-gray-400': currentShot === index }">
         {{ value.shot_count }}
       </div>
     </div>
+
+    <!-- display whatever shot data selected here... -->
+    <section
+      v-if="
+        props.current_shots !== undefined &&
+        displayShot &&
+        props.current_shots.length > 0
+      "
+      class="p-1 border rounded bg-blue-400 hover:cursor-pointer">
+      <div class="flex gap-5">
+        <h4>{{ props.current_shots[currentShot].shot_count }}</h4>
+        <h4>{{ props.current_shots[currentShot].club_type }}</h4>
+      </div>
+
+      <div @click="dropDown('currentShot')">
+        <h4>{{ props.current_shots[currentShot].land_type }}</h4>
+      </div>
+    </section>
 
     <!-- shot general shot details of selected shot -->
     <section v-if="shotDrop" class="">
@@ -113,21 +151,23 @@ onMounted(() => {
     </section>
 
     <!-- shots drop down -->
-    <section class="">
+    <section
+      v-if="props.hole_data?.hole_number! === current_hole_state!"
+      class="">
       <div
         @click="dropDown('addShot')"
-        class="flex justify-between items-center p-2 border-b border-0.5">
+        class="flex justify-between items-center p-2 border rounded border-0.5">
         <h4 class="text-2xl mb-1">Add Shot</h4>
-        <i v-if="!addShotDrop" class="bi bi-arrow-plus"></i>
-        <i v-if="addShotDrop" class="bi bi-arrow-minus"></i>
+        <i v-if="!addShotDrop" class="bi bi-plus"></i>
+        <i v-if="addShotDrop" class="bi bi-dash"></i>
       </div>
 
       <div v-if="addShotDrop" class="border border-0.5">
         <gameShot
-          :update-new-shot="shotAddCall"
-          :hole_id="holeData?.id"
-          :user_id="holeData?.user_id"
-          :game_id="holeData?.game_id"
+          :closeAddShotMenu="dropAddShotMenu"
+          :hole_id="props.hole_data?.id"
+          :user_id="props.hole_data?.user_id"
+          :game_id="props.hole_data?.game_id"
           :shot_count="shotCount" />
       </div>
     </section>

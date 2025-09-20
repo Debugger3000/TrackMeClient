@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from "vue";
+import { ref, onMounted, onUnmounted, watch, inject } from "vue";
 import { useFetch } from "../../../../api/authFetch";
 import { routeTo } from "../../../../router";
 import { useRouter } from "vue-router";
@@ -25,7 +25,7 @@ const router = useRouter();
 
 const props = defineProps<{
   //   shots: Game_Shot_Data[] | null | undefined;
-  updateNewShot: (shot_data: Game_Shot_Data) => void;
+  closeAddShotMenu: () => void;
   hole_id: number | undefined;
   user_id: number | undefined;
   shot_count: number | undefined;
@@ -66,6 +66,11 @@ let intervalId: number | null = null;
 // const userStore = useUserStore();
 const userId = localStorage.getItem("id");
 
+// inject update score function
+const updater = inject<{
+  updateGameShots: (shot: Game_Shot_Data_Submit) => void;
+}>("update_shots");
+
 // ----------------------
 
 function changePath(path: IShotPaths) {
@@ -73,6 +78,7 @@ function changePath(path: IShotPaths) {
 }
 function changeClub(club: IShotType) {
   shotDataForm.value.club_type = club;
+  console.log("club type chose: ", shotDataForm.value.club_type);
 }
 function changeContact(contact: IShotContact) {
   shotDataForm.value.shot_contact = contact;
@@ -146,35 +152,16 @@ async function sendShotData() {
         // set queue to zero
 
         // update parent components with new data in memory
-        const shot_for_update: Game_Shot_Data = {
-          hole_id: shotDataForm.value.hole_id,
-          user_id: shotDataForm.value.user_id,
-          shot_count: shotDataForm.value.shot_count,
-          stroke: shotDataForm.value.stroke,
-          shot: {
-            userId: shotDataForm.value.user_id,
-            clubType: shotDataForm.value.club_type,
-            shotContact: shotDataForm.value.shot_contact,
-            shotPath: shotDataForm.value.shot_path,
-          },
+        const shot_for_update = { ...shotDataForm.value };
 
-          coordinates: {
-            start_lat: null,
-            start_lng: null,
-            end_lat: null,
-            end_lng: null,
-          },
+        // use function injected here to update
+        updater?.updateGameShots(shot_for_update);
 
-          land_type: shotDataForm.value.land_type,
-          yards: shotDataForm.value.yards,
-          metres: shotDataForm.value.metres,
-        };
+        // drop add shot menu from parent component.
+        props.closeAddShotMenu();
 
         // reset shot Form and close add shot,
         resetshotDataForm();
-
-        // update parent components with new shot data
-        props.updateNewShot(shot_for_update);
 
         console.log("send GAMEShotData request successful !");
       }

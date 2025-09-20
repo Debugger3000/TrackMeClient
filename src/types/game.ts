@@ -98,7 +98,7 @@ export type Hole_Data = {
   par: number;
   score: number;
   notes: string | null;
-  hole_shot_data: Game_Shot_Data[] | null;
+  hole_shot_data: Game_Shot_Data_Submit[] | null;
 };
 
 export type Hole_Submit = {
@@ -106,6 +106,9 @@ export type Hole_Submit = {
   putt_count: number;
   score: number;
   notes: string | null;
+  game_id: number;
+  hole_state: number;
+  game_score: number;
 };
 
 export type Nine_Hole_Data = {
