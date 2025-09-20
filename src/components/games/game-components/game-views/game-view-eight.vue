@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, provide, ref, watch } from "vue";
 import { routeTo } from "../../../../router/index";
 import { useRoute, useRouter } from "vue-router";
 import type {
   Eighteen_Hole_Data,
   Game_Shot_Data,
+  Game_Shot_Data_Submit,
   Hole_Data,
 } from "../../../../types/game";
 import { useFetch } from "../../../../api/authFetch";
@@ -51,18 +52,18 @@ const hole_data = ref<Eighteen_Hole_Data>();
 const current_hole = ref<Hole_Data>();
 
 // current shots Array =
-const current_shots = ref<Game_Shot_Data[]>();
+const current_shots = ref<Game_Shot_Data_Submit[]>([]);
 
 // ---------------
 
 // this can be changed by clicking on whatever hole on the scoreboard
-let currentHole = ref<number>(1);
+let current_hole_state = ref<number>(1);
 // let holeKey = ref<NineHoleKey>("hole_one");
 
 let keyyer = ref<EightHoleKey>("hole_one");
 
 watch(
-  () => currentHole.value,
+  () => current_hole_state.value,
   (newHole) => {
     keyyer.value = EIGHTEEN_HOLES_MAP[newHole - 1];
 
@@ -73,39 +74,40 @@ watch(
 // course selected to create game on
 function score_board_change_hole(index: number) {
   const curHoleKeyy = EIGHTEEN_HOLES_MAP[index];
+  // update hole data
   current_hole.value = hole_data.value![curHoleKeyy];
 
+  console.log("new hole data from scoreboard change: ", current_hole.value);
+
+  // update hole shots separately too
+  current_shots.value = current_hole.value.hole_shot_data!;
+
   // track hole with index too, so we can update hole accordingly
-  currentHole.value = index + 1;
+  current_hole_state.value = index + 1;
 }
 
 // runs when a shot is POST from game-shot...
-function updateGameShots(shot_data: Game_Shot_Data) {
-  console.log("UPDATE HOLE SHOTS IN GAME-VIEW ", shot_data);
+function updateGameShots(shot_data: Game_Shot_Data_Submit) {
+  console.log(
+    "UPDATE HOLE SHOTS IN GAME-VIEW EIGHT callewd from provide... ",
+    shot_data
+  );
+  current_shots.value = [...current_shots.value, shot_data];
 
-  // push new shot_data into hole_data's, shot array
-  //   const hole = hole_data.value![key];
-  //   hole.hole_shot_data?.push(shot_data);
-  current_hole.value?.hole_shot_data?.push(shot_data);
-  current_shots.value?.push(shot_data);
   // tally score
   //   tallyScoreInMem();
 }
 
-// function tally score count for a hole in memory
-// function tallyScoreInMem() {
-//   // go through shots and increment score in memory...
-//   const key = EIGHTEEN_HOLES_MAP[currentHole.value - 1];
-//   const hole = hole_data.value![key];
-//   if (hole.hole_shot_data) {
-//     let score_count = 0;
-//     hole.hole_shot_data.forEach((data) => {
-//       console.log("shottter: ", data);
-//       score_count = score_count + data.stroke;
-//     });
-//     hole.score = score_count;
-//   }
-// }
+// hole submit was good, now we need to grab fresh game data, and next hole will be ready to be posted within
+async function goNextHole() {
+  console.log("go next hole function in game-view-eight called !");
+  await getGameData();
+  console.log("go next hole data updated: ", game_data.value);
+}
+
+// update immediate score after shot has been posted...
+provide("update_shots", { updateGameShots });
+provide("goNextHole", goNextHole);
 
 // if else to break between
 async function getGameData() {
@@ -135,7 +137,7 @@ async function getGameData() {
       //   set current hole
       if (game_data.value.hole_state) {
         const hole_stater = game_data.value.hole_state;
-        currentHole.value = hole_stater;
+        current_hole_state.value = hole_stater;
         console.log(
           "curr_hole data: ",
           hole_data.value[getEightKeyFromIndex(game_data.value.hole_state)]
@@ -175,7 +177,7 @@ onMounted(async () => {
   // };
   await getGameData();
 
-  console.log("current hole value: ", currentHole.value);
+  console.log("current hole value: ", current_hole_state.value);
 
   //   const key = getEightKeyFromIndex(currentHole.value);
   //   console.log(

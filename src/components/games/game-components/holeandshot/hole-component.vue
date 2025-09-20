@@ -140,6 +140,9 @@ const holeForm = ref<Hole_Submit>({
   putt_count: 0,
   score: 0,
   notes: "",
+  game_id: 0,
+  hole_state: 0,
+  game_score: 0,
 });
 
 // -----------------
