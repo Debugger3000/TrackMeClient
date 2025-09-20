@@ -7,12 +7,15 @@ import type {
   Game_Shot_Data,
   Game_Shot_Data_Submit,
   Hole_Data,
+  Nine_Hole_Data,
 } from "../../../../types/game";
 import { useFetch } from "../../../../api/authFetch";
 import {
   EIGHTEEN_HOLES_MAP,
+  NINE_HOLES_MAP,
   type eighteen_hole_card,
   type EightHoleKey,
+  type nine_hole_card,
 } from "../../../../types/course";
 import eightHole from "../holeandshot/eight-hole.vue";
 
@@ -21,12 +24,13 @@ import nineScoreBoard from "../scoreBoards/nine-score-board.vue";
 import holeComponent from "../holeandshot/hole-component.vue";
 
 import holeComp from "../holeandshot/hole-comp.vue";
-import { getEightKeyFromIndex } from "../helpers/helpers";
+import { getEightKeyFromIndex, getNineKeyFromIndex } from "../helpers/helpers";
 import type {
   IGameObjectReturn,
   IGameReturnEight,
 } from "../../../../types/game";
 import EightScoreBoard from "../scoreBoards/eight-score-board.vue";
+import NineScoreBoard from "../scoreBoards/nine-score-board.vue";
 const router = useRouter();
 
 const route = useRoute();
@@ -45,8 +49,8 @@ const game_id = route.params.game_id;
 
 // game object data references (game data, score_board, and hole_data)
 const game_data = ref<IGameObjectReturn>();
-const score_card = ref<eighteen_hole_card>();
-const hole_data = ref<Eighteen_Hole_Data>();
+const score_card = ref<nine_hole_card>();
+const hole_data = ref<Nine_Hole_Data>();
 
 // current hole we are giving to hole component
 const current_hole = ref<Hole_Data>();
@@ -73,7 +77,7 @@ watch(
 
 // course selected to create game on
 function score_board_change_hole(index: number) {
-  const curHoleKeyy = EIGHTEEN_HOLES_MAP[index];
+  const curHoleKeyy = NINE_HOLES_MAP[index];
   // update hole data
   current_hole.value = hole_data.value![curHoleKeyy];
 
@@ -138,15 +142,11 @@ async function getGameData() {
       if (game_data.value.hole_state) {
         const hole_stater = game_data.value.hole_state;
         current_hole_state.value = hole_stater;
-        console.log(
-          "curr_hole data: ",
-          hole_data.value[getEightKeyFromIndex(game_data.value.hole_state)]
-        );
         current_hole.value =
-          hole_data.value[getEightKeyFromIndex(game_data.value.hole_state)];
+          hole_data.value[getNineKeyFromIndex(game_data.value.hole_state)];
         current_shots.value =
           hole_data.value[
-            getEightKeyFromIndex(game_data.value.hole_state)
+            getNineKeyFromIndex(game_data.value.hole_state)
           ].hole_shot_data!;
       }
 
@@ -236,7 +236,7 @@ onMounted(async () => {
 
       <!-- Display scorecard, probably 9 over 9 for mobile -->
       <section v-if="game_data" class="mt-5">
-        <EightScoreBoard
+        <NineScoreBoard
           :card-data="score_card!"
           :hole-data="hole_data!"
           :holes="18"
@@ -251,16 +251,7 @@ onMounted(async () => {
           :current_hole="current_hole!"
           :current_shots="current_shots!"
           :update-game-shots="updateGameShots" />
-
-        <!-- <eightHole
-          :game-status="game_data?.status!"
-          :current-hole="currentHole"
-          :holes="18"
-          :eight-hole-data="hole_data!"
-          :update-game-shots="updateGameShots" /> -->
       </section>
-
-      <!-- shot data... I believe shot data will embed within hole data... -->
     </section>
   </section>
 </template>
