@@ -1,29 +1,15 @@
 <script setup lang="ts">
 import { inject, onMounted, ref, watch, type Ref } from "vue";
-import {
-  EIGHTEEN_HOLES_MAP,
-  NINE_HOLES_MAP,
-  type EightHoleKey,
-  type NineHoleKey,
-  type T18_MAP,
-  type THoles,
-} from "../../../../types/course";
+
 import type {
-  Eighteen_Hole_Data,
-  Game_Shot_Data,
   Game_Shot_Data_Submit,
   GameStatus,
   Hole_Data,
   Hole_Submit,
-  IGameEighteen,
-  IGameNine,
-  IGameStrict,
-  Nine_Hole_Data,
 } from "../../../../types/game";
 import { useRouter } from "vue-router";
 
 import shotComponent from "./shot-component.vue";
-import type { PropertySignature } from "typescript";
 import { useFetch } from "../../../../api/authFetch";
 import { routeTo } from "../../../../router";
 import type { IAuthResponse } from "../../../../types/Iauth";
@@ -41,6 +27,9 @@ const props = defineProps<{
 }>();
 
 const current_hole_state = inject<Ref<number, number>>("current_hole_state");
+const game_hole_state = inject<Ref<number, number>>("game_hole_state");
+const game_status = inject<Ref<GameStatus, GameStatus>>("game_status");
+
 // const injector = inject<{ goNextHole: () => void }>("goNextHole");
 
 const goNextHole = inject<() => void>("goNextHole");
@@ -51,13 +40,9 @@ const putts: number[] = [0, 1, 2, 3, 4, 5, 6];
 // current score in hole
 const current_hole_score = ref<number>(0);
 
-// let hole = ref<Hole_Data>();
-// current hole key
-// let curHoleKeyEight = ref<EightHoleKey>();
-// let curHoleKeyNine = ref<NineHoleKey>();
-
-// let eight_data = ref<Eighteen_Hole_Data>();
-// let nine_data = ref<Nine_Hole_Data>();
+// edit state for holes. Players can edit things if they accidently submitted wrong data
+let edit_state = ref<boolean>(false);
+let submit_text = ref<string>("Next Hole!");
 
 watch(
   () => props.current_shots,
@@ -66,6 +51,7 @@ watch(
     console.log("current holes was pushed too hehehehehehe");
     // grab whatever shots are in hole shot array and tally strokes to display current hole score
     updateHoleScore();
+    submit_text.value = "Next Hole!";
   }
 );
 
@@ -78,37 +64,6 @@ function updateHoleScore() {
     });
     current_hole_score.value = score_count;
   }
-  //   if (props.current_hole && props.current_hole.hole_shot_data) {
-  //     let score_count = 0;
-  //     props.current_hole.hole_shot_data.forEach((data) => {
-  //       console.log("shottter: ", data);
-  //       score_count = score_count + data.stroke;
-  //     });
-  //     current_hole_score.value = score_count;
-  //   }
-}
-
-// watch(
-//   () => props.currentHole,
-//   () => {
-//     updateData(props.holes);
-
-//     console.log("game view update triggers hopefully watcher triggered");
-//   }
-// );
-
-function updateData(holes: number) {
-  //   if (holes === 18 && props.eightHoleData && props.currentHole) {
-  //     // const curHoleKeyy = EIGHTEEN_HOLES_MAP[props.currentHole - 1];
-  //     const hole_data = eight_data.value![curHoleKeyy];
-  //     // set values
-  //     console.log("before hole set");
-  //     hole.value = hole_data;
-  //     curHoleKeyEight.value = curHoleKeyy;
-  //     holeForm.value.id = hole_data.id;
-  //     console.log("after hole set ", hole.value);
-  //   }
-  // update game-view so scoreboard can update as well...
 }
 
 // drop downs
@@ -183,6 +138,15 @@ async function submitHole() {
   console.log("holeForm value: ", holeForm.value);
 }
 
+function flipEdit() {
+  edit_state.value = !edit_state.value;
+
+  // when editing...
+  if (edit_state.value) {
+    submit_text.value = "Submit Edit!";
+  }
+}
+
 // -----------------
 // Display games as card / list view to click on complete game for stats, or in-progress game
 // --------
@@ -206,13 +170,31 @@ onMounted(() => {
         Par:
         {{ props.current_hole.par }}
       </h4>
+      <!--  -->
+      <div
+        v-if="props.current_hole.hole_number < game_hole_state! && game_status === 'IN-PROGRESS'"
+        class=""
+        @click="flipEdit">
+        <button
+          class="p-1 bg-green-200 border"
+          v-if="!edit_state"
+          type="button">
+          Edit
+        </button>
+        <button class="p-1 bg-green-200 border" v-if="edit_state" type="button">
+          Editing
+        </button>
+      </div>
     </div>
 
     <!-- putts count / drop down -->
-    <section class="">
+    <!--  -->
+    <section
+      class=""
+      v-if="edit_state || props.current_hole.hole_number === game_hole_state">
       <div class="" @click="dropDown('putt')">
         <h4 class="text-2xl mb-1">Putts</h4>
-        <div class="grid grid-cols-6">
+        <div class="grid grid-cols-7">
           <div
             v-for="value in putts"
             class="flex justify-center items-center p-2 rounded border"
@@ -226,16 +208,18 @@ onMounted(() => {
 
     <!-- shots drop down -->
     <section class="mt-5" @click="dropDown('shot')">
-      <h4 class="text-2xl mb-1">Shots</h4>
       <div class="">
         <shot-component
+          :edit_state="edit_state"
           :hole_data="props.current_hole"
           :current_shots="props.current_shots!" />
       </div>
     </section>
 
     <!-- notes -->
-    <section class="mt-5">
+    <section
+      v-if="(props.current_hole && !props.current_hole.notes) || edit_state"
+      class="mt-5">
       <h4 class="text-2xl mb-1">Notes</h4>
       <textarea
         v-model="holeForm.notes"
@@ -243,9 +227,23 @@ onMounted(() => {
         placeholder="Hole notes..."></textarea>
     </section>
 
-    <div>
-      <div class="p-1 bg-green-800">
-        <button type="button" @click="submitHole">Submit Hole</button>
+    <!-- display notes for previous holes or what not -->
+    <section
+      v-if="(props.current_hole.notes && props.current_hole?.hole_number < game_hole_state! && !edit_state) || game_status === 'COMPLETE'"
+      class="mt-5">
+      <h4 class="text-2xl mb-1">Notes</h4>
+      <p
+        class="p-1 rounded border border-0.5 w-full"
+        placeholder="Hole notes...">
+        {{ props.current_hole.notes }}
+      </p>
+    </section>
+    <!-- -->
+
+    <div
+      v-if="props.current_hole?.hole_number === game_hole_state || edit_state">
+      <div class="flex justify-center p-2 rounded border bg-blue-300 mt-3">
+        <button type="button" @click="submitHole">{{ submit_text }}</button>
       </div>
     </div>
 

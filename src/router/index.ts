@@ -7,8 +7,8 @@ import games from "../components/games/games.vue";
 import profile from "../components/profile/profile.vue";
 import createCourse from "../components/games/create-course.vue";
 import createGame from "../components/games/create-game.vue";
-import gameView from "../components/games/game-view.vue";
 import gameViewEight from "../components/games/game-components/game-views/game-view-eight.vue";
+import gameViewNine from "../components/games/game-components/game-views/game-view-nine.vue";
 
 const routes = [
   { path: "/", redirect: "login" },
@@ -24,6 +24,11 @@ const routes = [
     path: "/game-view-eight/:game_id",
     name: "game-view-eight",
     component: gameViewEight,
+  },
+  {
+    path: "/game-view-nine/:game_id",
+    name: "game-view-nine",
+    component: gameViewNine,
   },
 ];
 

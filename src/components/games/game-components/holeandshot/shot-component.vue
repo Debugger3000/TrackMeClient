@@ -4,6 +4,7 @@ import { inject, onMounted, ref, watch, type Ref } from "vue";
 import type {
   Game_Shot_Data,
   Game_Shot_Data_Submit,
+  GameStatus,
   Hole_Data,
 } from "../../../../types/game";
 import { useRouter } from "vue-router";
@@ -16,10 +17,13 @@ import type { THoles } from "../../../../types/course";
 const props = defineProps<{
   hole_data: Hole_Data | null | undefined;
   current_shots: Game_Shot_Data_Submit[];
+  edit_state: boolean;
   // updateNewShot: (shot_data: Game_Shot_Data, hole: number) => void;
 }>();
 
 const current_hole_state = inject<Ref<number, number>>("current_hole_state");
+const game_hole_state = inject<Ref<number, number>>("game_hole_state");
+const game_status = inject<Ref<GameStatus, GameStatus>>("game_status");
 
 watch(
   () => props.current_shots,
@@ -56,18 +60,26 @@ function dropDown(type: string) {
   } else if (type === "currentShot") {
     displayShot.value = !displayShot.value;
   }
+  console.log("dispaly shoht: ", displayShot.value);
 }
 
 // change current shot
 function changeCurrentShot(index: number) {
   if (props.current_shots !== undefined) {
-    console.log("changing current shot displayer...");
-    currentShot.value = index;
-    if (!displayShot.value) {
+    //
+    // if (!displayShot.value) {
+    //   dropDown("currentShot");
+
+    // }
+    // click on current shot view to close it
+    if (currentShot.value === index) {
+      console.log("changing current shot displayer...");
       dropDown("currentShot");
     } else {
-      dropDown("currentShot");
+      displayShot.value = true;
     }
+
+    currentShot.value = index;
   }
 }
 
@@ -112,15 +124,34 @@ onMounted(() => {
     <!-- <div class="flex justify-between items-center mb-3 border-b pb-1">
       <h4 class="text-2xl">Shots</h4>
     </div> -->
+    <div class="flex justify-between">
+      <h4 v-if="props.current_shots.length === 0" class="text-2xl mb-1">
+        No Shots Added...
+      </h4>
+
+      <div
+        v-if="
+          (props.hole_data?.hole_number === game_hole_state || edit_state) &&
+          game_status === 'IN-PROGRESS'
+        "
+        @click="dropDown('addShot')"
+        class="flex justify-between items-center p-2 border rounded border-0.5 border-gray-200">
+        <!-- <h4 class="text-2xl mb-1"></h4> -->
+        <i v-if="!addShotDrop" class="bi bi-plus"></i>
+        <i v-if="addShotDrop" class="bi bi-dash"></i>
+      </div>
+    </div>
 
     <!-- display list of shots (block 1, block 2, block 3) -->
-    <div v-if="props.current_shots" class="flex flex-row">
+    <div
+      v-if="props.current_shots"
+      class="grid grid-flow-col auto-cols-min overflow-x-scroll rounded border border-0.5 border-gray-200">
       <div
         v-for="(value, index) in props.current_shots"
-        class="grid grid-cols-auto p-2 justify-center items-center rounded border"
+        class="min-w-[100px] text-center p-1"
         @click="changeCurrentShot(index)"
         :class="{ 'bg-gray-400': currentShot === index }">
-        {{ value.shot_count }}
+        Shot {{ value.shot_count }}
       </div>
     </div>
 
@@ -131,7 +162,7 @@ onMounted(() => {
         displayShot &&
         props.current_shots.length > 0
       "
-      class="p-1 border rounded bg-blue-400 hover:cursor-pointer">
+      class="p-1 border rounded border-0.5 border-gray-200 hover:cursor-pointer">
       <div class="flex gap-5">
         <h4>{{ props.current_shots[currentShot].shot_count }}</h4>
         <h4>{{ props.current_shots[currentShot].club_type }}</h4>
@@ -142,26 +173,8 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- shot general shot details of selected shot -->
-    <section v-if="shotDrop" class="">
-      <div class="flex flex-row gap-3">
-        <!-- <h4 class="text-blue-500">{{ currentShot.shot_count }}</h4>
-        <div>{{ currentShot.shot.clubType }}</div> -->
-      </div>
-    </section>
-
     <!-- shots drop down -->
-    <section
-      v-if="props.hole_data?.hole_number! === current_hole_state!"
-      class="">
-      <div
-        @click="dropDown('addShot')"
-        class="flex justify-between items-center p-2 border rounded border-0.5">
-        <h4 class="text-2xl mb-1">Add Shot</h4>
-        <i v-if="!addShotDrop" class="bi bi-plus"></i>
-        <i v-if="addShotDrop" class="bi bi-dash"></i>
-      </div>
-
+    <section v-if="props.edit_state" class="">
       <div v-if="addShotDrop" class="border border-0.5">
         <gameShot
           :closeAddShotMenu="dropAddShotMenu"
