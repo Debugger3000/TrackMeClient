@@ -30,6 +30,10 @@ function gameSelected(game_id: number, holes: number) {
       params: { game_id },
     });
   } else {
+    router.push({
+      name: "game-view-nine",
+      params: { game_id },
+    });
   }
 }
 

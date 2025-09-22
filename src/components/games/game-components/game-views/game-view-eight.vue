@@ -6,6 +6,7 @@ import type {
   Eighteen_Hole_Data,
   Game_Shot_Data,
   Game_Shot_Data_Submit,
+  GameStatus,
   Hole_Data,
 } from "../../../../types/game";
 import { useFetch } from "../../../../api/authFetch";
@@ -60,6 +61,19 @@ const current_shots = ref<Game_Shot_Data_Submit[]>([]);
 let current_hole_state = ref<number>(1);
 // let holeKey = ref<NineHoleKey>("hole_one");
 
+// expose game data hole_state to all children so we can appropriately block things we need to
+let game_hole_state = ref<number>(1);
+
+let game_status = ref<GameStatus>("IN-PROGRESS");
+
+// provide context to children components
+// update immediate score after shot has been posted...
+provide("update_shots", { updateGameShots });
+provide("goNextHole", goNextHole);
+provide("current_hole_state", current_hole_state);
+provide("game_hole_state", game_hole_state);
+provide("game_status", game_status);
+
 let keyyer = ref<EightHoleKey>("hole_one");
 
 watch(
@@ -105,10 +119,6 @@ async function goNextHole() {
   console.log("go next hole data updated: ", game_data.value);
 }
 
-// update immediate score after shot has been posted...
-provide("update_shots", { updateGameShots });
-provide("goNextHole", goNextHole);
-
 // if else to break between
 async function getGameData() {
   console.log("calling useFetch for getGameData");
@@ -137,7 +147,10 @@ async function getGameData() {
       //   set current hole
       if (game_data.value.hole_state) {
         const hole_stater = game_data.value.hole_state;
+        // current hole state for switch between hole data
         current_hole_state.value = hole_stater;
+        // set master hole_state to drop some display on holes
+        game_hole_state.value = hole_stater;
         console.log(
           "curr_hole data: ",
           hole_data.value[getEightKeyFromIndex(game_data.value.hole_state)]
@@ -237,6 +250,7 @@ onMounted(async () => {
       <!-- Display scorecard, probably 9 over 9 for mobile -->
       <section v-if="game_data" class="mt-5">
         <EightScoreBoard
+          v-if="score_card && hole_data"
           :card-data="score_card!"
           :hole-data="hole_data!"
           :holes="18"
@@ -247,6 +261,7 @@ onMounted(async () => {
       <!-- Hole data, depending on what hole you are currently on... -->
       <section class="mt-5">
         <holeComp
+          v-if="current_hole && game_data"
           :game_status="game_data?.status!"
           :current_hole="current_hole!"
           :current_shots="current_shots!"
