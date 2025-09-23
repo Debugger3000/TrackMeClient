@@ -21,6 +21,7 @@ const props = defineProps<{
   current_hole: Hole_Data;
   current_shots: Game_Shot_Data_Submit[];
   updateGameShots: (game_data: Game_Shot_Data_Submit) => void;
+  game_score: number;
   // gameData: IGameView[];
   //   courseSelector?: (index: number) => void;
   //   course?: ICourseView;
@@ -33,6 +34,7 @@ const game_status = inject<Ref<GameStatus, GameStatus>>("game_status");
 // const injector = inject<{ goNextHole: () => void }>("goNextHole");
 
 const goNextHole = inject<() => void>("goNextHole");
+const completeGame = inject<() => void>("complete_game");
 
 // putt values
 const putts: number[] = [0, 1, 2, 3, 4, 5, 6];
@@ -42,7 +44,6 @@ const current_hole_score = ref<number>(0);
 
 // edit state for holes. Players can edit things if they accidently submitted wrong data
 let edit_state = ref<boolean>(false);
-let submit_text = ref<string>("Next Hole!");
 
 watch(
   () => props.current_shots,
@@ -51,7 +52,11 @@ watch(
     console.log("current holes was pushed too hehehehehehe");
     // grab whatever shots are in hole shot array and tally strokes to display current hole score
     updateHoleScore();
-    submit_text.value = "Next Hole!";
+    // make sure edit state is always turned to false, when first entering a hole
+    edit_state.value = false;
+
+    // update hole Form with edit data if user needs to edit
+    holeForm.value.notes = ""; // reset notes field when a new current_shots is loaded
   }
 );
 
@@ -98,14 +103,17 @@ const holeForm = ref<Hole_Submit>({
 async function submitHole() {
   // goNextHole?.();
 
-  const par_adjusted_score = current_hole_score.value - props.current_hole.par;
+  const shot_plus_putts = current_hole_score.value + holeForm.value.putt_count;
+
+  const new_game_score =
+    shot_plus_putts - props.current_hole.par + props.game_score;
   // set hole score (stroke)
-  holeForm.value.score = current_hole_score.value;
+  holeForm.value.score = shot_plus_putts;
   // set hole id
   holeForm.value.id = props.current_hole.id;
 
   // set game score (stroke - par)
-  holeForm.value.game_score = par_adjusted_score;
+  holeForm.value.game_score = new_game_score;
   // set game _id
   holeForm.value.game_id = props.current_hole.game_id;
   // set hole state so we can easily move it to +1
@@ -128,7 +136,16 @@ async function submitHole() {
     else {
       console.log("hole was submitted, and patch properly !");
       // now we set current hole to next hole, and we do a full data grab to update everything...
-      goNextHole?.();
+
+      if (props.game_score === 18 || props.game_score === 9) {
+        goNextHole?.();
+      }
+      // complete game. Game is already finished updating,
+      // we send user to games page, and the newly complete game will be there to view...
+      else {
+        completeGame?.();
+      }
+
       console.log("Calling go next hole hehe");
     }
   } catch (error) {
@@ -143,7 +160,54 @@ function flipEdit() {
 
   // when editing...
   if (edit_state.value) {
-    submit_text.value = "Submit Edit!";
+    // set putt count
+    holeForm.value.putt_count = props.current_hole.putt_count;
+  }
+}
+
+// edit a previous hole for some reason haha
+async function submitEditPreviousHole() {
+  // goNextHole?.();
+
+  const shot_plus_putts = current_hole_score.value + holeForm.value.putt_count;
+
+  const par_adjusted_score = shot_plus_putts - props.current_hole.par;
+  // set hole score (stroke)
+  holeForm.value.score = shot_plus_putts;
+  // set hole id
+  holeForm.value.id = props.current_hole.id;
+
+  // set game score (stroke - par)
+  holeForm.value.game_score = par_adjusted_score;
+  // set game _id
+  holeForm.value.game_id = props.current_hole.game_id;
+  // set hole state so we can easily move it to +1
+  holeForm.value.hole_state = current_hole_state?.value!;
+
+  try {
+    const res = await useFetch<IAuthResponse, Hole_Submit>(
+      "/game/hole/previous-edit",
+      "PATCH",
+      holeForm.value
+    );
+
+    if (res === 401) {
+      localStorage.setItem("isLoggedIn", "false");
+      routeTo("/login", router);
+    } else if (res === undefined) {
+      throw new Error("Error from getUserDAta res, is undefined");
+    }
+    // good response...
+    else {
+      console.log("hole was submitted, and patch PREVIOUS worked properly !");
+      // now we set current hole to next hole, and we do a full data grab to update everything...
+
+      goNextHole?.();
+
+      console.log("Updating game object data now !");
+    }
+  } catch (error) {
+    console.log("error in previous Hole form submit: ", error);
   }
 }
 
@@ -172,7 +236,7 @@ onMounted(() => {
       </h4>
       <!--  -->
       <div
-        v-if="props.current_hole.hole_number < game_hole_state! && game_status === 'IN-PROGRESS'"
+        v-if="props.current_hole?.hole_number < game_hole_state! && game_status === 'IN-PROGRESS'"
         class=""
         @click="flipEdit">
         <button
@@ -243,7 +307,12 @@ onMounted(() => {
     <div
       v-if="props.current_hole?.hole_number === game_hole_state || edit_state">
       <div class="flex justify-center p-2 rounded border bg-blue-300 mt-3">
-        <button type="button" @click="submitHole">{{ submit_text }}</button>
+        <button v-if="!edit_state" type="button" @click="submitHole">
+          Next Hole!
+        </button>
+        <button v-if="edit_state" type="button" @click="submitEditPreviousHole">
+          Submit Edit!
+        </button>
       </div>
     </div>
 

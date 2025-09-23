@@ -74,6 +74,9 @@ provide("current_hole_state", current_hole_state);
 provide("game_hole_state", game_hole_state);
 provide("game_status", game_status);
 
+provide("delete_shot", deleteGameShot);
+provide("complete_game", completeGame);
+
 let keyyer = ref<EightHoleKey>("hole_one");
 
 watch(
@@ -107,9 +110,17 @@ function updateGameShots(shot_data: Game_Shot_Data_Submit) {
     shot_data
   );
   current_shots.value = [...current_shots.value, shot_data];
+}
 
-  // tally score
-  //   tallyScoreInMem();
+function deleteGameShot(index: number) {
+  console.log("deletem game shots in GAMEVIEW ", current_shots.value);
+  const new_shots = current_shots.value.filter((_, i) => i !== index);
+  current_shots.value = new_shots;
+
+  console.log(
+    "deletem game shots in GAMEVIEW POST deleter",
+    current_shots.value
+  );
 }
 
 // hole submit was good, now we need to grab fresh game data, and next hole will be ready to be posted within
@@ -117,6 +128,11 @@ async function goNextHole() {
   console.log("go next hole function in game-view-eight called !");
   await getGameData();
   console.log("go next hole data updated: ", game_data.value);
+}
+
+function completeGame() {
+  console.log("Game completed !");
+  router.push("/games");
 }
 
 // if else to break between
@@ -169,7 +185,7 @@ async function getGameData() {
       // Object.assign(game_data, res);
     }
   } catch (error) {
-    console.log("Error in getGameData in game-view component: ", error);
+    console.log("Error in getGameData in game-view eight component: ", error);
   }
 }
 
@@ -265,7 +281,8 @@ onMounted(async () => {
           :game_status="game_data?.status!"
           :current_hole="current_hole!"
           :current_shots="current_shots!"
-          :update-game-shots="updateGameShots" />
+          :update-game-shots="updateGameShots"
+          :game_score="game_data.score" />
 
         <!-- <eightHole
           :game-status="game_data?.status!"

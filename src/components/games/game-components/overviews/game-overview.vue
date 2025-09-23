@@ -30,6 +30,7 @@ function gameSelected(game_id: number, holes: number) {
       params: { game_id },
     });
   } else {
+    console.log("Setting game to GAME NINE ", game_id);
     router.push({
       name: "game-view-nine",
       params: { game_id },
