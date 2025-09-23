@@ -6,6 +6,7 @@ import type {
   Eighteen_Hole_Data,
   Game_Shot_Data,
   Game_Shot_Data_Submit,
+  GameStatus,
   Hole_Data,
   Nine_Hole_Data,
 } from "../../../../types/game";
@@ -58,13 +59,25 @@ const current_hole = ref<Hole_Data>();
 // current shots Array =
 const current_shots = ref<Game_Shot_Data_Submit[]>([]);
 
+// track master game hole state & status
+let game_hole_state = ref<number>(1);
+let game_status = ref<GameStatus>("IN-PROGRESS");
+
 // ---------------
 
 // this can be changed by clicking on whatever hole on the scoreboard
-let current_hole_state = ref<number>(1);
+let current_hole_state = ref<number>(0);
 // let holeKey = ref<NineHoleKey>("hole_one");
 
 let keyyer = ref<EightHoleKey>("hole_one");
+
+provide("update_shots", { updateGameShots });
+provide("goNextHole", goNextHole);
+provide("current_hole_state", current_hole_state);
+provide("game_hole_state", game_hole_state);
+provide("game_status", game_status);
+provide("delete_shot", deleteGameShot);
+provide("complete_game", completeGame);
 
 watch(
   () => current_hole_state.value,
@@ -88,6 +101,20 @@ function score_board_change_hole(index: number) {
 
   // track hole with index too, so we can update hole accordingly
   current_hole_state.value = index + 1;
+}
+
+function completeGame() {
+  router.push({
+    name: "/games",
+  });
+}
+
+function deleteGameShot(index: number) {
+  console.log("delete game shots in GAMEVIEW ", current_shots.value);
+  const new_shots = current_shots.value.filter((_, i) => i !== index);
+  current_shots.value = new_shots;
+
+  console.log("delete game shots POST deleter", current_shots.value);
 }
 
 // runs when a shot is POST from game-shot...
@@ -142,6 +169,8 @@ async function getGameData() {
       if (game_data.value.hole_state) {
         const hole_stater = game_data.value.hole_state;
         current_hole_state.value = hole_stater;
+        // set global current game hole_state
+        game_hole_state.value = hole_stater;
         current_hole.value =
           hole_data.value[getNineKeyFromIndex(game_data.value.hole_state)];
         current_shots.value =
@@ -169,30 +198,11 @@ function routeToHere(tabClicked: string) {
 // ------
 // or should i have two separate components. I can re use components for shots / scoreboard
 onMounted(async () => {
-  // set hole Type for fetch call
+  console.log("MOUNTED GAME VIEW NINER");
 
-  // grab all game Data on mount ???
-  // const callGameData = async () => {
-  //   await getGameData();
-  // };
   await getGameData();
 
   console.log("current hole value: ", current_hole_state.value);
-
-  //   const key = getEightKeyFromIndex(currentHole.value);
-  //   console.log(
-  //     "key to make sure non submitted hole scores are updated from shots...",
-  //     key
-  //   );
-
-  //   if (key && hole_data.value) {
-  //     console.log("Tallying score for 18 01");
-  //     const hole = hole_data.value[key];
-  //     if (hole.hole_shot_data!.length > 0 && hole.score === 0) {
-  //       tallyScoreInMem();
-  //       //   console.log("Tallying score for 1803", hole_data.score);
-  //     }
-  //   }
 });
 </script>
 
@@ -250,7 +260,8 @@ onMounted(async () => {
           :game_status="game_data?.status!"
           :current_hole="current_hole!"
           :current_shots="current_shots!"
-          :update-game-shots="updateGameShots" />
+          :update-game-shots="updateGameShots"
+          :game_score="game_data?.score!" />
       </section>
     </section>
   </section>

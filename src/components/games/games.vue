@@ -12,6 +12,7 @@ let curData = ref<"games" | "stats">("games");
 
 // hold in progress games
 let inProgressGames = ref<IGameView[]>();
+let completedGames = ref<IGameView[]>();
 
 function changeData() {
   if (curData.value === "games") {
@@ -40,8 +41,31 @@ async function getCurrentGames() {
     // good response...
     else {
       // set course view data...
-      console.log("Getting in progress games response: ", res);
+      // console.log("Getting in progress games response: ", res);
       inProgressGames.value = res;
+    }
+  } catch (error) {
+    console.log("Error in get in progress games on games page", error);
+  }
+}
+
+// GET COMPLETE games
+async function getCompleteGames() {
+  try {
+    // should return new game object ID so i can use it in params for new route
+    const res = await useFetch<IGameView[]>("/game/completed", "GET");
+
+    if (res === 401) {
+      localStorage.setItem("isLoggedIn", "false");
+      routeTo("/login", router);
+    } else if (res === undefined) {
+      throw new Error("Error from getcoursebySearch res, is undefined");
+    }
+    // good response...
+    else {
+      // set course view data...
+      // console.log("Getting completed games response: ", res);
+      completedGames.value = res;
     }
   } catch (error) {
     console.log("Error in get in progress games on games page", error);
@@ -54,13 +78,11 @@ async function getCurrentGames() {
 // }
 
 // lifecycle hooks
-onMounted(() => {
-  // call get user info...
+onMounted(async () => {
   // grab in-progress games
-  const callCurGames = async () => {
-    await getCurrentGames();
-  };
-  callCurGames();
+  await getCurrentGames();
+  // call completed games
+  await getCompleteGames();
 });
 </script>
 
@@ -118,46 +140,16 @@ onMounted(() => {
       </section>
 
       <!-- in-progress games right here -->
-      <section
-        v-if="inProgressGames?.length && curData === 'games'"
-        class="mt-5">
+      <section v-if="inProgressGames && curData === 'games'" class="mt-5">
         <h4 class="font-semibold pb-1">In-Progress Games</h4>
         <game-overview :game-data="inProgressGames" />
       </section>
 
       <!-- GAMES table / stats -->
-      <section v-if="curData === 'games'" class="mt-5">
+      <section v-if="curData === 'games' && completedGames" class="mt-5">
         <h4 class="font-semibold pb-1">Game History</h4>
-
-        <section class="me-border">
-          <div class="grid grid-cols-3 gap-3 border-b">
-            <div class="flex items-center">
-              <h4>BearCreek</h4>
-            </div>
-            <div class="flex items-center">
-              <h4>August 22, 2025</h4>
-            </div>
-
-            <div class="flex flex-col gap-1">
-              <h4 class="m-0">Par: 72</h4>
-              <h4 class="m-0">Score: 86</h4>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-3 gap-3">
-            <div class="flex items-center">
-              <h4>BearCreek</h4>
-            </div>
-            <div class="flex items-center">
-              <h4>August 22, 2025</h4>
-            </div>
-
-            <div class="flex flex-col gap-1">
-              <h4 class="m-0">Par: 72</h4>
-              <h4 class="m-0">Score: 86</h4>
-            </div>
-          </div>
-        </section>
+        <!-- <h4 class="font-semibold pb-1">Completed Games</h4> -->
+        <game-overview :game-data="completedGames" />
       </section>
     </section>
   </section>

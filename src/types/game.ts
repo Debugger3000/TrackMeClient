@@ -87,6 +87,17 @@ export type Game_Shot_Data_Submit = {
   metres: number | null;
 };
 
+export type Game_Shot_Delete = {
+  hole_id: number;
+  user_id: number;
+  game_id: number;
+  shot_count: number;
+};
+
+export interface Game_Shot_Data_Incoming extends Game_Shot_Data_Submit {
+  id: number;
+}
+
 // each individual hole data
 // grabs data from 'courses' like PAR + HOLE_NUMBER
 export type Hole_Data = {
