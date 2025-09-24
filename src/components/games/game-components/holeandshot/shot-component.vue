@@ -198,20 +198,18 @@ onMounted(() => {
       </div>
     </div>
 
+    <!-- <div class="grid grid-cols-3 mx-5 gap-5 mt-3">
+          <div class="flex flex-col items-center p-2 rounded border shadow-lg">
+            <h4 class="font-semibold text-color-blue-800">Score</h4>
+            <h4 class="text-2xl">{{ current_hole_score }}</h4>
+          </div> -->
     <!-- display whatever shot data selected here... -->
     <section
       v-if="props.current_shots?.length > 0 && displayShot"
-      class="p-1 border rounded border-0.5 border-gray-200 hover:cursor-pointer">
-      <div class="flex gap-5">
-        <h4>{{ props.current_shots[currentShot].shot_count }}</h4>
-        <h4>{{ props.current_shots[currentShot].club_type }}</h4>
-      </div>
-
-      <div @click="dropDown('currentShot')">
-        <h4>{{ props.current_shots[currentShot].land_type }}</h4>
-      </div>
-
+      class="border rounded border-0.5 border-gray-200 hover:cursor-pointer">
+      <!-- delete shot button -->
       <div
+        class="flex justify-end mt-3"
         v-if="
           props.hole_data?.hole_number === game_hole_state &&
           game_status === 'IN-PROGRESS'
@@ -220,12 +218,40 @@ onMounted(() => {
           Delete
         </button>
       </div>
+
+      <!-- section for shot details -->
+      <div class="grid grid-cols-3 gap-5 mt-3">
+        <div class="flex flex-col items-center p-2 rounded border shadow-lg">
+          <h4 class="font-semibold text-color-blue-800">Club</h4>
+          <div class="border border-0.5 border-gray-200 w-[50%]"></div>
+          <h4>{{ props.current_shots[currentShot].club_type }}</h4>
+        </div>
+
+        <div class="flex flex-col items-center p-2 rounded border shadow-lg">
+          <h4 class="font-semibold text-color-blue-800">Land</h4>
+          <div class="border border-0.5 border-gray-200 w-[50%]"></div>
+          <h4>{{ props.current_shots[currentShot].land_type }}</h4>
+        </div>
+
+        <div class="flex flex-col items-center p-2 rounded border shadow-lg">
+          <h4 class="font-semibold text-color-blue-800">Contact</h4>
+          <div class="border border-0.5 border-gray-200 w-[50%]"></div>
+          <h4>{{ props.current_shots[currentShot].shot_contact }}</h4>
+        </div>
+        <div class="flex flex-col items-center p-2 rounded border shadow-lg">
+          <h4 class="font-semibold text-color-blue-800">Path</h4>
+          <div class="border border-0.5 border-gray-200 w-[50%]"></div>
+          <h4>{{ props.current_shots[currentShot].shot_path }}</h4>
+        </div>
+      </div>
     </section>
 
     <!-- shots drop down -->
     <section
       v-if="
-        props.edit_state || props.hole_data?.hole_number === game_hole_state
+        (props.edit_state ||
+          props.hole_data?.hole_number === game_hole_state) &&
+        game_status === 'IN-PROGRESS'
       "
       class="">
       <div v-if="addShotDrop" class="border border-0.5">
