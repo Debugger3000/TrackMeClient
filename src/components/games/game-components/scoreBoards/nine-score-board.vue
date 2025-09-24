@@ -73,7 +73,7 @@ function changeHole(hole: number) {
 
   // only allow users to go backwards on holes... They shouldnt be allowed to add shots on hole 7 when they are currently on hole 3..
   if (hole + 1 <= props.hole_state) {
-    props.score_board_change_hole(hole + 1);
+    props.score_board_change_hole(hole);
   }
 }
 

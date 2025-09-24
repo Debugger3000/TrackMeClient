@@ -3,34 +3,28 @@ import { onMounted, provide, ref, watch } from "vue";
 import { routeTo } from "../../../../router/index";
 import { useRoute, useRouter } from "vue-router";
 import type {
-  Eighteen_Hole_Data,
-  Game_Shot_Data,
   Game_Shot_Data_Submit,
   GameStatus,
   Hole_Data,
+  IGameReturnNine,
   Nine_Hole_Data,
 } from "../../../../types/game";
 import { useFetch } from "../../../../api/authFetch";
 import {
   EIGHTEEN_HOLES_MAP,
   NINE_HOLES_MAP,
-  type eighteen_hole_card,
   type EightHoleKey,
   type nine_hole_card,
 } from "../../../../types/course";
-import eightHole from "../holeandshot/eight-hole.vue";
 
 // import eightScoreBoard from "../scoreBoards/eight-score-board.vue";
-import nineScoreBoard from "../scoreBoards/nine-score-board.vue";
-import holeComponent from "../holeandshot/hole-component.vue";
 
 import holeComp from "../holeandshot/hole-comp.vue";
-import { getEightKeyFromIndex, getNineKeyFromIndex } from "../helpers/helpers";
+import { getNineKeyFromIndex } from "../helpers/helpers";
 import type {
   IGameObjectReturn,
   IGameReturnEight,
 } from "../../../../types/game";
-import EightScoreBoard from "../scoreBoards/eight-score-board.vue";
 import NineScoreBoard from "../scoreBoards/nine-score-board.vue";
 const router = useRouter();
 
@@ -104,9 +98,8 @@ function score_board_change_hole(index: number) {
 }
 
 function completeGame() {
-  router.push({
-    name: "/games",
-  });
+  console.log("Game completed in nine!");
+  router.push("/games");
 }
 
 function deleteGameShot(index: number) {
@@ -136,16 +129,12 @@ async function goNextHole() {
   console.log("go next hole data updated: ", game_data.value);
 }
 
-// update immediate score after shot has been posted...
-provide("update_shots", { updateGameShots });
-provide("goNextHole", goNextHole);
-
 // if else to break between
 async function getGameData() {
   console.log("calling useFetch for getGameData");
   try {
-    const res = await useFetch<IGameReturnEight>(
-      `/game/data/${game_id}?holes=18`,
+    const res = await useFetch<IGameReturnNine>(
+      `/game/data/${game_id}?holes=9`,
       "GET",
       undefined
     );
@@ -163,8 +152,11 @@ async function getGameData() {
       score_card.value = res.score_card_data;
       hole_data.value = res.hole_data;
 
-      console.log("hole state: ", game_data.value);
-      console.log("hole state: ", game_data.value.hole_state);
+      // set game_status
+      game_status.value = res.game_object.status;
+
+      // console.log("hole state: ", game_data.value);
+      // console.log("hole state: ", game_data.value.hole_state);
       //   set current hole
       if (game_data.value.hole_state) {
         const hole_stater = game_data.value.hole_state;
@@ -179,8 +171,8 @@ async function getGameData() {
           ].hole_shot_data!;
       }
 
-      console.log("new game data SET...", current_hole.value);
-      console.log("new game data SET...", hole_data.value);
+      // console.log("new game data SET...", current_hole.value);
+      // console.log("new game data SET...", hole_data.value);
 
       // Object.assign(game_data, res);
     }
@@ -255,7 +247,7 @@ onMounted(async () => {
       </section>
 
       <!-- Hole data, depending on what hole you are currently on... -->
-      <section class="mt-5">
+      <section v-if="game_data && current_hole" class="mt-5">
         <holeComp
           :game_status="game_data?.status!"
           :current_hole="current_hole!"

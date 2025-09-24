@@ -158,8 +158,11 @@ async function getGameData() {
       score_card.value = res.score_card_data;
       hole_data.value = res.hole_data;
 
-      console.log("hole state: ", game_data.value);
-      console.log("hole state: ", game_data.value.hole_state);
+      // set game_status
+      game_status.value = res.game_object.status;
+
+      // console.log("hole state: ", game_data.value);
+      // console.log("hole state: ", game_data.value.hole_state);
       //   set current hole
       if (game_data.value.hole_state) {
         const hole_stater = game_data.value.hole_state;
@@ -167,10 +170,10 @@ async function getGameData() {
         current_hole_state.value = hole_stater;
         // set master hole_state to drop some display on holes
         game_hole_state.value = hole_stater;
-        console.log(
-          "curr_hole data: ",
-          hole_data.value[getEightKeyFromIndex(game_data.value.hole_state)]
-        );
+        // console.log(
+        //   "curr_hole data: ",
+        //   hole_data.value[getEightKeyFromIndex(game_data.value.hole_state)]
+        // );
         current_hole.value =
           hole_data.value[getEightKeyFromIndex(game_data.value.hole_state)];
         current_shots.value =
@@ -179,8 +182,8 @@ async function getGameData() {
           ].hole_shot_data!;
       }
 
-      console.log("new game data SET...", current_hole.value);
-      console.log("new game data SET...", hole_data.value);
+      // console.log("new game data SET...", current_hole.value);
+      // console.log("new game data SET...", hole_data.value);
 
       // Object.assign(game_data, res);
     }
@@ -283,16 +286,7 @@ onMounted(async () => {
           :current_shots="current_shots!"
           :update-game-shots="updateGameShots"
           :game_score="game_data.score" />
-
-        <!-- <eightHole
-          :game-status="game_data?.status!"
-          :current-hole="currentHole"
-          :holes="18"
-          :eight-hole-data="hole_data!"
-          :update-game-shots="updateGameShots" /> -->
       </section>
-
-      <!-- shot data... I believe shot data will embed within hole data... -->
     </section>
   </section>
 </template>
