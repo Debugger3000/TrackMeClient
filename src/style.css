@@ -46,6 +46,16 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+/* h4 {
+  color: #374151;
+} */
+
+.text-01 {
+  color: #242424;
+}
+.text-02 {
+  color: #5e5e5e;
+}
 
 /* border gray universal */
 .me-border {

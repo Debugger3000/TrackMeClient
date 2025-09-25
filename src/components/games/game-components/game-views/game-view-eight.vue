@@ -4,7 +4,6 @@ import { routeTo } from "../../../../router/index";
 import { useRoute, useRouter } from "vue-router";
 import type {
   Eighteen_Hole_Data,
-  Game_Shot_Data,
   Game_Shot_Data_Submit,
   GameStatus,
   Hole_Data,
@@ -15,11 +14,6 @@ import {
   type eighteen_hole_card,
   type EightHoleKey,
 } from "../../../../types/course";
-import eightHole from "../holeandshot/eight-hole.vue";
-
-// import eightScoreBoard from "../scoreBoards/eight-score-board.vue";
-import nineScoreBoard from "../scoreBoards/nine-score-board.vue";
-import holeComponent from "../holeandshot/hole-component.vue";
 
 import holeComp from "../holeandshot/hole-comp.vue";
 import { getEightKeyFromIndex } from "../helpers/helpers";

@@ -264,17 +264,17 @@ onMounted(() => {
 });
 </script>
 
+<style src="./mainstyles.css"></style>
+
 <template>
   <section class="">
     <div class="">
-      <div
-        class="flex justify-between items-center p-2 rounded border border-0.5 border-gray-300"
-        @click="dropDown('hole')">
-        <h4 v-if="props.current_hole" class="text-2xl">
+      <div class="flex justify-between items-center" @click="dropDown('hole')">
+        <h4 v-if="props.current_hole" class="section-header">
           Hole {{ props.current_hole.hole_number }}
         </h4>
-        <i v-if="!holeDrop" class="bi bi-plus"></i>
-        <i v-if="holeDrop" class="bi bi-dash"></i>
+        <i v-if="!holeDrop" class="bi bi-plus text-3xl"></i>
+        <i v-if="holeDrop" class="bi bi-dash text-3xl"></i>
       </div>
 
       <!-- hole information -->
@@ -298,23 +298,27 @@ onMounted(() => {
           </button>
         </div>
         <!-- strict hole data -->
-        <div class="grid grid-cols-3 gap-5 mt-3">
-          <div class="flex flex-col items-center p-2 rounded border shadow-lg">
-            <h4 class="font-semibold text-color-blue-800">Score</h4>
-            <div class="border border-0.5 border-gray-200 w-[50%]"></div>
-            <h4 class="text-2xl">{{ current_hole_score }}</h4>
+        <div class="grid grid-cols-3 gap-5">
+          <div class="grid-card">
+            <h4 class="card-title">Score</h4>
+            <div class="card-divider"></div>
+            <h4 class="card-data">
+              {{ current_hole_score }}
+            </h4>
           </div>
-          <div class="flex flex-col items-center p-2 rounded border shadow-lg">
-            <h4 class="font-semibold text-color-blue-800">Par</h4>
-            <div class="border border-0.5 border-gray-200 w-[50%]"></div>
-            <h4 v-if="props.current_hole" class="text-2xl">
+
+          <div class="grid-card">
+            <h4 class="card-title">Par</h4>
+            <div class="card-divider"></div>
+            <h4 v-if="props.current_hole" class="card-data">
               {{ props.current_hole.par }}
             </h4>
           </div>
-          <div class="flex flex-col items-center p-2 rounded border shadow-lg">
-            <h4 class="font-semibold text-color-blue-800">Putts</h4>
-            <div class="border border-0.5 border-gray-200 w-[50%]"></div>
-            <h4 v-if="props.current_hole" class="text-2xl">
+
+          <div class="grid-card">
+            <h4 class="card-title">Putts</h4>
+            <div class="card-divider"></div>
+            <h4 v-if="props.current_hole" class="card-data">
               {{ props.current_hole.putt_count }}
             </h4>
           </div>
@@ -349,10 +353,10 @@ onMounted(() => {
 
         <!-- notes -->
         <section v-if="allow_prev_holes_edit" class="mt-5">
-          <h4 class="text-2xl mb-1">Notes</h4>
+          <h4 class="section-header">Notes</h4>
           <textarea
             v-model="holeForm.notes"
-            class="p-1 rounded border border-0.5 w-full"
+            class="p-1 border-default w-full"
             placeholder="Hole notes..."></textarea>
         </section>
 
@@ -360,10 +364,8 @@ onMounted(() => {
         <section
           v-if="props.current_hole.notes && ((props.current_hole?.hole_number < game_hole_state! && !edit_state) || game_status === 'COMPLETE')"
           class="mt-5">
-          <h4 class="text-2xl mb-1">Notes</h4>
-          <p
-            class="p-1 rounded border border-0.5 w-full"
-            placeholder="Hole notes...">
+          <h4 class="section-header">Notes</h4>
+          <p class="p-1 border-default w-full" placeholder="Hole notes...">
             {{ props.current_hole.notes }}
           </p>
         </section>

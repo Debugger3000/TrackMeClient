@@ -89,29 +89,41 @@ onMounted(() => {
   // card_data.value = props.holes === 9 ? props.cardData as any : props.cardData as any;
 });
 </script>
-:class="{ 'bg-green-300': curHoles === 9 }"
+<!-- :class="{ 'bg-green-300': curHoles === 9 }" -->
 <template>
   <section class="overflow-x-auto">
-    <h4 class="mb-1 text-2xl">Score Card</h4>
+    <h4 class="section-header">Score Card</h4>
     <section class="inline-grid grid-flow-col auto-cols-min overflow-x-scroll">
+      <!-- title/ headers -->
+      <div class="min-w-[75px]">
+        <div class="flex justify-center border-default bg-green-400">
+          <h4 class="text-xl card-title">Hole</h4>
+        </div>
+        <div class="flex justify-center border-default">
+          <h4 class="text-xl card-title">Par</h4>
+        </div>
+        <div class="flex justify-center border-default">
+          <h4 class="text-xl card-title">Score</h4>
+        </div>
+      </div>
+
       <div
         v-if="props.holeData"
         v-for="(value, index) in nine_map"
-        class="min-w-[75px] active:bg-gray-400"
+        class="min-w-[75px] active:bg-green-600"
         @click="changeHole(index)">
-        <div class="flex justify-center border">
-          <h4 class="text-xl text-red-800">
+        <div class="flex justify-center border-default bg-green-400">
+          <h4 class="text-xl text-gray-800">
             {{ index + 1 }}
           </h4>
         </div>
         <div class="w-full">
-          <h4
-            class="flex justify-center text-xl text-green-700 border border-black">
+          <h4 class="flex justify-center text-xl border-default">
             {{ props.cardData[value] }}
           </h4>
         </div>
         <div class="w-full">
-          <h4 class="flex justify-center text-xl border">
+          <h4 class="flex justify-center text-xl border-default">
             {{ props.holeData[value].score }}
           </h4>
         </div>

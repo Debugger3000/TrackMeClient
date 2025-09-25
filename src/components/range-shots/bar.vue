@@ -27,7 +27,7 @@ let charter: Chart<
 watch(
   () => props.pathData,
   () => {
-    console.log("weatch trigeereddeded.e...");
+    // console.log("weatch trigeereddeded.e...");
     if (charter) {
       charter.data.datasets[0].data = props.pathData.dataSet;
       charter.update();
@@ -38,8 +38,8 @@ watch(
 // lifecycle hooks
 onMounted(() => {
   console.log("BAR ON MOUNTED......");
-  console.log("bar data received: ", props.pathData.dataSet);
-  console.log("heheh");
+  // console.log("bar data received: ", props.pathData.dataSet);
+  // console.log("heheh");
 
   const chartDiv = document.getElementById("bar")! as HTMLCanvasElement;
   chartItem.value = chartDiv;

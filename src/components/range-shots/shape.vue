@@ -15,12 +15,12 @@ onMounted(() => {
   // call get user info...
 
   console.log("current shape: ", props.shotShape);
-  console.log("cur d: ", SHOTPATHSVG[props.shotShape].d);
-  console.log("cur class: ", SHOTPATHSVG[props.shotShape].class);
+  // console.log("cur d: ", SHOTPATHSVG[props.shotShape].d);
+  // console.log("cur class: ", SHOTPATHSVG[props.shotShape].class);
 });
 </script>
 
-<!-- <style src="./shotshape.css"></style> -->
+<style src="./shotshape.css"></style>
 
 <template>
   <!-- contains specs of form (shotpath, contact, clubtype) -->

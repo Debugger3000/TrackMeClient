@@ -168,13 +168,13 @@ onUnmounted(() => {
 
 <template>
   <!-- Stats page page -->
-  <section class="overflow-x-auto">
+  <section class="p-2 overflow-x-auto">
     <!-- contains specs of form (shotpath, contact, clubtype) -->
     <section class="overflow-x-auto">
       <!-- shot path div -->
       <div class="grid grid-cols-8">
         <!-- Contact type -->
-        <section class="col-start-1 col-span-2 grid grid-rows-5 mt-4 mb-4">
+        <section class="col-start-1 col-span-2 grid grid-rows-5 mb-4">
           <div
             class="shot-path-buttons"
             v-for="[_, contact] in contacts"
