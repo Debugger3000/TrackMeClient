@@ -38,9 +38,9 @@ let charterDonut: Chart<
 watch(
   () => props.contactData,
   () => {
-    console.log("weatch trggiar, DONUT");
+    // console.log("weatch trggiar, DONUT");
     if (charterDonut) {
-      console.log("donut update: ", props.contactData.dataSet);
+      // console.log("donut update: ", props.contactData.dataSet);
       charterDonut.data.datasets[0].data = props.contactData.dataSet;
       charterDonut.update();
     }
@@ -51,7 +51,7 @@ watch(
 onMounted(() => {
   console.log("donut ON MOUNTED......");
 
-  console.log("donut data received: ", props.contactData!.dataSet);
+  // console.log("donut data received: ", props.contactData!.dataSet);
 
   const chartDiv = document.getElementById("donut")! as HTMLCanvasElement;
   chartItem.value = chartDiv;

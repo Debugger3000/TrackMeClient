@@ -27,7 +27,7 @@ let isLoggedIn = ref("");
 const navBar: { page: string; icon: string }[] = [
   { page: "home", icon: "bi-bar-chart" },
   { page: "games", icon: "bi-controller" },
-  { page: "stats", icon: "bi-bar-chart" },
+  { page: "stats-main", icon: "bi-bar-chart" },
   { page: "profile", icon: "bi-person" },
 ];
 

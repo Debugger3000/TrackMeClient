@@ -77,16 +77,28 @@ onMounted(() => {
 :class="{ 'bg-green-300': curHoles === 9 }"
 <template>
   <section class="overflow-x-auto">
-    <h4 class="mb-1 text-2xl">Score Card</h4>
+    <h4 class="section-header">Score Card</h4>
     <section class="inline-grid grid-flow-col auto-cols-min overflow-x-scroll">
+      <!-- title/ headers -->
+      <div class="min-w-[75px]">
+        <div class="flex justify-center border-default bg-green-400">
+          <h4 class="text-xl card-title">Hole</h4>
+        </div>
+        <div class="flex justify-center border-default">
+          <h4 class="text-xl card-title">Par</h4>
+        </div>
+        <div class="flex justify-center border-default">
+          <h4 class="text-xl card-title">Score</h4>
+        </div>
+      </div>
       <!-- eighteen hole score card -->
       <div
         v-if="props.cardData"
         v-for="(value, index) in eight_map"
         class="min-w-[75px] active:bg-gray-400"
         @click="changeHole(index)">
-        <div class="flex justify-center border">
-          <h4 class="text-xl text-red-800">
+        <div class="flex justify-center border bg-green-400">
+          <h4 class="text-xl text-gray-800">
             {{ index + 1 }}
           </h4>
         </div>

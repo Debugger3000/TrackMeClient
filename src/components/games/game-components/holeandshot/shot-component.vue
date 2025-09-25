@@ -162,6 +162,8 @@ onMounted(() => {
 });
 </script>
 
+<style src="./mainstyles.css"></style>
+
 <template>
   <section class="">
     <!-- <div class="flex justify-between items-center mb-3 border-b pb-1">
@@ -186,15 +188,19 @@ onMounted(() => {
     </div>
 
     <!-- display list of shots (block 1, block 2, block 3) -->
-    <div
-      v-if="props.current_shots?.length > 0"
-      class="grid grid-flow-col auto-cols-min overflow-x-scroll rounded border border-0.5 border-gray-200">
-      <div
-        v-for="(value, index) in props.current_shots"
-        class="min-w-[100px] text-center p-1"
-        @click="changeCurrentShot(index)"
-        :class="{ 'bg-gray-400': currentShot === index }">
-        Shot {{ value.shot_count }}
+    <!-- grid grid-flow-col auto-cols-min overflow-x-scroll rounded border border-0.5 border-gray-200 -->
+    <!-- min-w-[100px] text-center p-1 -->
+    <div v-if="props.current_shots?.length > 0" class="flex justify-between">
+      <h4 class="section-header">Shots</h4>
+      <div class="flex gap-1">
+        <div
+          v-for="(value, index) in props.current_shots"
+          class="border-default"
+          id="shots-circles"
+          @click="changeCurrentShot(index)"
+          :class="{ 'bg-gray-300': currentShot === index }">
+          {{ value.shot_count }}
+        </div>
       </div>
     </div>
 
@@ -220,28 +226,37 @@ onMounted(() => {
       </div>
 
       <!-- section for shot details -->
-      <div class="grid grid-cols-3 gap-5 mt-3">
-        <div class="flex flex-col items-center p-2 rounded border shadow-lg">
-          <h4 class="font-semibold text-color-blue-800">Club</h4>
-          <div class="border border-0.5 border-gray-200 w-[50%]"></div>
-          <h4>{{ props.current_shots[currentShot].club_type }}</h4>
+      <div class="grid grid-cols-3 gap-5">
+        <div class="grid-card">
+          <h4 class="card-title">Club</h4>
+          <div class="card-divider"></div>
+          <h4 class="card-data">
+            {{ props.current_shots[currentShot].club_type }}
+          </h4>
         </div>
 
-        <div class="flex flex-col items-center p-2 rounded border shadow-lg">
-          <h4 class="font-semibold text-color-blue-800">Land</h4>
-          <div class="border border-0.5 border-gray-200 w-[50%]"></div>
-          <h4>{{ props.current_shots[currentShot].land_type }}</h4>
+        <div class="grid-card">
+          <h4 class="card-title">Land</h4>
+          <div class="card-divider"></div>
+          <h4 class="card-data">
+            {{ props.current_shots[currentShot].land_type }}
+          </h4>
         </div>
 
-        <div class="flex flex-col items-center p-2 rounded border shadow-lg">
-          <h4 class="font-semibold text-color-blue-800">Contact</h4>
-          <div class="border border-0.5 border-gray-200 w-[50%]"></div>
-          <h4>{{ props.current_shots[currentShot].shot_contact }}</h4>
+        <div class="grid-card">
+          <h4 class="card-title">Contact</h4>
+          <div class="card-divider"></div>
+          <h4 class="card-data">
+            {{ props.current_shots[currentShot].shot_contact }}
+          </h4>
         </div>
-        <div class="flex flex-col items-center p-2 rounded border shadow-lg">
-          <h4 class="font-semibold text-color-blue-800">Path</h4>
-          <div class="border border-0.5 border-gray-200 w-[50%]"></div>
-          <h4>{{ props.current_shots[currentShot].shot_path }}</h4>
+
+        <div class="grid-card">
+          <h4 class="card-title">Path</h4>
+          <div class="card-divider"></div>
+          <h4 class="card-data">
+            {{ props.current_shots[currentShot].shot_path }}
+          </h4>
         </div>
       </div>
     </section>

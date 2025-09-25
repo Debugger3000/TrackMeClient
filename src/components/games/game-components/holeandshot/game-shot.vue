@@ -12,7 +12,7 @@ import {
   type IShotContact,
 } from "../../../../types/shot";
 
-import shape from "../../../Stats/shape.vue";
+import shape from "../../../range-shots/shape.vue";
 import type { IAuthResponse } from "../../../../types/Iauth";
 import {
   LAND_TYPE,
@@ -75,6 +75,7 @@ const updater = inject<{
 
 function changePath(path: IShotPaths) {
   shotDataForm.value.shot_path = path;
+  curShotPath.value = path;
 }
 function changeClub(club: IShotType) {
   shotDataForm.value.club_type = club;
@@ -197,7 +198,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style src="../../../Stats/shotshape.css"></style>
+<style src="../../../../components/range-shots/shotshape.css"></style>
 
 <template>
   <!-- Stats page page -->

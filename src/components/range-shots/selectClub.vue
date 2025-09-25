@@ -30,7 +30,7 @@ onMounted(() => {});
 
 <template>
   <!-- Home page -->
-  <section class="p-2">
+  <section class="">
     <!-- select club to show stats for... -->
     <section class="relative w-full">
       <div

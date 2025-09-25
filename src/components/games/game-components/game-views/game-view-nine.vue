@@ -21,10 +21,7 @@ import {
 
 import holeComp from "../holeandshot/hole-comp.vue";
 import { getNineKeyFromIndex } from "../helpers/helpers";
-import type {
-  IGameObjectReturn,
-  IGameReturnEight,
-} from "../../../../types/game";
+import type { IGameObjectReturn } from "../../../../types/game";
 import NineScoreBoard from "../scoreBoards/nine-score-board.vue";
 const router = useRouter();
 
@@ -198,42 +195,46 @@ onMounted(async () => {
 });
 </script>
 
+<style src="../holeandshot/mainstyles.css"></style>
+
 <template>
   <section class="">
     <!-- top bar on page -->
-    <section class="flex justify-between bg-green-800 p-2">
-      <div>
+
+    <section class="flex items-center justify-between bg-green-800 p-2">
+      <div class="flex items-center justify-center">
         <button
           @click="
             {
               routeToHere('games');
             }
           "
-          class="font-semibold text-xs rounded border text-white bg-green-700">
+          class="font-semibold text-xs rounded border text-white bg-green-700 p-1">
           <i class="bi bi-arrow-left text-2xl text-white"></i>
         </button>
       </div>
 
-      <div class="text-center mb-3">
-        <h4 class="font-semibold text-3xl">GameView</h4>
-      </div>
+      <h2 class="font-semibold text-white text-3xl">GameView</h2>
     </section>
 
     <!-- main section of page... -->
-    <section class="mt-5 p-4">
-      <!-- display general course info -->
-      <section class="me-border p-2">
-        <h4 class="text-3xl">
+
+    <section class="mt-3 p-4">
+      <section class="border-default p-2">
+        <h4 class="text-02 font-bold text-3xl">
           {{ game_data?.course.club_name }}
         </h4>
-        <h4 v-if="game_data?.course.course_name" class="text-2xl">
+        <h4
+          v-if="game_data?.course.course_name"
+          class="text-01 font-semibold text-2xl">
           {{ game_data?.course.course_name }}
         </h4>
-        <h4 class="text-xl">
+        <h4 class="text-02 font-semibold text-xl">
           {{ game_data?.course.location }}
         </h4>
-        <h4 class="text-xl">Par: {{ game_data?.course.par }}</h4>
-        <h4 class="text-xl">Score: {{ game_data?.score }}</h4>
+        <h4 class="font-semibold text-xl">{{ game_data?.date }}</h4>
+        <h4 class="text-xl font-semibold">Par: {{ game_data?.course.par }}</h4>
+        <h4 class="text-xl font-semibold">Score: {{ game_data?.score }}</h4>
       </section>
 
       <!-- Display scorecard, probably 9 over 9 for mobile -->
