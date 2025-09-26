@@ -1,4 +1,4 @@
-import type { IAuthResponse } from "../types/Iauth";
+// import type { IAuthResponse } from "../types/Iauth";
 
 export async function useFetch<TResponse, TBody = undefined>(
   route: string,

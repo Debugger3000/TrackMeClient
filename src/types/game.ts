@@ -1,6 +1,5 @@
 import type {
   eighteen_hole_card,
-  ICourse,
   ICourseGameReturn,
   ICourseView,
   nine_hole_card,

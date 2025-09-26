@@ -3,7 +3,6 @@ import {
   NINE_HOLES_MAP,
   type EightHoleKey,
   type NineHoleKey,
-  type THoles,
 } from "../../../../types/course";
 
 // hole number and not index

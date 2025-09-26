@@ -6,6 +6,8 @@ import { useFetch } from "../../api/authFetch";
 import type { IGameView } from "../../types/game";
 import gameOverview from "./game-components/overviews/game-overview.vue";
 
+// import mapPlugin from "./game-components/map/map-plugin.vue";
+
 const router = useRouter();
 
 let curData = ref<"games" | "stats">("games");
@@ -151,6 +153,9 @@ onMounted(async () => {
         <!-- <h4 class="font-semibold pb-1">Completed Games</h4> -->
         <game-overview :game-data="completedGames" />
       </section>
+
+      <!-- map comp testing -->
+      <!-- <map-plugin /> -->
     </section>
   </section>
 </template>

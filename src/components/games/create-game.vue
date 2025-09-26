@@ -25,9 +25,9 @@ let prevDataLength = 0;
 let courseSelected = ref<boolean>(true);
 let selectedCourse = ref<ICourseView>();
 
-function routeToHere(tabClicked: string) {
-  routeTo(tabClicked, router);
-}
+// function routeToHere(tabClicked: string) {
+//   routeTo(tabClicked, router);
+// }
 
 function searchInput(value: EventTarget | null) {
     console.log("new search input is: ", value);

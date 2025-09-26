@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch, inject } from "vue";
+import { ref, onMounted, watch, inject } from "vue";
 import { useFetch } from "../../../../api/authFetch";
 import { routeTo } from "../../../../router";
 import { useRouter } from "vue-router";
@@ -16,10 +16,10 @@ import shape from "../../../range-shots/shape.vue";
 import type { IAuthResponse } from "../../../../types/Iauth";
 import {
   LAND_TYPE,
-  type Game_Shot_Data,
   type Game_Shot_Data_Submit,
   type Land_Type,
 } from "../../../../types/game";
+import { getCurCoordinates, getDistanceInMeters } from "../../../../api/map";
 
 const router = useRouter();
 
@@ -43,7 +43,7 @@ watch(
 );
 
 // club type - no default - user will have to interact before submit can be pressed...
-let curClubType = ref<IShotType>();
+// let curClubType = ref<IShotType>();
 const clubs = Object.entries(CLUBTYPE);
 
 // current shot path - default path to 'straight'
@@ -51,7 +51,7 @@ let curShotPath = ref<IShotPaths>("straight");
 const paths = Object.entries(SHOTPATH);
 
 // contact - default contact type to 'center'
-let curContactType = ref<IShotContact>("center");
+// let curContactType = ref<IShotContact>("center");
 const contacts = Object.entries(SHOTCONTACT);
 
 const land_types = Object.entries(LAND_TYPE);
@@ -61,10 +61,10 @@ let message = ref("");
 let loading = ref(false);
 
 // interval
-let intervalId: number | null = null;
+// let intervalId: number | null = null;
 
 // const userStore = useUserStore();
-const userId = localStorage.getItem("id");
+// const userId = localStorage.getItem("id");
 
 // inject update score function
 const updater = inject<{
@@ -135,6 +135,24 @@ async function sendShotData() {
         shotDataForm.value.stroke = 2;
       }
 
+      if (
+        shotDataForm.value.start_lat &&
+        shotDataForm.value.start_lng &&
+        shotDataForm.value.end_lat &&
+        shotDataForm.value.end_lng
+      ) {
+        // calculate coordinates and distances before we send off to server to POST
+        const distances = getDistanceInMeters(
+          shotDataForm.value.start_lat,
+          shotDataForm.value.start_lng,
+          shotDataForm.value.end_lat,
+          shotDataForm.value.end_lng
+        );
+        // set yards and metres in shot object
+        shotDataForm.value.yards = distances.yards;
+        shotDataForm.value.metres = distances.metres;
+      }
+
       console.log("outgoing game shot object: ", shotDataForm.value);
       const res = await useFetch<IAuthResponse, Game_Shot_Data_Submit>(
         "/data/game-shot",
@@ -172,29 +190,27 @@ async function sendShotData() {
   }
 }
 
-function displayMessage() {
-  setTimeout(() => {
-    message.value = "";
-    loading.value = false;
-  }, 3000);
+// function displayMessage() {
+//   setTimeout(() => {
+//     message.value = "";
+//     loading.value = false;
+//   }, 3000);
+// }
+
+async function fetchCoordinates(type: string) {
+  const coord = await getCurCoordinates();
+  if (type === "from") {
+    shotDataForm.value.start_lat = coord.lat;
+    shotDataForm.value.start_lng = coord.lon;
+  } else {
+    shotDataForm.value.end_lat = coord.lat;
+    shotDataForm.value.end_lng = coord.lon;
+  }
 }
 
 // lifecycle hooks
 onMounted(() => {
-  console.log("Stats page just mounted");
-
-  // can just start poll on launch since items may alreaady be in Q
-
-  //   intervalId = setInterval(sendShotData, 1 * 60 * 1000);
-  // console.log("shotQ created: setInterval started. ", intervalId);
-  // call get user info...
-});
-
-onUnmounted(() => {
-  //   if (intervalId) {
-  //     clearInterval(intervalId);
-  //     console.log("Post shots, unmounted.. interval cleared..");
-  //   }
+  console.log("Game shotpage just mounted");
 });
 </script>
 
@@ -260,6 +276,37 @@ onUnmounted(() => {
           :class="{ 'bg-gray-400': shotDataForm.land_type === `${path}` }">
           <button @click="changeLandType(path)" class="w-full h-full">
             {{ path }}
+          </button>
+        </div>
+      </section>
+
+      <!-- feedback to let user know there coordinates have been gathered... -->
+      <section class="flex gap-3">
+        <div>
+          <!-- disable if -->
+          <button
+            class="p-1 rounded border-default"
+            @click="fetchCoordinates('from')">
+            From Coordinate
+            <i
+              v-if="shotDataForm.start_lat && shotDataForm.start_lng"
+              class="bi bi-check-lg text-3xl text-green-800"></i>
+            <i
+              v-if="!shotDataForm.start_lat && !shotDataForm.start_lng"
+              class="bi bi-x text-3xl text-red-800"></i>
+          </button>
+        </div>
+        <div>
+          <button
+            class="p-1 rounded border-default"
+            @click="fetchCoordinates('land')">
+            Land Coordinate
+            <i
+              v-if="shotDataForm.end_lat && shotDataForm.end_lng"
+              class="bi bi-check-lg text-3xl text-green-800"></i>
+            <i
+              v-if="!shotDataForm.end_lat && !shotDataForm.end_lng"
+              class="bi bi-x text-3xl text-red-800"></i>
           </button>
         </div>
       </section>
