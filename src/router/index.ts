@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, type Router } from "vue-router";
-import Home from "../components/Home/home.vue";
+// import Home from "../components/Home/home.vue";
+import home from "../components/home/home.vue";
 import Login from "../components/auth/login.vue";
 import Register from "../components/auth/register.vue";
 import Stats from "../components/range-shots/Stats.vue";
@@ -13,7 +14,7 @@ import statsMain from "../components/range-shots/stats-main.vue";
 
 const routes = [
   { path: "/", redirect: "login" },
-  { path: "/home", name: "home", component: Home },
+  { path: "/home", name: "home", component: home },
   { path: "/login", name: "login", component: Login },
   { path: "/register", name: "register", component: Register },
   { path: "/stats", name: "stats", component: Stats },
