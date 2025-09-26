@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory, type Router } from "vue-router";
-// import Home from "../components/Home/home.vue";
-// import home from "../components/Home/home.vue";
-import Home from "../components/home/home.vue";
+
+import Home from "../components/Home/Home.vue";
 import Login from "../components/auth/login.vue";
 import Register from "../components/auth/register.vue";
 import Stats from "../components/range-shots/Stats.vue";
