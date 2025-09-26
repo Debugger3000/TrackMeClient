@@ -14,6 +14,8 @@ import { useFetch } from "../../../../api/authFetch";
 import { routeTo } from "../../../../router";
 import type { IAuthResponse } from "../../../../types/Iauth";
 
+import mapPlugin from "../map/map-plugin.vue";
+
 const router = useRouter();
 
 const props = defineProps<{
@@ -27,12 +29,11 @@ const props = defineProps<{
   //   course?: ICourseView;
 }>();
 
+// inject variables from main game-view
 const current_hole_state = inject<Ref<number, number>>("current_hole_state");
 const game_hole_state = inject<Ref<number, number>>("game_hole_state");
 const game_status = inject<Ref<GameStatus, GameStatus>>("game_status");
-
-// const injector = inject<{ goNextHole: () => void }>("goNextHole");
-
+// inject functions
 const goNextHole = inject<() => void>("goNextHole");
 const completeGame = inject<() => void>("complete_game");
 
@@ -351,6 +352,11 @@ onMounted(() => {
           </div>
         </section>
 
+        <!-- map shot comp -->
+        <map-plugin
+          v-if="props.current_shots"
+          :current_shots="props.current_shots" />
+
         <!-- notes -->
         <section v-if="allow_prev_holes_edit" class="mt-5">
           <h4 class="section-header">Notes</h4>
@@ -391,7 +397,5 @@ onMounted(() => {
         </div>
       </div>
     </div>
-
-    <!-- current holes stats ??? -->
   </section>
 </template>

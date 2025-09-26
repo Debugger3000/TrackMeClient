@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import { walk } from "vue/compiler-sfc";
 
 const props = defineProps<{
   message: string;

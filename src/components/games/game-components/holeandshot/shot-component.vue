@@ -2,7 +2,6 @@
 import { inject, onMounted, ref, watch, type Ref } from "vue";
 
 import type {
-  Game_Shot_Data,
   Game_Shot_Data_Submit,
   Game_Shot_Delete,
   GameStatus,
@@ -11,7 +10,7 @@ import type {
 import { useRouter } from "vue-router";
 
 import gameShot from "./game-shot.vue";
-import type { THoles } from "../../../../types/course";
+// import type { THoles } from "../../../../types/course";
 import { routeTo } from "../../../../router";
 import { useFetch } from "../../../../api/authFetch";
 import type { IAuthResponse } from "../../../../types/Iauth";
@@ -25,7 +24,7 @@ const props = defineProps<{
   // updateNewShot: (shot_data: Game_Shot_Data, hole: number) => void;
 }>();
 
-const current_hole_state = inject<Ref<number, number>>("current_hole_state");
+// const current_hole_state = inject<Ref<number, number>>("current_hole_state");
 const game_hole_state = inject<Ref<number, number>>("game_hole_state");
 const game_status = inject<Ref<GameStatus, GameStatus>>("game_status");
 
@@ -51,7 +50,7 @@ watch(
 // let holeData = ref<Hole_Data>();
 
 // drop downs
-let shotDrop = ref<boolean>(true);
+// let shotDrop = ref<boolean>(true);
 // drop down for stats for shot to add
 let addShotDrop = ref<boolean>(false);
 
@@ -171,28 +170,15 @@ onMounted(() => {
     </div> -->
     <div class="flex justify-between">
       <h4 v-if="props.current_shots.length === 0" class="text-2xl mb-1">
-        No Shots Added...
+        No Shots recorded
       </h4>
-
-      <div
-        v-if="
-          (props.hole_data?.hole_number === game_hole_state || edit_state) &&
-          game_status === 'IN-PROGRESS'
-        "
-        @click="dropDown('addShot')"
-        class="flex justify-between items-center p-2 border rounded border-0.5 border-gray-200">
-        <!-- <h4 class="text-2xl mb-1"></h4> -->
-        <i v-if="!addShotDrop" class="bi bi-plus"></i>
-        <i v-if="addShotDrop" class="bi bi-dash"></i>
-      </div>
     </div>
 
     <!-- display list of shots (block 1, block 2, block 3) -->
     <!-- grid grid-flow-col auto-cols-min overflow-x-scroll rounded border border-0.5 border-gray-200 -->
     <!-- min-w-[100px] text-center p-1 -->
     <div v-if="props.current_shots?.length > 0" class="flex justify-between">
-      <h4 class="section-header">Shots</h4>
-      <div class="flex gap-1">
+      <div class="flex gap-1 items-center">
         <div
           v-for="(value, index) in props.current_shots"
           class="border-default"
@@ -212,17 +198,23 @@ onMounted(() => {
     <!-- display whatever shot data selected here... -->
     <section
       v-if="props.current_shots?.length > 0 && displayShot"
-      class="border rounded border-0.5 border-gray-200 hover:cursor-pointer">
-      <!-- delete shot button -->
-      <div
-        class="flex justify-end mt-3"
-        v-if="
-          props.hole_data?.hole_number === game_hole_state &&
-          game_status === 'IN-PROGRESS'
-        ">
-        <button class="p-1 bg-red-800 rounded" @click="deleteShot()">
-          Delete
-        </button>
+      class="border-t rounded border-0.5 border-gray-400 mt-1 py-3 hover:cursor-pointer">
+      <div class="flex justify-between items-center">
+        <h4 class="section-header">
+          Shot {{ props.current_shots[currentShot].shot_count }}
+        </h4>
+
+        <!-- delete shot button -->
+        <div
+          class="flex items-center"
+          v-if="
+            props.hole_data?.hole_number === game_hole_state &&
+            game_status === 'IN-PROGRESS'
+          ">
+          <button class="p-1 rounded" @click="deleteShot()">
+            <i class="bi bi-trash text-red-800 text-3xl"></i>
+          </button>
+        </div>
       </div>
 
       <!-- section for shot details -->
@@ -258,18 +250,50 @@ onMounted(() => {
             {{ props.current_shots[currentShot].shot_path }}
           </h4>
         </div>
+
+        <div class="grid-card">
+          <h4 class="card-title">Distance</h4>
+          <div class="card-divider"></div>
+          <h4 class="card-data">
+            {{ props.current_shots[currentShot].yards }} yards
+          </h4>
+        </div>
+
+        <div class="grid-card">
+          <h4 class="card-title">Distance</h4>
+          <div class="card-divider"></div>
+          <h4 class="card-data">
+            {{ props.current_shots[currentShot].metres }} metres
+          </h4>
+        </div>
       </div>
     </section>
 
-    <!-- shots drop down -->
+    <!-- game shot down -->
     <section
       v-if="
         (props.edit_state ||
           props.hole_data?.hole_number === game_hole_state) &&
         game_status === 'IN-PROGRESS'
       "
-      class="">
-      <div v-if="addShotDrop" class="border border-0.5">
+      class="border-t rounded border-0.5 border-gray-400 py-3">
+      <div class="flex justify-between py-1">
+        <h4 class="section-header">Add Shot</h4>
+
+        <div
+          v-if="
+            (props.hole_data?.hole_number === game_hole_state || edit_state) &&
+            game_status === 'IN-PROGRESS'
+          "
+          @click="dropDown('addShot')"
+          class="flex justify-between items-center">
+          <!-- <h4 class="text-2xl mb-1"></h4> -->
+          <i v-if="!addShotDrop" class="bi bi-plus text-3xl"></i>
+          <i v-if="addShotDrop" class="bi bi-dash text-3xl"></i>
+        </div>
+      </div>
+
+      <div v-if="addShotDrop" class="border border-0.5 mt-5">
         <gameShot
           :closeAddShotMenu="dropAddShotMenu"
           :hole_id="props.hole_data?.id"
@@ -278,7 +302,5 @@ onMounted(() => {
           :shot_count="shotCount" />
       </div>
     </section>
-
-    <!-- current holes stats ??? -->
   </section>
 </template>

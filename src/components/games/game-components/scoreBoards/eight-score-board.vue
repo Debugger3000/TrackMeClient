@@ -6,7 +6,7 @@ import {
   type T18_MAP,
 } from "../../../../types/course";
 import type { Eighteen_Hole_Data } from "../../../../types/game";
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 
 // type NineGameData = {
 //   holes: 9;

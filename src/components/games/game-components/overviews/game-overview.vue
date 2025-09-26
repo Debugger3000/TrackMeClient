@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, watch } from "vue";
-import type { ICourseView } from "../../../../types/course";
+// import type { ICourseView } from "../../../../types/course";
 import type { IGameView } from "../../../../types/game";
-import { routeTo } from "../../../../router";
+// import { routeTo } from "../../../../router";
 import { useRouter } from "vue-router";
 
 const router = useRouter();

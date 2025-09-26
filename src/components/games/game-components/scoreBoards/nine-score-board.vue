@@ -1,27 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { onMounted } from "vue";
 import {
-  EIGHTEEN_ARRAY,
-  EIGHTEEN_HOLES,
-  EIGHTEEN_HOLES_MAP,
-  NINE_ARRAY,
   NINE_HOLES_MAP,
-  type eighteen_hole_card,
-  type ICourseView,
   type nine_hole_card,
-  type T18_MAP,
   type T9_MAP,
-  type THoles,
 } from "../../../../types/course";
-import type {
-  Eighteen_Hole_Data,
-  HoleType,
-  IGameView,
-  Nine_Hole_Data,
-} from "../../../../types/game";
-import { routeTo } from "../../../../router";
-import { useRouter } from "vue-router";
-import type { AnyNode } from "postcss";
+import type { Nine_Hole_Data } from "../../../../types/game";
 
 // type NineGameData = {
 //   holes: 9;
@@ -35,7 +19,7 @@ import type { AnyNode } from "postcss";
 // };
 // type GameData = NineGameData | EighteenGameData;
 
-const router = useRouter();
+// const router = useRouter();
 
 const props = defineProps<{
   // gameData: GameData;

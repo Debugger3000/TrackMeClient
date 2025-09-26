@@ -19,11 +19,11 @@ import donut from "./donut.vue";
 
 const router = useRouter();
 
-const props = defineProps<{
-  // username: String;
-  // isLoggedIn: Boolean;
-  // syncStorage?: (username: string) => void;
-}>();
+// const props = defineProps<{
+//   // username: String;
+//   // isLoggedIn: Boolean;
+//   // syncStorage?: (username: string) => void;
+// }>();
 
 // this will be used to filter chart to ONE CLUB at a time...
 let selectedClub = ref<IShotType>(CLUBTYPE.ThreeWood);

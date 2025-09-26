@@ -5,7 +5,7 @@ import { ref, onMounted } from "vue";
 import { useFetch } from "../../api/authFetch";
 import { useRouter } from "vue-router";
 import { routeTo } from "../../router";
-import type { IAuthResponse } from "../../types/Iauth";
+import type { IAuthResponse, IUserCredentials } from "../../types/Iauth";
 
 const router = useRouter();
 // reactive state
@@ -25,7 +25,7 @@ const registerSubmit = async () => {
     console.log(`url route fetching: ${import.meta.env.VITE_SERVER_API}/register`);
     try {
 
-      const res = await useFetch<IAuthResponse>("/auth/register","POST",{
+      const res = await useFetch<IAuthResponse,IUserCredentials>("/auth/register","POST",{
         username: registerForm.value.username,
         password: registerForm.value.password
       });
