@@ -99,6 +99,51 @@ onMounted(async () => {
 
       <!-- right side of top bar -->
       <section class="flex gap-3">
+        <div class="border border-white rounded p-1">
+          <button
+            @click="
+              {
+                routeToHere('create-game');
+              }
+            "
+            class="font-semibold rounded text-white">
+            Start Game
+            <!-- <i class="bi bi-plus text-2xl text-white"></i> -->
+          </button>
+        </div>
+      </section>
+    </section>
+
+    <!-- main section of page... -->
+    <section class="mt-3 p-2">
+      <!-- other functionality above table -->
+      <section class="flex items-center justify-between pb-5 border-b">
+        <div class="flex items-center border-default rounded">
+          <div class="">
+            <button
+              @click="changeData"
+              class="p-1"
+              :class="{
+                'bg-green-800': curData === 'stats',
+                'text-white': curData === 'stats',
+              }">
+              Stats
+            </button>
+          </div>
+          <!-- add shots -->
+          <div class="flex items-cetner">
+            <button
+              class="p-1"
+              @click="changeData"
+              :class="{
+                'bg-green-800': curData === 'games',
+                'text-white': curData === 'games',
+              }">
+              Games
+            </button>
+          </div>
+        </div>
+        <!-- add a course -->
         <div class="border border-white rounded">
           <button
             @click="
@@ -106,50 +151,22 @@ onMounted(async () => {
                 routeToHere('create-course');
               }
             "
-            class="font-semibold text-xs rounded border text-white bg-green-700">
-            <i class="bi bi-plus text-2xl text-white"></i>
+            class="font-semibold rounded text-white bg-green-800 p-1">
+            Add Course
+            <!-- <i class="bi bi-plus text-2xl text-white"></i> -->
           </button>
-        </div>
-        <div class="border border-white rounded">
-          <button
-            @click="
-              {
-                routeToHere('create-game');
-              }
-            "
-            class="font-semibold text-xs rounded border text-white bg-green-700">
-            Game
-            <i class="bi bi-plus text-2xl text-white"></i>
-          </button>
-        </div>
-      </section>
-    </section>
-
-    <!-- main section of page... -->
-    <section class="mt-5 p-2">
-      <!-- other functionality above table -->
-      <section class="flex items-center">
-        <div class="flex items-center">
-          <div class="me-border">
-            <button @click="changeData">
-              <div class="flex items-center">
-                <h4 :class="{ 'bg-green-300': curData === 'games' }">Games</h4>
-                <h4 :class="{ 'bg-green-300': curData === 'stats' }">Stats</h4>
-              </div>
-            </button>
-          </div>
         </div>
       </section>
 
       <!-- in-progress games right here -->
       <section v-if="inProgressGames && curData === 'games'" class="mt-5">
-        <h4 class="font-semibold pb-1">In-Progress Games</h4>
+        <h4 class="section-header">In-Progress Games</h4>
         <game-overview :game-data="inProgressGames" />
       </section>
 
       <!-- GAMES table / stats -->
       <section v-if="curData === 'games' && completedGames" class="mt-5">
-        <h4 class="font-semibold pb-1">Game History</h4>
+        <h4 class="section-header">Game History</h4>
         <!-- <h4 class="font-semibold pb-1">Completed Games</h4> -->
         <game-overview :game-data="completedGames" />
       </section>

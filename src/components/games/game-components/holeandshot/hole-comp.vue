@@ -183,7 +183,10 @@ function flipEdit() {
   if (edit_state.value) {
     // set putt count
     holeForm.value.putt_count = props.current_hole.putt_count;
+    // set notes too
+    holeForm.value.notes = props.current_hole.notes;
   }
+  console.log("edit state value: ", edit_state.value);
 }
 
 // edit a previous hole for some reason haha
@@ -246,7 +249,8 @@ const edit_condition = computed(() => {
 // only if game_status is IN-PROGRESS
 const allow_prev_holes_edit = computed(() => {
   return (
-    (edit_state || props.current_hole.hole_number === game_hole_state?.value) &&
+    (edit_state.value ||
+      props.current_hole.hole_number === game_hole_state?.value) &&
     game_status?.value === "IN-PROGRESS"
   );
 });
@@ -283,20 +287,12 @@ onMounted(() => {
         <!-- edit button -->
         <div
           v-if="edit_condition"
-          class="flex justify-end mt-3"
+          class="flex justify-end mb-3"
           @click="flipEdit">
-          <button
-            class="p-1 bg-green-200 border"
-            v-if="!edit_state"
-            type="button">
-            Edit
-          </button>
-          <button
-            class="p-1 bg-green-200 border"
-            v-if="edit_state"
-            type="button">
-            Editing
-          </button>
+          <div class="rounded border border-gray-400">
+            <button class="p-1" v-if="!edit_state" type="button">Edit</button>
+            <button class="p-1" v-if="edit_state" type="button">Editing</button>
+          </div>
         </div>
         <!-- strict hole data -->
         <div class="grid grid-cols-3 gap-5">

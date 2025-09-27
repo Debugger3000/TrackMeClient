@@ -142,6 +142,20 @@ async function deleteShot() {
   }
 }
 
+function switchDeletePopUp() {
+  delete_popup.value = !delete_popup.value;
+}
+
+async function deletePopUp(result: Boolean) {
+  if (result) {
+    await deleteShot();
+    delete_popup.value = !delete_popup.value;
+  } else {
+    delete_popup.value = !delete_popup.value;
+  }
+}
+
+let delete_popup = ref<boolean>(false);
 // -----------------
 // Display games as card / list view to click on complete game for stats, or in-progress game
 // --------
@@ -198,7 +212,7 @@ onMounted(() => {
     <!-- display whatever shot data selected here... -->
     <section
       v-if="props.current_shots?.length > 0 && displayShot"
-      class="border-t rounded border-0.5 border-gray-400 mt-1 py-3 hover:cursor-pointer">
+      class="border-t rounded border-0.5 border-gray-400 mt-1 py-3 hover:cursor-pointer relative">
       <div class="flex justify-between items-center">
         <h4 class="section-header">
           Shot {{ props.current_shots[currentShot].shot_count }}
@@ -206,14 +220,39 @@ onMounted(() => {
 
         <!-- delete shot button -->
         <div
-          class="flex items-center"
+          class="flex items-center relative"
           v-if="
             props.hole_data?.hole_number === game_hole_state &&
             game_status === 'IN-PROGRESS'
           ">
-          <button class="p-1 rounded" @click="deleteShot()">
+          <button class="p-1 rounded" @click="switchDeletePopUp()">
             <i class="bi bi-trash text-red-800 text-3xl"></i>
           </button>
+        </div>
+      </div>
+
+      <!-- delete pop up to confirm deletion -->
+      <div
+        v-if="delete_popup"
+        class="absolute inset-0 flex justify-center items-center">
+        <div
+          class="flex flex-col justify-center p-1 items-center w-[70%] h-[70%] opacity-0.7 bg-white border border-gray-300 shadow-md z-90">
+          <h4 class="text-center">
+            Are you sure you want to delete shot
+            {{ props.current_shots[currentShot].shot_count }} ?
+          </h4>
+          <div class="flex gap-5 items-center mt-3">
+            <button
+              class="bg-green-600 p-2 rounded text-white"
+              @click="deletePopUp(true)">
+              Yes
+            </button>
+            <button
+              class="bg-red-600 p-2 rounded text-white"
+              @click="deletePopUp(false)">
+              No
+            </button>
+          </div>
         </div>
       </div>
 

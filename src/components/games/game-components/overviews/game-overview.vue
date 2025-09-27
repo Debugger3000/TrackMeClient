@@ -4,6 +4,7 @@ import { onMounted, watch } from "vue";
 import type { IGameView } from "../../../../types/game";
 // import { routeTo } from "../../../../router";
 import { useRouter } from "vue-router";
+import { formatDate } from "../helpers/helpers";
 
 const router = useRouter();
 
@@ -49,23 +50,32 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="me-border">
+  <section class="border-default">
     <div
       v-for="(value, index) in props.gameData"
       :key="index"
-      class="grid grid-cols-3 gap-3 border-b"
+      class="grid grid-cols-3 gap-3 border-b border-gray-300 min-h-[75px]"
       @click="
         {
           gameSelected(value.id, value.holes);
         }
       ">
-      <div class="flex items-center">
-        <h4>{{ value.club_name }}</h4>
+      <div class="flex flex-col justify-center pl-2">
+        <h4 class="font-semibold text-xl">{{ value.club_name }}</h4>
+        <div class="flex gap-1">
+          <h4 class="m-0">Par {{ value.par }} -</h4>
+          <h4 class="m-0">{{ value.holes }}</h4>
+        </div>
+      </div>
+      <div class="flex items-center justify-center gap-1">
+        <h4 class="text-xl">Score: {{ value.score }}</h4>
+        <h4 v-if="value.status === 'COMPLETE'" class="text-xl">
+          ({{ value.par + value.score }})
+        </h4>
       </div>
 
-      <div class="flex flex-col gap-1">
-        <h4 class="m-0">Holes: {{ value.holes }}</h4>
-        <h4 class="m-0">Par: {{ value.par }}</h4>
+      <div class="flex items-center justify-end pr-2">
+        <h4 class="font-semibold">{{ formatDate(value.created_at) }}</h4>
       </div>
     </div>
   </section>
