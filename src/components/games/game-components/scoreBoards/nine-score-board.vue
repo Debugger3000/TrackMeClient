@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import {
   NINE_HOLES_MAP,
   type nine_hole_card,
@@ -44,6 +44,9 @@ const props = defineProps<{
 // let card_data = ref<CardType<typeof props.holes>>();
 let nine_map: T9_MAP = NINE_HOLES_MAP;
 
+// holds index of hole
+let current_hole = ref<number>(props.hole_state - 1);
+
 // watch(
 //   () => props.holes,
 //   () => {
@@ -58,6 +61,7 @@ function changeHole(hole: number) {
   // only allow users to go backwards on holes... They shouldnt be allowed to add shots on hole 7 when they are currently on hole 3..
   if (hole + 1 <= props.hole_state) {
     props.score_board_change_hole(hole);
+    current_hole.value = hole;
   }
 }
 
@@ -76,38 +80,43 @@ onMounted(() => {
 <!-- :class="{ 'bg-green-300': curHoles === 9 }" -->
 <template>
   <section class="overflow-x-auto">
-    <h4 class="section-header">Score Card</h4>
-    <section class="inline-grid grid-flow-col auto-cols-min overflow-x-scroll">
+    <!-- <h4 class="section-header">Score Card</h4> -->
+    <section
+      class="inline-grid grid-flow-col auto-cols-min overflow-x-scroll rounded">
       <!-- title/ headers -->
-      <div class="min-w-[75px]">
-        <div class="flex justify-center border-default bg-green-400">
-          <h4 class="text-xl card-title">Hole</h4>
+      <!-- <div class="">
+        <div class="flex justify-center border-default bg-green-500">
+          <h4 class="text-xl font-semibold text-white">Hole</h4>
         </div>
         <div class="flex justify-center border-default">
           <h4 class="text-xl card-title">Par</h4>
         </div>
-        <div class="flex justify-center border-default">
-          <h4 class="text-xl card-title">Score</h4>
+        <div class="flex justify-center border-default bg-red-500">
+          <h4 class="text-xl font-semibold text-white">Score</h4>
         </div>
-      </div>
+      </div> -->
 
       <div
         v-if="props.holeData"
         v-for="(value, index) in nine_map"
-        class="min-w-[75px] active:bg-green-600"
+        class="min-w-[50px] active:bg-gray-500 border-default"
         @click="changeHole(index)">
-        <div class="flex justify-center border-default bg-green-400">
-          <h4 class="text-xl text-gray-800">
+        <div
+          class="flex justify-center p-1"
+          :class="{ 'bg-gray-800': current_hole === index }">
+          <h4
+            class="text-xl text-gray-800"
+            :class="{ 'text-white': current_hole === index }">
             {{ index + 1 }}
           </h4>
         </div>
-        <div class="w-full">
-          <h4 class="flex justify-center text-xl border-default">
+        <div class="w-full p-1">
+          <h4 class="flex justify-center text-xl text-gray-500">
             {{ props.cardData[value] }}
           </h4>
         </div>
-        <div class="w-full">
-          <h4 class="flex justify-center text-xl border-default">
+        <div class="w-full bg-gray-300 p-1">
+          <h4 class="flex justify-center text-xl">
             {{ props.holeData[value].score }}
           </h4>
         </div>

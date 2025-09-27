@@ -14,11 +14,6 @@ import { shot_polyline_Colors } from "../../../../types/map";
 
 const props = defineProps<{
   current_shots: Game_Shot_Data_Submit[];
-  //   updateGameShots: (game_data: Game_Shot_Data_Submit) => void;
-  //   game_score: number;
-  // gameData: IGameView[];
-  //   courseSelector?: (index: number) => void;
-  //   course?: ICourseView;
 }>();
 
 // let curDeviceCoor = ref<IMap_Coordinates>();\
@@ -49,6 +44,15 @@ function getShotColor(index: number) {
 function renderShots(shots: Game_Shot_Data_Submit[]) {
   if (!shotsLayer) return;
 
+  // check for a shot one, and center mapview on that, if at least one shot exists...
+  if (shots.length > 0) {
+    const start_lat = shots[0].start_lat;
+    const start_lan = shots[0].start_lng;
+    if (start_lat && start_lan) {
+      map.setView([start_lat, start_lan], 16);
+    }
+  }
+
   console.log("shots given to POLYLINE for map: ", shots);
 
   // Clear existing shot lines
@@ -68,7 +72,7 @@ function renderShots(shots: Game_Shot_Data_Submit[]) {
           [shot.start_lat, shot.start_lng],
           [shot.end_lat, shot.end_lng],
         ],
-        { color: getShotColor(index), weight: 3, opacity: 0.7 }
+        { color: getShotColor(index), weight: 6, opacity: 0.7 }
       );
 
       polyline.bindPopup(`
@@ -89,11 +93,6 @@ function renderShots(shots: Game_Shot_Data_Submit[]) {
   });
 }
 
-// function getCurCoordinates() {
-//     const geo = new Geolocation();
-//     geo.getCurrentPosition()
-// }
-
 // Re-center map to device location
 async function recenterMap() {
   try {
@@ -109,35 +108,6 @@ async function recenterMap() {
     console.error("Could not get location:", err);
   }
 }
-
-// submit course data
-//
-// Potentially, add Country, and City
-// async function submitCourseData() {
-//   try {
-//     const res = await useFetch<IAuthResponse, ICourse>("/course/add", "POST");
-
-//     // bad 401
-//     // shouldnt have to technially check for bad 401 response
-//     if (res === 401) {
-//       routeTo("/login", router);
-//     } else if (res === undefined) {
-//       throw new Error();
-//     }
-//     // good
-//     else {
-//       // check for success
-//       if (res.success) {
-//         // success route back to games
-//         routeTo("/games", router);
-//       } else {
-//       }
-//     }
-//     console.log("Test output of scorecard submit: ");
-//   } catch (error) {
-//     console.log("error in submit Course Data: ", error);
-//   }
-// }
 
 function dropDown() {
   dropper.value = !dropper.value;

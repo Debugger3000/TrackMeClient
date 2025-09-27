@@ -148,6 +148,8 @@ async function sendShotData() {
           shotDataForm.value.end_lat,
           shotDataForm.value.end_lng
         );
+
+        console.log("SHOT distances after converting: ", distances);
         // set yards and metres in shot object
         shotDataForm.value.yards = distances.yards;
         shotDataForm.value.metres = distances.metres;

@@ -36,3 +36,13 @@ export function isNineKey(key: NineHoleKey | EightHoleKey) {
     return false;
   }
 }
+
+// give formatted time stamp
+export function formatDate(rawDate: string): string {
+  const date = new Date(rawDate);
+  return date.toLocaleDateString("en-US", {
+    month: "short", // "September"
+    day: "numeric", // 14
+    year: "numeric", // 2025
+  });
+}
