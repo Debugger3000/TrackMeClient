@@ -50,7 +50,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="border-default">
+  <section class="grow border-default overflow-y-scroll">
     <div
       v-for="(value, index) in props.gameData"
       :key="index"
@@ -67,11 +67,14 @@ onMounted(() => {
           <h4 class="m-0">{{ value.holes }}</h4>
         </div>
       </div>
-      <div class="flex items-center justify-center gap-1">
-        <h4 class="text-xl">Score: {{ value.score }}</h4>
-        <h4 v-if="value.status === 'COMPLETE'" class="text-xl">
-          ({{ value.par + value.score }})
-        </h4>
+      <div class="flex flex-col items-center justify-center">
+        <h4 class="">Score</h4>
+        <div class="flex items-center gap-1">
+          <h4>{{ value.score }}</h4>
+          <h4 v-if="value.status === 'COMPLETE'" class="">
+            ({{ value.par + value.score }})
+          </h4>
+        </div>
       </div>
 
       <div class="flex items-center justify-end pr-2">
