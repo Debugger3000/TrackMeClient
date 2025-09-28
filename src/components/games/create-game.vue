@@ -130,7 +130,7 @@ onMounted(() => {
       
 
       <section class="">
-        <div class="flex gap-5 me-border">
+        <div class="flex gap-5 border-default">
             <!-- <i class="bi bi-plus text-2xl text-black"></i> -->
             <input type="text" placeholder="Search Course..." @input="searchInput($event.target)" class="p-2 w-full"></input>
         </div>

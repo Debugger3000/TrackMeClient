@@ -99,7 +99,7 @@ router.beforeEach((_to, _from, next) => {
         <h4>{{ globalPopUp }}</h4>
       </section>
 
-      <section class="min-h-full">
+      <section class="h-full">
         <!-- Main router view here -->
         <RouterView
           class=""
