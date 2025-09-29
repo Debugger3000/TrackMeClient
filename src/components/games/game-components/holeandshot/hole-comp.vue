@@ -16,6 +16,8 @@ import type { IAuthResponse } from "../../../../types/Iauth";
 
 import mapPlugin from "../map/map-plugin.vue";
 
+import gridCard from "../helpers/grid-card.vue";
+
 const router = useRouter();
 
 const props = defineProps<{
@@ -294,6 +296,8 @@ onMounted(() => {
             <button class="p-1" v-if="edit_state" type="button">Editing</button>
           </div>
         </div>
+        
+
         <!-- strict hole data -->
         <div class="grid grid-cols-3 gap-5">
           <div class="grid-card">
@@ -303,6 +307,8 @@ onMounted(() => {
               {{ current_hole_score }}
             </h4>
           </div>
+
+          <!-- <gridCard title="Score" :data_point="current_hole_score"/> -->
 
           <div class="grid-card">
             <h4 class="card-title">Par</h4>

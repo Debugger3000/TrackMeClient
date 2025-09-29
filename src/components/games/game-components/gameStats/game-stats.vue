@@ -9,6 +9,8 @@ import { routeTo } from "../../../../router";
 import { useFetch } from "../../../../api/authFetch";
 import gameSearch from "../helpers/game-search.vue";
 import gameOverview from "../overviews/game-overview.vue";
+import type { IGame_Stats } from "../../../../types/game-stats";
+import gridCard from "../helpers/grid-card.vue";
 
 const router = useRouter();
 
@@ -56,6 +58,8 @@ function selectOption(option: string) {
   isOpen.value = false;
 }
 
+let game_stats_data = ref<IGame_Stats>();
+
 async function getGameStats() {
   // whats the first data I grab ?
   // how should I filter data ?
@@ -64,7 +68,7 @@ async function getGameStats() {
 
   try {
     // should return new game object ID so i can use it in params for new route
-    const res = await useFetch<IGameView[]>(
+    const res = await useFetch<IGame_Stats>(
       `/game/stats/${selectedOption.value}`,
       "GET"
     );
@@ -77,9 +81,9 @@ async function getGameStats() {
     }
     // good response...
     else {
-      // set course view data...
-      // console.log("Getting in progress games response: ", res);
-      //   inProgressGames.value = res;
+      // set game stats data
+      game_stats_data.value = res;
+      
       console.log("game stats returned: ", res);
     }
   } catch (error) {
@@ -91,9 +95,10 @@ async function getGameStats() {
 // Display games as card / list view to click on complete game for stats, or in-progress game
 // --------
 //
-onMounted(() => {
+onMounted(async () => {
   // call get user info...
   //   console.log("Hole in game-overview: ", props.gameData);
+  await getGameStats();
 });
 </script>
 
@@ -152,8 +157,35 @@ onMounted(() => {
     </section>
 
     <!-- stats grid area -->
-    <section class="grid grid-cols-3 gap-5">
+    <section class="grid grid-cols-3 gap-3">
       <!-- feed this a array of objects with keys [{title: string, data: string}] -->
+      <gridCard title="Game Played" :data_point="game_stats_data?.games_played!"/>
+      <gridCard title="Holes Played" :data_point="game_stats_data?.holes_played!"/>
+      <gridCard title="Total Shots" :data_point="game_stats_data?.total_shots!"/>
+
+      <!-- putt average -->
+       <gridCard title="Putt Avg" :data_point="game_stats_data?.putt_average!"/>
+      <!-- Scoring Average -->
+       <gridCard title="Score Avg" :data_point="game_stats_data?.scoring_average!"/>
+       <!-- stroke average -->
+      <gridCard title="Stroke Avg" :data_point="game_stats_data?.stroke_average!"/>
+
+      <!-- penalty percent -->
+      <gridCard title="Penalty %" :data_point="game_stats_data?.penalty_percent!"/>
+      <!-- fairways hit off tee -->
+      <gridCard title="Fairway %" :data_point="game_stats_data?.fairways_hit_off_tee!"/>
+      <!-- longest drive -->
+      <gridCard title="Long Drive" :data_point="game_stats_data?.longest_drive!"/>
+
+
+
+      <!-- Display graph here, and can swap in club data... -->
+       <!-- initial data is score percents -->
+      <section class="mt-3">
+
+      </section>
+
+
     </section>
   </section>
 </template>

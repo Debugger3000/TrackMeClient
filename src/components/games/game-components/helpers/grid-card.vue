@@ -14,7 +14,7 @@ const router = useRouter();
 
 const props = defineProps<{
   title: string;
-  data_point: string;
+  data_point: string | number;
   //   gameData: IGameView[];
   //   courseSelector?: (index: number) => void;
   //   course?: ICourseView;
@@ -34,9 +34,9 @@ onMounted(() => {
 
 <template>
   <div class="grid-card">
-    <h4 class="card-title">{{ props.title }}</h4>
-    <div class="card-divider"></div>
-    <h4 class="card-data">
+    <h4 class="card-title mb-1">{{ props.title }}</h4>
+    <div class="card-divider "></div>
+    <h4 class="card-data mt-1">
       {{ props.data_point }}
     </h4>
   </div>
