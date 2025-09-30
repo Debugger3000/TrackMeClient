@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import { onMounted, provide, ref, watch } from "vue";
+import { onMounted } from "vue";
 // import type { ICourseView } from "../../../../types/course";
-import { type IGameView } from "../../../../types/game";
+// import { type IGameView } from "../../../../types/game";
 // import { routeTo } from "../../../../router";
-import { useRouter } from "vue-router";
-import { formatDate } from "../helpers/helpers";
-import { routeTo } from "../../../../router";
-import { useFetch } from "../../../../api/authFetch";
-import gameSearch from "../helpers/game-search.vue";
-import gameOverview from "../overviews/game-overview.vue";
+// import { useRouter } from "vue-router";
 
-const router = useRouter();
+// const router = useRouter();
 
 const props = defineProps<{
   title: string;
@@ -35,7 +30,7 @@ onMounted(() => {
 <template>
   <div class="grid-card">
     <h4 class="card-title mb-1">{{ props.title }}</h4>
-    <div class="card-divider "></div>
+    <div class="card-divider"></div>
     <h4 class="card-data mt-1">
       {{ props.data_point }}
     </h4>

@@ -172,3 +172,15 @@ export const SHOTPATHSVG = {
     class: "pull-hook",
   },
 };
+
+
+
+// many games shots types /  individual game shot stats
+  export interface Indiv_Game_Shots {
+    total_shots: number;
+    average_distance: number;
+    longest_shot: number;
+    penalties_percent: number;
+    shot_paths: IShotIncoming;
+    shot_contact:  IShotContactIncoming;
+  }

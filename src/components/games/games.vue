@@ -22,7 +22,7 @@ let completedGames = ref<IGameView[]>();
 // let oldCompletedGames = ref<IGameView[]>();
 
 // for game search
-let prevDataLength = 0;
+// let prevDataLength = 0;
 
 function setGamesInjector(gameData: IGameView[]) {
   completedGames.value = gameData;

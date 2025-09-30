@@ -16,7 +16,7 @@ import type { IAuthResponse } from "../../../../types/Iauth";
 
 import mapPlugin from "../map/map-plugin.vue";
 
-import gridCard from "../helpers/grid-card.vue";
+// import gridCard from "../helpers/grid-card.vue";
 
 const router = useRouter();
 
