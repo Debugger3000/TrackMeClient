@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from "vue";
+import { inject, onMounted } from "vue";
 // import type { ICourseView } from "../../../../types/course";
 import type { IGameView } from "../../../../types/game";
 // import { routeTo } from "../../../../router";
@@ -9,15 +9,15 @@ import { useFetch } from "../../../../api/authFetch";
 
 const router = useRouter();
 
-const props = defineProps<{
-    // type: "stats" | "games";
-  //   gameData: IGameView[];
-  //   course?: ICourseView;
-//   prev_search: number;
-//   changePrevLength: (index: number) => void;
-//   setGameViewData: (gameData: IGameView[]) => void;
+// const props = defineProps<{
+//     // type: "stats" | "games";
+//   //   gameData: IGameView[];
+//   //   course?: ICourseView;
+// //   prev_search: number;
+// //   changePrevLength: (index: number) => void;
+// //   setGameViewData: (gameData: IGameView[]) => void;
 
-}>();
+// }>();
 
 // const sendGames = inject<((gameData: IGameView[]) => void) | undefined>("getGames");
 
@@ -33,7 +33,7 @@ const reset = inject<{
 let prevDataLength = 0;
 
 // Options
-const options = ["1 month", "3 months", "6 months", "This Year", "Last Year"];
+// const options = ["1 month", "3 months", "6 months", "This Year", "Last Year"];
 
 // watch(
 //   () => props.gameData,
@@ -43,16 +43,16 @@ const options = ["1 month", "3 months", "6 months", "This Year", "Last Year"];
 // );
 
 // Dropdown state
-const isOpen = ref<boolean>(false);
+// const isOpen = ref<boolean>(false);
 
-// Selected option (default: 1 month)
-const selectedOption = ref(options[0]);
+// // Selected option (default: 1 month)
+// const selectedOption = ref(options[0]);
 
-// Method to choose option
-function selectOption(option: string) {
-  selectedOption.value = option;
-  isOpen.value = false;
-}
+// // Method to choose option
+// function selectOption(option: string) {
+//   selectedOption.value = option;
+//   isOpen.value = false;
+// }
 
 async function getGameBySearch(searchValue: string) {
     try {

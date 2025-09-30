@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { onMounted, provide, ref, watch } from "vue";
+import { onMounted, provide, ref} from "vue";
 // import type { ICourseView } from "../../../../types/course";
 import { type IGameView } from "../../../../types/game";
 // import { routeTo } from "../../../../router";
 import { useRouter } from "vue-router";
-import { formatDate } from "../helpers/helpers";
+// import { formatDate } from "../helpers/helpers";
 import { routeTo } from "../../../../router";
 import { useFetch } from "../../../../api/authFetch";
 import gameSearch from "../helpers/game-search.vue";
@@ -12,16 +12,26 @@ import gameOverview from "../overviews/game-overview.vue";
 import type { IGame_Stats } from "../../../../types/game-stats";
 import gridCard from "../helpers/grid-card.vue";
 
+import polarChart from "./polar-chart.vue";
+import clubStats from "./club-stats.vue";
+
 const router = useRouter();
 
-const props = defineProps<{
-  //   gameData: IGameView[];
-  //   courseSelector?: (index: number) => void;
-  //   course?: ICourseView;
-}>();
+// const props = defineProps<{
+//   //   gameData: IGameView[];
+//   //   courseSelector?: (index: number) => void;
+//   //   course?: ICourseView;
+// }>();
 
+// main game view data...
 let games_searched = ref<IGameView[]>();
 
+// variable ref to control when a single game is choosen from search
+let game_id_choosen = ref<number>();
+
+
+// Injections
+// ---------------------------------------------------
 // game search injectors
 function setGamesInjector(gameData: IGameView[]) {
   games_searched.value = gameData;
@@ -35,6 +45,7 @@ async function resetGamesSearch() {
 
 provide("resetGames", { resetGamesSearch });
 provide("setGames", { setGamesInjector });
+// ---------------------------------------------------------
 
 // Options
 const options = ["1 month", "3 months", "6 months", "1 year", "1 year"];
@@ -157,7 +168,7 @@ onMounted(async () => {
     </section>
 
     <!-- stats grid area -->
-    <section class="grid grid-cols-3 gap-3">
+    <section v-if="game_stats_data" class="grid grid-cols-3 gap-3">
       <!-- feed this a array of objects with keys [{title: string, data: string}] -->
       <gridCard title="Game Played" :data_point="game_stats_data?.games_played!"/>
       <gridCard title="Holes Played" :data_point="game_stats_data?.holes_played!"/>
@@ -179,13 +190,23 @@ onMounted(async () => {
 
 
 
-      <!-- Display graph here, and can swap in club data... -->
-       <!-- initial data is score percents -->
-      <section class="mt-3">
-
-      </section>
+      
 
 
     </section>
+    <!-- Display graph here, and can swap in club data... -->
+       <!-- initial data is score percents -->
+      <section v-if="game_stats_data" class="mt-3">
+        <polarChart :score_distro="game_stats_data?.scores_distro!"/>
+
+      </section>
+
+      <!-- individual club stats -->
+      <section class="mt-5">
+        <clubStats :game_id="game_id_choosen" :time_filter="selectedOption"/>
+
+        
+
+      </section>
   </section>
 </template>
