@@ -187,7 +187,8 @@ async function getGameData() {
 }
 
 function routeToHere(tabClicked: string) {
-  routeTo(`/${tabClicked}`, router);
+  // routeTo(`/${tabClicked}`, router);
+  router.go(-1);
 }
 
 // -------------

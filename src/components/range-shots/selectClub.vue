@@ -7,7 +7,7 @@ const props = defineProps<{
 }>();
 
 // this will be used to filter chart to ONE CLUB at a time...
-let selectedClub = ref<IShotType>(CLUBTYPE.ThreeWood);
+let selectedClub = ref<IShotType>(CLUBTYPE.Driver);
 let toggleMenu = ref<boolean>(false);
 
 // Per club data...

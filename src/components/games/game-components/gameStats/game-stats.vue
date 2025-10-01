@@ -14,6 +14,7 @@ import gridCard from "../helpers/grid-card.vue";
 
 import polarChart from "./polar-chart.vue";
 import clubStats from "./club-stats.vue";
+import { formatDate } from "../helpers/helpers";
 
 const router = useRouter();
 
@@ -27,7 +28,7 @@ const router = useRouter();
 let games_searched = ref<IGameView[]>();
 
 // variable ref to control when a single game is choosen from search
-let game_id_choosen = ref<number>();
+let game_choosen = ref<IGameView>();
 
 
 // Injections
@@ -43,8 +44,22 @@ async function resetGamesSearch() {
   games_searched.value = undefined;
 }
 
+// game overview function
+async function setSoloGameStats(game: IGameView) {
+  game_choosen.value = game;
+
+  // set games_searched to undefined 
+  games_searched.value = undefined;
+
+  // call get solo game stats...
+  await getSoloGameStats();
+}
+
+
+
 provide("resetGames", { resetGamesSearch });
 provide("setGames", { setGamesInjector });
+provide("setSoloGameStats", { setSoloGameStats });
 // ---------------------------------------------------------
 
 // Options
@@ -70,6 +85,14 @@ function selectOption(option: string) {
 }
 
 let game_stats_data = ref<IGame_Stats>();
+
+
+async function removeGameSelected() {
+  console.log("removing selected game...");
+  game_choosen.value = undefined;
+  // re fetch game stats for whatever timeframe is selected...
+  await getGameStats();
+}
 
 async function getGameStats() {
   // whats the first data I grab ?
@@ -102,6 +125,34 @@ async function getGameStats() {
   }
 }
 
+async function getSoloGameStats() {
+
+   try {
+    // should return new game object ID so i can use it in params for new route
+    const res = await useFetch<IGame_Stats>(
+      `/game/stats/solo/${game_choosen.value?.id}`,
+      "GET"
+    );
+
+    if (res === 401) {
+      localStorage.setItem("isLoggedIn", "false");
+      routeTo("/login", router);
+    } else if (res === undefined) {
+      throw new Error("Error from get games stats res, is undefined");
+    }
+    // good response...
+    else {
+      // set game stats data
+      game_stats_data.value = res;
+      
+      console.log("game stats returned: ", res);
+    }
+  } catch (error) {
+    console.log("Error in get game stats on games stats page", error);
+  }
+
+}
+
 // -----------------
 // Display games as card / list view to click on complete game for stats, or in-progress game
 // --------
@@ -128,7 +179,7 @@ onMounted(async () => {
 
         <!-- games view -->
         <div v-if="games_searched">
-          <gameOverview v-if="games_searched" :game-data="games_searched" />
+          <gameOverview v-if="games_searched" link_type="game-stats" :game-data="games_searched" />
         </div>
       </section>
 
@@ -142,7 +193,7 @@ onMounted(async () => {
 
     <!-- another menu bar -->
     <section class="flex items-center py-3">
-      <div class="relative w-24">
+      <div v-if="!game_choosen" class="relative w-24">
         <!-- Selected option -->
         <div
           class="cursor-pointer border-default rounded p-1 bg-white shadow text-center"
@@ -163,6 +214,19 @@ onMounted(async () => {
           </div>
         </div>
       </div>
+
+      <!-- display game name and date and such if a singl game is selected ! -->
+      <section v-if="game_choosen" class="w-full">
+        <gameOverview :game-data="[game_choosen]" link_type="scorecard-link"/>
+        <div class="flex items-center justify-center mt-3"
+           @click="removeGameSelected">
+          
+            <h4 class="p-1 border-default">Remove game</h4>
+        </div>
+
+      </section>
+
+    
 
       <!-- filter data... games / holes / shots ??? -->
     </section>
@@ -203,7 +267,7 @@ onMounted(async () => {
 
       <!-- individual club stats -->
       <section class="mt-5">
-        <clubStats :game_id="game_id_choosen" :time_filter="selectedOption"/>
+        <clubStats v-if="game_stats_data" :game="game_choosen" :time_filter="selectedOption"/>
 
         
 

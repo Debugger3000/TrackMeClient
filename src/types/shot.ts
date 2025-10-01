@@ -184,3 +184,5 @@ export const SHOTPATHSVG = {
     shot_paths: IShotIncoming;
     shot_contact:  IShotContactIncoming;
   }
+
+  // maybe include array of club_types so selectClub only shows those clubs...

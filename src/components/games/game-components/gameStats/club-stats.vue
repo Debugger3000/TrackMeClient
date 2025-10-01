@@ -17,6 +17,7 @@ import {
 } from "../../../../types/shot";
 
 import gridCard from "../helpers/grid-card.vue";
+import type { IGameView } from "../../../../types/game";
 
 const router = useRouter();
 
@@ -25,7 +26,7 @@ const props = defineProps<{
   // isLoggedIn: Boolean;
   // syncStorage?: (username: string) => void;
     time_filter?: string;
-    game_id?: number;
+    game_id?: IGameView;
     // club_type: IShotType;
 
 }>();
@@ -66,7 +67,23 @@ watch(
     // ✅ Only runs when game_id changes
     else if (newGameId !== oldGameId) {
       
+      if(newGameId){
+const soloShots = async () => {
+        console.log("called async wrapper for solo game shots GRABBEr......");
+        await getSoloGameShots();
+      }
+      soloShots();
+      }
+      else{
+        const gameShots = async () => {
+        console.log("called async wrapper for solo game shots GRABBEr......");
+        await getGameShots();
+      }
+      gameShots();
+        
+      }
       console.log("game_id changed:", newGameId);
+      
       // put your second block logic here
     }
 
@@ -80,7 +97,43 @@ watch(
 async function selectClubCallBack(club: IShotType) {
   selectedClub.value = club;
 
+  if(props.game_id){
+    await getSoloGameShots();
+  }
+  else{
   await getGameShots();
+  }
+}
+
+// get game shots for a solo game
+// Per club data...
+async function getSoloGameShots() {
+  
+  try {
+    if(!props.game_id){
+        return;
+    }
+
+    const res = await useFetch<Indiv_Game_Shots>(
+      `/data/stats/game-solo/${props.game_id}?club_type=${selectedClub.value}`,
+      "GET"
+    );
+
+    if (res === 401) {
+      localStorage.setItem("isLoggedIn", "false");
+      routeTo("/login", router);
+    } else if (res === undefined) {
+      throw new Error("Error from game shots res, is undefined");
+    }
+    // good response...
+    else {
+        game_shots.value = res;
+        console.log("returned many SOLO game shots: ",res);
+      
+    }
+  } catch (error) {
+    console.log("get game shots function threw error: ", error);
+  }
 }
 
 
