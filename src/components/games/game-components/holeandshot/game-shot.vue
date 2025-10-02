@@ -224,7 +224,7 @@ onMounted(() => {
     <!-- contains specs of form (shotpath, contact, clubtype) -->
     <section class="overflow-x-auto">
       <!-- shot path div -->
-      <div class="grid grid-cols-8 h-[300px] p-1 border border-0.5 mb-3">
+      <div class="grid grid-cols-8 h-[300px] p-1 border-default mb-3">
         <!-- club type selection -->
         <section
           class="grid grid-cols-2 col-start-1 col-span-3 overflow-y-scroll">
@@ -242,7 +242,7 @@ onMounted(() => {
       </div>
 
       <!-- control buttons for club shot path -->
-      <h4 class="text-xl mb-1">Shot Shape</h4>
+      <h4 class="text-sub-header color-01 ">Shot Shape</h4>
       <section class="grid grid-flow-col auto-cols-min overflow-x-scroll mb-3">
         <div
           v-for="[_, path] in paths"

@@ -274,7 +274,7 @@ onMounted(async () => {
         v-if="inProgressGames && curData === 'games' && curView === 'current'"
         class="mt-3">
         <h4 class="section-header">Current Games</h4>
-        <game-overview :game-data="inProgressGames" />
+        <game-overview :game-data="inProgressGames" link_type="scorecard-link"/>
       </section>
 
       <!-- GAMES table / stats -->
@@ -290,7 +290,7 @@ onMounted(async () => {
         </div> -->
         </div>
         <!-- <h4 class="font-semibold pb-1">Completed Games</h4> -->
-        <game-overview :game-data="completedGames" />
+        <game-overview :game-data="completedGames" link_type="scorecard-link"/>
       </section>
 
       <!-- Games Stats -->

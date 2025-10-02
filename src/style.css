@@ -50,12 +50,7 @@ h1 {
   color: #374151;
 } */
 
-.text-01 {
-  color: #242424;
-}
-.text-02 {
-  color: #5e5e5e;
-}
+
 
 /* border gray universal */
 .me-border {
@@ -107,4 +102,76 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* app round styles */
+
+
+/* card styles */
+.bg-color-card{
+  background-color: white;
+}
+
+.card-main-border{
+  border-radius: 0.25rem; /* Tailwind rounded */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Tailwind shadow-lg */
+}
+
+
+
+
+/* text / font */
+
+.color-01{
+  color: rgb(63, 63, 63);
+}
+
+.color-light-grey{
+  color: #6B7280;
+}
+
+.text-01 {
+  color: #242424;
+}
+
+/* olor: #374151; */
+
+/* headers */
+
+
+.text-title{
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.text-sub-header{
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+
+.text-normal{
+  font-size: 1rem; 
+}
+
+.text-semibold{
+  font-weight: 600;
+}
+
+/* one of the bg's to use for shit */
+
+.bg-01 {
+  background-color: #2563EB;
+}
+
+.bg-02{
+  background-color: #991B1B;
+}
+
+.app-main-bg{
+  background-color: #E5E7EB;
+}
+
+.inner-bg{
+  background-color: #e5eef8;
 }

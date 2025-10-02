@@ -20,7 +20,7 @@ import {
 // import eightScoreBoard from "../scoreBoards/eight-score-board.vue";
 
 import holeComp from "../holeandshot/hole-comp.vue";
-import { getNineKeyFromIndex } from "../helpers/helpers";
+import { formatDate, getNineKeyFromIndex } from "../helpers/helpers";
 import type { IGameObjectReturn } from "../../../../types/game";
 import NineScoreBoard from "../scoreBoards/nine-score-board.vue";
 const router = useRouter();
@@ -202,7 +202,7 @@ onMounted(async () => {
   <section class="">
     <!-- top bar on page -->
 
-    <section class="flex items-center justify-between bg-green-800 p-2">
+    <section class="flex items-center justify-between p-2 bg-color-card">
       <div class="flex items-center justify-center">
         <button
           @click="
@@ -210,36 +210,36 @@ onMounted(async () => {
               routeToHere('games');
             }
           "
-          class="font-semibold text-xs rounded border text-white bg-green-700 p-1">
-          <i class="bi bi-arrow-left text-2xl text-white"></i>
+          class="font-semibold text-xs rounded border text-white bg-gray-300 p-1">
+          <i class="bi bi-arrow-left text-2xl color-01"></i>
         </button>
       </div>
 
-      <h2 class="font-semibold text-white text-3xl">GameView</h2>
+      <h2 class="font-semibold color-01 text-xl">GameView</h2>
     </section>
 
     <!-- main section of page... -->
 
-    <section class="mt-3 p-4">
-      <section class="border-default p-2">
-        <h4 class="text-02 font-bold text-3xl">
+    <section class="mt-3 px-4">
+      <section class="p-2 bg-color-card card-main-border">
+        <h4 class="text-01 text-title mb-0">
           {{ game_data?.course.club_name }}
         </h4>
         <h4
           v-if="game_data?.course.course_name"
-          class="text-01 font-semibold text-2xl">
+          class="color-light-grey text-normal">
           {{ game_data?.course.course_name }}
         </h4>
-        <h4 class="text-02 font-semibold text-xl">
+        <h4 class="color-01">
           {{ game_data?.course.location }}
         </h4>
-        <h4 class="font-semibold text-xl">{{ game_data?.date }}</h4>
-        <h4 class="text-xl font-semibold">Par: {{ game_data?.course.par }}</h4>
-        <h4 class="text-xl font-semibold">Score: {{ game_data?.score }}</h4>
+        <h4 class="text-01 text-normal">{{ formatDate(game_data?.date!) }}</h4>
+        <h4 class="text-01 text-normal">Par: {{ game_data?.course.par }}</h4>
+        <h4 class="text-01 text-normal">Score: {{ game_data?.score }}</h4>
       </section>
 
       <!-- Display scorecard, probably 9 over 9 for mobile -->
-      <section v-if="game_data" class="mt-5">
+      <section v-if="game_data" class="mt-3">
         <NineScoreBoard
           :card-data="score_card!"
           :hole-data="hole_data!"
@@ -249,7 +249,7 @@ onMounted(async () => {
       </section>
 
       <!-- Hole data, depending on what hole you are currently on... -->
-      <section v-if="game_data && current_hole" class="mt-5">
+      <section v-if="game_data && current_hole" class="mt-3">
         <holeComp
           :game_status="game_data?.status!"
           :current_hole="current_hole!"

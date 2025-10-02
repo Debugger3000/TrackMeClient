@@ -15,6 +15,9 @@ const props = defineProps<{
   //   course?: ICourseView;
 }>();
 
+// link_type="scorecard-link"
+// link_type="game-stats"
+
 watch(
   () => props.gameData,
   () => {

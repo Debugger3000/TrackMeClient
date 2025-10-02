@@ -5,7 +5,7 @@
   align-items: center;
   padding: 0.5rem; /* Tailwind p-2 */
   border-radius: 0.25rem; /* Tailwind rounded */
-  border: 0.5px solid #9ca3af; /* Tailwind border-gray-400 + border-0.5 */
+  /* border: 0.5px solid #9ca3af; Tailwind border-gray-400 + border-0.5 */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Tailwind shadow-lg */
 }
 
@@ -31,12 +31,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem; /* size of circle */
-  height: 2rem;
+  width: 3rem; /* size of circle */
+  height: 3rem;
   border-radius: 50%; /* makes it a circle */
   font-weight: 600;
-  font-size: 1rem;
-  color: #374151;
+  /* color: #374151; */
 }
 
 /* ------- */
