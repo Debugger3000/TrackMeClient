@@ -15,7 +15,6 @@ import { routeTo } from "../../../../router";
 import type { IAuthResponse } from "../../../../types/Iauth";
 
 import mapPlugin from "../map/map-plugin.vue";
-import gridCard from "../helpers/grid-card.vue";
 import GridCard from "../helpers/grid-card.vue";
 
 // import gridCard from "../helpers/grid-card.vue";

@@ -14,7 +14,6 @@ import gridCard from "../helpers/grid-card.vue";
 
 import polarChart from "./polar-chart.vue";
 import clubStats from "./club-stats.vue";
-import { formatDate } from "../helpers/helpers";
 
 const router = useRouter();
 

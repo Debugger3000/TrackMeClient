@@ -186,7 +186,7 @@ async function getGameData() {
   }
 }
 
-function routeToHere(tabClicked: string) {
+function routeToHere() {
   // routeTo(`/${tabClicked}`, router);
   router.go(-1);
 }
@@ -229,7 +229,7 @@ onMounted(async () => {
     <section class="flex items-center justify-between p-2 bg-color-card">
       <div>
         <button
-          @click="{ routeToHere('games'); }"
+          @click="{ routeToHere(); }"
           class="font-semibold text-xs rounded border text-white bg-gray-300 p-1">
           <i class="bi bi-arrow-left text-2xl color-01"></i>
         </button>

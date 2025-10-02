@@ -178,7 +178,7 @@ async function getGameData() {
   }
 }
 
-function routeToHere(tabClicked: string) {
+function routeToHere() {
   // routeTo(`/${tabClicked}`, router);
   router.go(-1);
 }
@@ -207,7 +207,7 @@ onMounted(async () => {
         <button
           @click="
             {
-              routeToHere('games');
+              routeToHere();
             }
           "
           class="font-semibold text-xs rounded border text-white bg-gray-300 p-1">
