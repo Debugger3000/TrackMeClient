@@ -90,7 +90,7 @@ router.beforeEach((_to, _from, next) => {
         </div>
       </nav>
     </header> -->
-    <main class="relative overflow-y-auto">
+    <main class="relative h-[90%] overflow-y-auto app-main-bg">
       <!-- global pop up... -->
       <section
         v-if="globalPopUp"
@@ -113,7 +113,7 @@ router.beforeEach((_to, _from, next) => {
     <!-- Navigation bar at bottom of screen -->
     <section
       v-if="isLoggedIn.valueOf() === 'true'"
-      class="grid grid-cols-4 bg-gray-800">
+      class="h-[10%] grid grid-cols-4 bg-gray-800">
       <!-- home tab -->
       <div
         v-for="value in navBar"

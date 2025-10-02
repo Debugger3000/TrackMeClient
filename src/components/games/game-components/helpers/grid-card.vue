@@ -28,7 +28,7 @@ onMounted(() => {
 <style src="../holeandshot/mainstyles.css"></style>
 
 <template>
-  <div class="grid-card">
+  <div class="grid-card bg-color-card">
     <h4 class="card-title mb-1">{{ props.title }}</h4>
     <div class="card-divider"></div>
     <h4 class="card-data mt-1">

@@ -14,6 +14,7 @@ import gameShot from "./game-shot.vue";
 import { routeTo } from "../../../../router";
 import { useFetch } from "../../../../api/authFetch";
 import type { IAuthResponse } from "../../../../types/Iauth";
+import gridCard from "../helpers/grid-card.vue";
 
 const router = useRouter();
 
@@ -178,12 +179,12 @@ onMounted(() => {
 <style src="./mainstyles.css"></style>
 
 <template>
-  <section class="">
+  <section class="mt-3">
     <!-- <div class="flex justify-between items-center mb-3 border-b pb-1">
       <h4 class="text-2xl">Shots</h4>
     </div> -->
-    <div class="flex justify-between">
-      <h4 v-if="props.current_shots.length === 0" class="text-2xl mb-1">
+    <div v-if="props.current_shots.length === 0"  class="flex justify-between bg-color-card card-main-border p-2">
+      <h4 class="text-2xl mb-1">
         No Shots recorded
       </h4>
     </div>
@@ -191,14 +192,19 @@ onMounted(() => {
     <!-- display list of shots (block 1, block 2, block 3) -->
     <!-- grid grid-flow-col auto-cols-min overflow-x-scroll rounded border border-0.5 border-gray-200 -->
     <!-- min-w-[100px] text-center p-1 -->
-    <div v-if="props.current_shots?.length > 0" class="flex justify-between">
+    <div v-if="props.current_shots?.length > 0" class="flex justify-between p-2">
       <div class="flex gap-1 items-center">
         <div
           v-for="(value, index) in props.current_shots"
-          class="border-default"
+          class=""
           id="shots-circles"
           @click="changeCurrentShot(index)"
-          :class="{ 'bg-gray-300': currentShot === index }">
+          :class="{
+            'bg-01': currentShot === index,
+            'text-white': currentShot === index,
+            ' bg-color-card card-main-border': currentShot !== index,
+            'color-01': currentShot !== index
+          }">
           {{ value.shot_count }}
         </div>
       </div>
@@ -212,9 +218,9 @@ onMounted(() => {
     <!-- display whatever shot data selected here... -->
     <section
       v-if="props.current_shots?.length > 0 && displayShot"
-      class="border-t rounded border-0.5 border-gray-400 mt-1 py-3 hover:cursor-pointer relative">
-      <div class="flex justify-between items-center">
-        <h4 class="section-header">
+      class="mt-1 hover:cursor-pointer relative bg-color-card card-main-border p-2">
+      <div class="flex justify-between items-center mb-2">
+        <h4 class="text-sub-header color-01">
           Shot {{ props.current_shots[currentShot].shot_count }}
         </h4>
 
@@ -225,8 +231,8 @@ onMounted(() => {
             props.hole_data?.hole_number === game_hole_state &&
             game_status === 'IN-PROGRESS'
           ">
-          <button class="p-1 rounded" @click="switchDeletePopUp()">
-            <i class="bi bi-trash text-red-800 text-3xl"></i>
+          <button class="rounded" @click="switchDeletePopUp()">
+            <i class="bi bi-trash text-red-800 rounded-xl text-2xl"></i>
           </button>
         </div>
       </div>
@@ -258,53 +264,12 @@ onMounted(() => {
 
       <!-- section for shot details -->
       <div class="grid grid-cols-3 gap-5">
-        <div class="grid-card">
-          <h4 class="card-title">Club</h4>
-          <div class="card-divider"></div>
-          <h4 class="card-data">
-            {{ props.current_shots[currentShot].club_type }}
-          </h4>
-        </div>
-
-        <div class="grid-card">
-          <h4 class="card-title">Land</h4>
-          <div class="card-divider"></div>
-          <h4 class="card-data">
-            {{ props.current_shots[currentShot].land_type }}
-          </h4>
-        </div>
-
-        <div class="grid-card">
-          <h4 class="card-title">Contact</h4>
-          <div class="card-divider"></div>
-          <h4 class="card-data">
-            {{ props.current_shots[currentShot].shot_contact }}
-          </h4>
-        </div>
-
-        <div class="grid-card">
-          <h4 class="card-title">Path</h4>
-          <div class="card-divider"></div>
-          <h4 class="card-data">
-            {{ props.current_shots[currentShot].shot_path }}
-          </h4>
-        </div>
-
-        <div class="grid-card">
-          <h4 class="card-title">Distance</h4>
-          <div class="card-divider"></div>
-          <h4 class="card-data">
-            {{ props.current_shots[currentShot].yards }} yards
-          </h4>
-        </div>
-
-        <div class="grid-card">
-          <h4 class="card-title">Distance</h4>
-          <div class="card-divider"></div>
-          <h4 class="card-data">
-            {{ props.current_shots[currentShot].metres }} metres
-          </h4>
-        </div>
+        <gridCard class="inner-bg" title="Club" :data_point="props.current_shots[currentShot].club_type!"/>
+        <gridCard class="inner-bg"  title="Lie" :data_point="props.current_shots[currentShot].land_type!"/>
+        <gridCard class="inner-bg"  title="Contact" :data_point="props.current_shots[currentShot].shot_contact!"/>
+        <gridCard class="inner-bg"  title="Path" :data_point="props.current_shots[currentShot].shot_path!"/>
+        <gridCard class="inner-bg"  title="Yards" :data_point="props.current_shots[currentShot].yards!"/>
+        <gridCard class="inner-bg"  title="Metres" :data_point="props.current_shots[currentShot].metres!"/>
       </div>
     </section>
 
@@ -315,8 +280,8 @@ onMounted(() => {
           props.hole_data?.hole_number === game_hole_state) &&
         game_status === 'IN-PROGRESS'
       "
-      class="border-t rounded border-0.5 border-gray-400 py-3">
-      <div class="flex justify-between py-1">
+      class="mt-3 p-2 bg-color-card card-main-border">
+      <div class="flex justify-between">
         <h4 class="section-header">Add Shot</h4>
 
         <div

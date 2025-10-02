@@ -15,6 +15,8 @@ import { routeTo } from "../../../../router";
 import type { IAuthResponse } from "../../../../types/Iauth";
 
 import mapPlugin from "../map/map-plugin.vue";
+import gridCard from "../helpers/grid-card.vue";
+import GridCard from "../helpers/grid-card.vue";
 
 // import gridCard from "../helpers/grid-card.vue";
 
@@ -276,8 +278,8 @@ onMounted(() => {
 <template>
   <section class="">
     <div class="">
-      <div class="flex justify-between items-center" @click="dropDown('hole')">
-        <h4 v-if="props.current_hole" class="section-header">
+      <div class="flex justify-between items-center bg-color-card card-main-border p-2" @click="dropDown('hole')">
+        <h4 v-if="props.current_hole" class="text-sub-header color-01 mb-1">
           Hole {{ props.current_hole.hole_number }}
         </h4>
         <i v-if="!holeDrop" class="bi bi-plus text-3xl"></i>
@@ -299,53 +301,32 @@ onMounted(() => {
         
 
         <!-- strict hole data -->
-        <div class="grid grid-cols-3 gap-5">
-          <div class="grid-card">
-            <h4 class="card-title">Score</h4>
-            <div class="card-divider"></div>
-            <h4 class="card-data">
-              {{ current_hole_score }}
-            </h4>
-          </div>
-
-          <!-- <gridCard title="Score" :data_point="current_hole_score"/> -->
-
-          <div class="grid-card">
-            <h4 class="card-title">Par</h4>
-            <div class="card-divider"></div>
-            <h4 v-if="props.current_hole" class="card-data">
-              {{ props.current_hole.par }}
-            </h4>
-          </div>
-
-          <div class="grid-card">
-            <h4 class="card-title">Putts</h4>
-            <div class="card-divider"></div>
-            <h4 v-if="props.current_hole" class="card-data">
-              {{ props.current_hole.putt_count }}
-            </h4>
-          </div>
-        </div>
+        <div class="grid grid-cols-3 gap-5 mt-3">
+        <GridCard class="" title="Score" :data_point="current_hole_score"/>
+        <GridCard class="" title="Par" :data_point="props.current_hole.par"/>
+        <GridCard class="" title="Putts" :data_point="props.current_hole.putt_count"/>
+        </div> 
 
         <!-- putts count / drop down -->
         <!--  -->
-        <section class="" v-if="allow_prev_holes_edit">
+        <section class="bg-color-card card-main-border mt-3 p-2" v-if="allow_prev_holes_edit">
           <div class="" @click="dropDown('putt')">
-            <h4 class="text-2xl mb-1">Putts</h4>
-            <div class="grid grid-cols-7">
+            <h4 class="text-sub-header color-01 mb-2">Putts</h4>
+            <div class="grid grid-cols-7 gap-1">
               <div
                 v-for="value in putts"
-                class="flex justify-center items-center p-2 rounded border"
-                :class="{ 'bg-gray-400': holeForm.putt_count === value }"
+                class="flex justify-center items-center p-2 rounded"
+                :class="{ 'bg-01': holeForm.putt_count === value, 'text-white': holeForm.putt_count === value }"
                 @click="changePuttCount(value)">
                 {{ value }}
               </div>
             </div>
           </div>
         </section>
+      
 
         <!-- shots drop down -->
-        <section class="mt-5" @click="dropDown('shot')">
+        <section class="mt-3" @click="dropDown('shot')">
           <div class="">
             <shot-component
               :edit_state="edit_state"
@@ -356,12 +337,13 @@ onMounted(() => {
 
         <!-- map shot comp -->
         <map-plugin
+        class=" bg-color-card card-main-border p-2 mt-3"
           v-if="props.current_shots"
           :current_shots="props.current_shots" />
 
         <!-- notes -->
-        <section v-if="allow_prev_holes_edit" class="mt-5">
-          <h4 class="section-header">Notes</h4>
+        <section v-if="allow_prev_holes_edit" class="mt-3 bg-color-card card-main-border p-2">
+          <h4 class="text-sub-header color-01 ">Notes</h4>
           <textarea
             v-model="holeForm.notes"
             class="p-1 border-default w-full"
@@ -371,9 +353,9 @@ onMounted(() => {
         <!-- display notes for previous holes or what not -->
         <section
           v-if="props.current_hole.notes && ((props.current_hole?.hole_number < game_hole_state! && !edit_state) || game_status === 'COMPLETE')"
-          class="mt-5">
-          <h4 class="section-header">Notes</h4>
-          <p class="p-1 border-default w-full" placeholder="Hole notes...">
+          class="mt-3 bg-color-card card-main-border p-2">
+          <h4 class="text-sub-header color-01 ">Notes</h4>
+          <p class="p-1 border-default w-full color-light-gray" placeholder="Hole notes...">
             {{ props.current_hole.notes }}
           </p>
         </section>
@@ -385,7 +367,7 @@ onMounted(() => {
               edit_state) &&
             props.game_status === 'IN-PROGRESS'
           ">
-          <div class="flex justify-center p-2 rounded border bg-blue-300 mt-3">
+          <div class="flex justify-center p-2 rounded bg-01 text-white mt-3">
             <button v-if="!edit_state" type="button" @click="submitHole">
               Next Hole!
             </button>

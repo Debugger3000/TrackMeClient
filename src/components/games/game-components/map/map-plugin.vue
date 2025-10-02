@@ -143,7 +143,7 @@ onMounted(async () => {
 <!-- This component will run leaflet with openstreetmaps API inputing tile data -->
 <template>
   <!-- Map plugin-->
-  <section class="border-t rounded border-0.5 border-gray-400 mt-1">
+  <section class="">
     <div class="flex justify-between items-center py-3" @click="dropDown()">
       <h4 class="section-header">Map</h4>
       <i v-if="!dropper" class="bi bi-plus text-3xl"></i>
