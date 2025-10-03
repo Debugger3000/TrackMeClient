@@ -41,7 +41,7 @@ const router = createRouter({
 });
 
 function routeTo(route: string, router: Router) {
-  router.replace(route);
+  router.push(route);
 }
 
 export { router, routeTo };
