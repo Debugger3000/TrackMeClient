@@ -35,14 +35,14 @@ onMounted(() => {});
     <section class="relative w-full">
       <div
         @click="callToggleMenu"
-        class="flex items-center gap-3 border rounded bg-gray-600 w-fit p-1 hover:cursor-pointer">
-        <h4 class="font-semibold text-xl text-white">{{ selectedClub }}</h4>
+        class="flex items-center gap-3 border-default rounded button-light-blue w-fit p-1 hover:cursor-pointer">
+        <h4 class="font-semibold text-xl">{{ selectedClub }}</h4>
         <i
           v-if="!toggleMenu"
-          class="bi bi-arrow-down text-xl text-white border-l"></i>
+          class="bi bi-arrow-down text-xl color-light-grey border-l"></i>
         <i
           v-if="toggleMenu"
-          class="bi bi-arrow-up text-xl text-white border-l"></i>
+          class="bi bi-arrow-up text-xl color-light-grey border-l"></i>
       </div>
 
       <section

@@ -46,23 +46,16 @@ onMounted(() => {
 
 <template>
   <!-- Home page -->
-  <section class="p-2">
+  <section class="">
     <!-- display contact stats -->
-    <section class="flex justify-between items-center mt-5 border-b pb-1">
-      <div class="">
-        <h4 class="font-semibold text-3xl text-gray-200">Profile</h4>
-      </div>
-
-      <div v-if="username.valueOf()">
-        <h4 class="text-2xl text-red-800">{{ username.valueOf() }}</h4>
-      </div>
-    </section>
-
-    <!-- bottom page, logout -->
-    <section class="flex justify-center items-center">
-      <div class="bg-blue-400 p-1 rounded border">
+    <section class="flex justify-between items-center bg-01 p-2">
+      <h4 class="font-semibold text-3xl text-white">Profile</h4>
+      <div class="text-white rounded-lg">
         <button @click="logout">Logout</button>
       </div>
+      <!-- <div v-if="username.valueOf()">
+        <h4 class="text-2xl text-red-800">{{ username.valueOf() }}</h4>
+      </div> -->
     </section>
   </section>
 </template>

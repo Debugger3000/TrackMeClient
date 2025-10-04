@@ -29,6 +29,11 @@ let selectedCourse = ref<ICourseView>();
 //   routeTo(tabClicked, router);
 // }
 
+function routeToHere(tabClicked: string) {
+  routeTo(tabClicked, router);
+}
+
+
 function searchInput(value: EventTarget | null) {
     console.log("new search input is: ", value);
     if(value){
@@ -112,44 +117,57 @@ onMounted(() => {
   <!-- Home page -->
   <section class="">
     <!-- top bar on page -->
-    <section class="flex justify-between bg-green-800 p-2">
+    <section class="flex justify-between items-center bg-01 px-4 pt-4 pb-2">
       <div class="">
-        <h4 class="font-semibold text-3xl text-white">Courses</h4>
+        <button
+          @click="
+            {
+              routeToHere('games');
+            }
+          "
+          class="">
+          <i class="bi bi-arrow-left text-2xl text-white"></i>
+        </button>
       </div>
+      <h4 class="font-semibold text-3xl text-white">Create Game</h4>
+      
     </section>
 
     <!-- main section of page... -->
-    <section class="mt-5 p-4 me-border">
+    <section class="px-4 pt-2">
+
       <!-- other functionality above table -->
-      <section class="justify-center items-center">
-        <div class="text-center mb-3">
-          <h4 class="font-semibold text-3xl">Create Game</h4>
+
+     
+      
+      
+
+
+
+
+      <section class="justify-center items-center pb-3">
+        
+          <!-- <h4 class="section-header">Create Game</h4> -->
+          <div class="flex gap-5 bg-white shadow-lg rounded-lg">
+            <!-- <i class="bi bi-plus text-2xl text-black"></i> -->
+            <input type="text" placeholder="Search Course..." @input="searchInput($event.target)" class="p-4 w-full"></input>
         </div>
       </section>
 
       
 
       <section class="">
-        <div class="flex gap-5 border-default">
-            <!-- <i class="bi bi-plus text-2xl text-black"></i> -->
-            <input type="text" placeholder="Search Course..." @input="searchInput($event.target)" class="p-2 w-full"></input>
-        </div>
         <!-- search results are here -->
-        <section v-if="!courseSelected" class="me-border active:bg-gray-300">
+        <section v-if="!courseSelected" class="active:bg-gray-300">
             <course-overview :course-data="courseData" :course-selector="coursePicked" class="active:bg-gray-300"/>
         </section>
-
-
-        <h4 class="mb-3 mt-5 text-xl text-center font-semibold">Selected Course</h4>
-        <!-- display chosen course... -->
-      <section v-if="selectedCourse">
-        
-        <course-overview :course="selectedCourse"/>
       </section>
 
-      <!-- button - START GAME -->
-      <div class="flex justify-center mt-3">
-        <button class="p-2 border bg-red-600 text-white" type="button" @click="createGame">Create Game</button>
+      <section v-if="selectedCourse">
+        <course-overview :course="selectedCourse"/>
+         <!-- button - START GAME -->
+      <div v-if="selectedCourse" class="flex justify-center mt-3">
+        <button class="bg-orange-800 rounded-lg text-white" type="button" @click="createGame">Create Game</button>
       </div>
       </section>
 

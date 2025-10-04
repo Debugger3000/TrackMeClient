@@ -78,28 +78,38 @@ onMounted(() => {
 
 <template>
   <!-- Register form -->
+   <section class="">
+    <div class="flex items-center gap-3 p-2 bg-01">
+      <i class="bi bi-amd text-2xl text-white"></i>
+      <h4 class="text-3xl font-semibold text-white">TrackMe</h4>
+    </div>
+    
+
+    <section class="border-default rounded p-4 mt-16 mx-16">
+
  
     <!-- form -->
-    <form @submit.prevent="registerSubmit" class="flex flex-col justify-center border rounded p-4">
-        <legend class="font-semibold text-4xl text-green-800">Register</legend>
+    <form @submit.prevent="registerSubmit" class="flex flex-col justify-center">
+        <legend class="font-semibold text-2xl text-center color-01">Register</legend>
         <!-- username -->
         <h4 class="font-semibold mb-1 mt-5">Username</h4>
-        <input v-model="registerForm.username" type="text" class="border rounded p-1"></input>
+        <input v-model="registerForm.username" type="text" class="border-default rounded p-1"></input>
 
         <!-- password -->
-        <h4 class="font-semibold mb-1 mt-5">Password</h4>
-        <input v-model="registerForm.password" type="text" class="border rounded p-1"></input>
+        <h4 class="font-semibold mb-1 mt-3">Password</h4>
+        <input v-model="registerForm.password" type="text" class="border-default rounded p-1"></input>
         <!-- submit -->
-        <section class="mt-5 flex justify-center">
+        <section class="mt-3 flex justify-center">
             <div class="">
-                <button type="submit" class="bg-green-800 text-xl p-2 rounded font-semibold">Submit</button>
+                <button type="submit" class="bg-01 rounded-lg text-white">Submit</button>
             </div>
         </section>
     </form>
 
-    <div class="flex justify-center mt-5 border-top">
-  <button @click="routeTo('/login', router)">Login</button>
+    <div class="flex justify-center mt-3 border-t border-gray-300">
+      <button @click="routeTo('/login', router)">Login</button>
     </div>
-  
-  <!-- <button @click="increment">Count is: {{ count }}</button> -->
+
+    </section>
+  </section>
 </template>

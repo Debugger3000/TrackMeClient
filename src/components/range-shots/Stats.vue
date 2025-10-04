@@ -165,20 +165,21 @@ onUnmounted(() => {
 </script>
 
 <style src="./shotshape.css"></style>
+<style src="../games//game-components//holeandshot/mainstyles.css"></style>
 
 <template>
   <!-- Stats page page -->
-  <section class="p-2 overflow-x-auto">
+  <section class="p-2 overflow-x-auto bg-white shadow-md rounded">
     <!-- contains specs of form (shotpath, contact, clubtype) -->
     <section class="overflow-x-auto">
       <!-- shot path div -->
       <div class="grid grid-cols-8">
         <!-- Contact type -->
-        <section class="col-start-1 col-span-2 grid grid-rows-5 mb-4">
+        <section class="col-start-1 col-span-2 grid grid-rows-5">
           <div
             class="shot-path-buttons"
             v-for="[_, contact] in contacts"
-            :class="{ 'bg-gray-400': curContactType === `${contact}` }">
+            :class="{ 'button-light-blue': curContactType === `${contact}` }">
             <button @click="changeContact(contact)" class="w-full h-full">
               {{ contact }}
             </button>
@@ -188,11 +189,11 @@ onUnmounted(() => {
       </div>
 
       <!-- control buttons for club shot path -->
-      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll py-2">
+      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll mt-3 rounded">
         <div
           v-for="[_, path] in paths"
           class="shot-path-buttons min-w-[75px]"
-          :class="{ 'bg-gray-400': curShotPath === `${path}` }">
+          :class="{ 'button-light-blue': curShotPath === `${path}` }">
           <button @click="changePath(path)" class="w-full h-full">
             {{ path }}
           </button>
@@ -200,11 +201,11 @@ onUnmounted(() => {
       </section>
 
       <!-- club type selection -->
-      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll py-2">
+      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll mt-3 rounded">
         <div
           class="shot-path-buttons min-w-[75px]"
           v-for="[_, club] in clubs"
-          :class="{ 'bg-gray-400': curClubType === `${club}` }">
+          :class="{ 'button-light-blue': curClubType === `${club}` }">
           <button @click="changeClub(club)" class="w-full h-full">
             {{ club }}
           </button>
@@ -212,18 +213,18 @@ onUnmounted(() => {
       </section>
 
       <!-- error -->
-      <section class="p-2">
-        <h4 v-if="message" class="font-semibold text-red-800">{{ message }}</h4>
+      <section v-if="message"  class="p-2">
+        <h4 class="font-semibold text-red-800 text-center">{{ message }}</h4>
       </section>
 
       <!-- submit button -->
-      <section class="flex justify-center mt-4">
+      <section class="flex justify-center mt-3">
         <button
           :disabled="loading"
           @click="submitShot"
-          class="p-4 rounded-xl mt-4 text-white"
+          class="bg-01 rounded-lg text-white"
           :class="{ 'bg-gray-400': loading, 'bg-red-800': !loading }">
-          Submit
+          Add Shot
         </button>
       </section>
     </section>

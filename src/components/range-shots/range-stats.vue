@@ -17,6 +17,8 @@ import {
 } from "../../types/shot";
 import donut from "./donut.vue";
 
+import gridCard from "../games/game-components/helpers/grid-card.vue";
+
 const router = useRouter();
 
 // const props = defineProps<{
@@ -134,33 +136,27 @@ onMounted(() => {
       <h2 class="text-2xl">islogger, {{ isLoggedIn }}</h2>
     </div> -->
 
-    <section class="flex justify-between items-center mb-1">
+    <section class="p-2">
       <!-- select club to show stats for... -->
       <!-- callback to this component to set selected Club... -->
       <selectClub :change-club="selectClubCallBack" />
 
-      <div class="flex items-center gap-1 p-2">
-        <h4 class="section-header">Total Shots:</h4>
-        <h4 class="section-header">
-          {{ contactData.total }}
-        </h4>
+      <div class="mt-2 grid grid-cols-2 gap-5">
+        <gridCard title="Club Type" :data_point="shotsData.clubType" />
+        <gridCard title="Total Shots" :data_point="contactData.total" />
       </div>
+
+      <section class="mt-2 grid-card bg-white">
+        <h4 class="font-semibold color-1 text-xl text-center">Contact</h4>
+        <donut :contact-data="contactData" />
+      </section>
     </section>
 
-    <section class="mt-5">
-      <div class="border-b pb-1">
-        <h4 class="font-semibold text-3xl text-02">Path</h4>
+    <section class="pt-1 px-2">
+      <div class="grid-card bg-white">
+        <h4 class="font-semibold text-xl color-01">Path</h4>
+        <bar :path-data="shotsData" />
       </div>
-      <!-- display path stats -->
-      <bar :path-data="shotsData" />
-    </section>
-
-    <!-- display contact stats -->
-    <section class="mt-5">
-      <div class="border-b pb-1">
-        <h4 class="font-semibold text-3xl text-02">Contact</h4>
-      </div>
-      <donut :contact-data="contactData" />
     </section>
   </section>
 </template>

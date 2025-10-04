@@ -1,7 +1,47 @@
+
+
 @import "tailwindcss";
+
+/* font face imports */
+
+@font-face {
+  font-family: "PlusJakarta";
+  src: url("/src/assets/fonts/PlusJakartaSans-Regular.ttf") format("truetype");
+  font-weight: 400; /* normal */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PlusJakarta";
+  src: url("/src/assets/fonts/PlusJakartaSans-Medium.ttf") format("truetype");
+  font-weight: 500; /* medium */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PlusJakarta";
+  src: url("/src/assets/fonts/PlusJakartaSans-SemiBold.ttf") format("truetype");
+  font-weight: 600; /* semibold */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PlusJakarta";
+  src: url("/src/assets/fonts/PlusJakartaSans-Bold.ttf") format("truetype");
+  font-weight: 700; /* bold */
+  font-style: normal;
+}
 
 * {
   box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  /* color: rgb(63, 63, 63); */
 }
 
 html {
@@ -9,7 +49,7 @@ html {
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* font-family: system-ui, Avenir, Helvetica, Arial, sans-serif; */
   line-height: 1.5;
   font-weight: 400;
 
@@ -36,6 +76,7 @@ a:hover {
 
 body {
   margin: 0;
+  font-family: "PlusJakarta", sans-serif;
   /* display: flex; */
   /* place-items: center; */
   /* min-width: 320px; */
@@ -50,8 +91,6 @@ h1 {
   color: #374151;
 } */
 
-
-
 /* border gray universal */
 .me-border {
   border: 1px rgb(143, 143, 143) solid;
@@ -60,18 +99,39 @@ h1 {
 
 button {
   /* border-radius: 8px; */
-  border: 1px solid transparent;
-  /* padding: 0.6em 1.2em; */
-  margin: 0;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  /* background-color: #1a1a1a; */
+  /* border: 1px solid transparent; */
+  /* margin: 0; */
+  font-weight: 600;
+  /* border-radius: 0.125rem;  */
+  /* box-shadow: 
+  0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  0 2px 4px -2px rgba(0, 0, 0, 0.1); */
   cursor: pointer;
+  padding: 0.5rem 0.25rem;
   /* transition: border-color 0.25s; */
+
+  /* border-radius: 0.375rem;  */
+  /* border-radius: 0.5rem; 8px */
 }
+button:active{
+  scale: 1.05;
+}
+
+/* circle button  */
+.circle-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem; /* size of circle */
+  height: 2.5rem;
+  border-radius: 50%; /* makes it a circle */
+  font-weight: 600;
+  /* color: #374151; */
+}
+
+
 button:hover {
-  border: 1px solid transparent;
+  /* border: 1px solid transparent; */
   /* border-color: #646cff; */
   cursor: pointer;
 }
@@ -106,72 +166,97 @@ button:focus-visible {
 
 /* app round styles */
 
-
 /* card styles */
-.bg-color-card{
+.bg-color-card {
   background-color: white;
 }
 
-.card-main-border{
+.card-main-border {
   border-radius: 0.25rem; /* Tailwind rounded */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Tailwind shadow-lg */
 }
 
-
-
+#footer-menu {
+  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+}
 
 /* text / font */
 
-.color-01{
+.color-01 {
   color: rgb(63, 63, 63);
 }
 
-.color-light-grey{
-  color: #6B7280;
+.color-light-grey {
+  color: #6b7280;
 }
 
 .text-01 {
   color: #242424;
 }
 
+.text-main-theme {
+  color: #2563eb;
+}
+
 /* olor: #374151; */
 
 /* headers */
 
-
-.text-title{
+.text-title {
   font-size: 2rem;
   font-weight: 600;
 }
 
-.text-sub-header{
+.text-sub-header {
   font-size: 1.5rem;
   font-weight: 600;
 }
 
-
-.text-normal{
-  font-size: 1rem; 
+.text-normal {
+  font-size: 1rem;
 }
 
-.text-semibold{
+.text-semibold {
   font-weight: 600;
 }
 
 /* one of the bg's to use for shit */
 
 .bg-01 {
-  background-color: #2563EB;
+  background-color: #2563eb;
 }
 
-.bg-02{
-  background-color: #991B1B;
+.bg-light-gray{
+
 }
 
-.app-main-bg{
-  background-color: #E5E7EB;
+
+.bg-02 {
+  background-color: #991b1b;
 }
 
-.inner-bg{
+.app-main-bg {
+  background-color: #e5e7eb;
+  background-color: #ebf2f5;
+}
+
+.inner-bg {
   background-color: #e5eef8;
 }
+
+
+/* toggle button */
+.toggle-button{
+  background-color: #b4becd
+}
+
+/* light blue button with blue text */
+.button-light-blue{
+  background-color: #60a5fa;
+  background-color: #bbdaff;
+  color: #2255c4;
+}
+
+
+/* font face imports */

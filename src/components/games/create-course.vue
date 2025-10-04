@@ -101,7 +101,7 @@ onMounted(() => {
   <!-- Home page -->
   <section class="">
     <!-- top bar on page -->
-    <section class="flex justify-between bg-green-800 p-2">
+    <section class="flex justify-between items-center bg-01 p-2">
       <div>
         <button
           @click="
@@ -109,55 +109,73 @@ onMounted(() => {
               routeToHere('games');
             }
           "
-          class="font-semibold text-xs rounded border text-white bg-green-700">
-          <i class="bi bi-arrow-left text-2xl text-white"></i>
+          class="">
+          <i class="bi bi-arrow-left text-3xl text-white"></i>
         </button>
       </div>
+      <h4 class="font-semibold text-3xl text-white">Create Course</h4>
       
     </section>
 
     <!-- main section of page... -->
-    <section class="mt-5 p-4">
+    <section class="p-2 mt-3">
       <!-- other functionality above table -->
       <section class="justify-center items-center">
 
-        <div class="text-center mb-3">
-        <h4 class="font-semibold text-3xl">Create Course</h4>
-      </div>
-
-        <form @submit.prevent="submitCourseData" class="flex flex-col justify-center border rounded p-4">
+        <form @submit.prevent="submitCourseData" class="flex flex-col color-light-grey justify-center rounded-md p-4 border-default">
           <!-- club name -->
-            <h4 class="font-semibold mb-1 mt-5">Club Name</h4>
+          
+            <h4 class="font-semibold mb-1 mt-3">Club Name</h4>
             <input v-model="courseForm.club_name" type="text" id="club_name" class="border rounded p-1"></input>
 
             <!-- Location -->
-            <h4 class="font-semibold mb-1 mt-5">Location</h4>
+            <h4 class="font-semibold mb-1 mt-3">Location</h4>
             <input v-model="courseForm.location" type="text" id="location" class="border rounded p-1"></input>
 
             <!-- course -->
-            <h4 class="font-semibold mb-1 mt-5">Course</h4>
+            <h4 class="font-semibold mb-1 mt-3">Course</h4>
             <input v-model="courseForm.course_name" type="text" id="course" class="border rounded p-1"></input>
 
             <!-- Par -->
-            <h4 class="font-semibold mb-1 mt-5">Par</h4>
+            <h4 class="font-semibold mb-1 mt-3">Par</h4>
             <input v-model="courseForm.par" type="number" id="par" class="border rounded p-1"></input>
 
         
-          <div class="mt-5">
-            <button @click="changeHoleData" type="button" class="me-border">
-              <div class="flex items-center">
-                <h4 :class="{ 'bg-green-300': curHoles === 9 }" class="p-1 text-2xl">9</h4>
-                <h4 :class="{ 'bg-green-300': curHoles === 18 }" class="p-1 text-2xl">18</h4>
-              </div>
+        
+
+          <div class="flex items-center w-fit border-default rounded-md mt-3">
+          <div class="">
+            <button
+            type="button"
+               @click="changeHoleData"
+              class="text-2xl"
+              :class="{
+                'button-light-blue': curHoles === 9 
+                // 'text-white': curData === 'stats',
+              }">
+              9
             </button>
           </div>
+          <!-- add shots -->
+          <div class="flex items-center">
+            <button
+            type="button"
+              class="text-2xl"
+              @click="changeHoleData"
+              :class="{
+                'button-light-blue': curHoles === 18 
+              }">
+              18
+            </button>
+          </div>
+        </div>
 
 
           <!-- scorecard to fill in -->
-           <section class="grid grid-cols-9 grid-rows-2 me-border mt-3">
+           <section class="grid grid-cols-9 grid-rows-2 border-default mt-3">
             <div v-for="(_value,index) in curArray" :key="index">
-              <div class="flex justify-center border">
-                <h4 class="text-xl text-red-800">{{ index+1 }}</h4>
+              <div class="flex justify-center border-default">
+                <h4 class="text-xl text-orange-800">{{ index+1 }}</h4>
               </div>
               <div class="w-full">
                 <input
@@ -169,27 +187,12 @@ onMounted(() => {
             </div>
            </section>
 
-
-
-
-
-          <div class="flex justify-center mt-5">
-            <button type="submit" class="p-2 rounded border bg-red-800 text-white">
+            <button type="submit" class="rounded-md border bg-orange-800 text-white mt-5">
               Submit
             </button>
-          </div>
-        
-
-
         </form>
 
         <alert-message :message="message"/>
-
-
-        
-
-
-
       </section>
 
 

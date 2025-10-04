@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onMounted } from "vue";
+import { inject, onMounted, ref } from "vue";
 // import type { ICourseView } from "../../../../types/course";
 import type { IGameView } from "../../../../types/game";
 // import { routeTo } from "../../../../router";
@@ -31,6 +31,8 @@ const reset = inject<{
 
 // for game search
 let prevDataLength = 0;
+
+
 
 // Options
 // const options = ["1 month", "3 months", "6 months", "This Year", "Last Year"];
@@ -117,7 +119,6 @@ async function setSearchToEmpty() {
 
 
 
-
 // -----------------
 // Display games as card / list view to click on complete game for stats, or in-progress game
 // --------
@@ -129,17 +130,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="relative mt-3">
+  <section class="relative">
+
+    
     
       <!-- search bar for individual games -->
-       <div class="flex gap-5 border-default">
+        <div class="flex gap-5 border-default">
             <input id="gameSearch" type="text" placeholder="Search Games..." @input="searchInput($event.target)" class="p-2 w-full"></input>
             <button @click="setSearchToEmpty"><i class="bi bi-x text-3xl"></i></button>
         </div>
 
-        <div class="">
-
-        </div>
+        
 
   </section>
 </template>

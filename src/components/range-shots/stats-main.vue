@@ -30,33 +30,34 @@ onMounted(() => {
 </script>
 
 <style src="./shotshape.css"></style>
+<style src="../games//game-components//holeandshot/mainstyles.css"></style>
 
 <template>
   <!-- Stats page page -->
-  <section class="p-2">
+  <section class="">
     <!-- contains specs of form (shotpath, contact, clubtype) -->
     <section class="overflow-x-auto">
-      <div class="pb-1 border-b">
-        <h3 class="font-bold text-3xl">Range</h3>
+      <div class="flex p-2 bg-01">
+        <h3 class="font-semibold text-3xl text-white">Range</h3>
       </div>
 
       <!-- stats vs add -->
-      <section class="flex items-center mt-3">
+      <section class="flex items-center p-2 border-b border-gray-300">
         <div class="flex items-center border-default">
           <div class="">
             <button
               @click="changeData"
-              class="p-1"
-              :class="{ 'bg-green-300': curData === 'stats' }">
+              class=""
+              :class="{ 'button-light-blue': curData === 'stats' }">
               Stats
             </button>
           </div>
           <!-- add shots -->
-          <div class="flex items-cetner">
+          <div class="flex items-center">
             <button
-              class="p-1"
+              class=""
               @click="changeData"
-              :class="{ 'bg-green-300': curData === 'add-shots' }">
+              :class="{ 'button-light-blue': curData === 'add-shots' }">
               Add Shots
             </button>
           </div>
@@ -68,7 +69,7 @@ onMounted(() => {
         <div v-if="curData === 'stats'">
           <range-stats />
         </div>
-        <div v-if="curData === 'add-shots'">
+        <div v-if="curData === 'add-shots'" class="p-2 shadow-lg">
           <stats />
         </div>
       </section>

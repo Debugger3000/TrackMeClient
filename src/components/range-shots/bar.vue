@@ -93,7 +93,7 @@ onMounted(() => {
 
 <template>
   <!-- Home page -->
-  <section class="p-2 h-[500px]">
+  <section class="h-[300px]">
     <canvas id="bar"></canvas>
   </section>
 </template>

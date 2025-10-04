@@ -21,6 +21,11 @@ let completedGames = ref<IGameView[]>();
 // older completedGames data
 // let oldCompletedGames = ref<IGameView[]>();
 
+let search_bar_toggle = ref<boolean>(false);
+function searchToggle(){
+    search_bar_toggle.value = !search_bar_toggle.value;
+}
+
 // for game search
 // let prevDataLength = 0;
 
@@ -175,81 +180,78 @@ onMounted(async () => {
   <!-- games page -->
   <section class="flex flex-col h-full">
     <!-- top bar on page -->
-    <section class="flex justify-between bg-green-800 p-2">
-      <div class="">
-        <h4 class="font-semibold text-3xl text-white">Courses</h4>
-      </div>
+    <section class="flex justify-between items-center bg-01 px-2 py-1">
+        <h4 class="font-semibold text-3xl text-white">Games</h4>
 
       <!-- right side of top bar -->
       <section class="flex gap-3">
-        <div class="border border-white rounded p-1">
+        <div class="">
           <button
             @click="
               {
                 routeToHere('create-game');
               }
             "
-            class="font-semibold rounded text-white">
-            Start Game
-            <!-- <i class="bi bi-plus text-2xl text-white"></i> -->
+            class="text-white">
+            
+            <i class="bi bi-plus text-4xl text-white"></i>
           </button>
         </div>
       </section>
     </section>
 
     <!-- main section of page... -->
-    <section class="mt-3 p-2 grow flex flex-col">
+    <section class="grow flex flex-col">
       <!-- other functionality above table -->
-      <section class="flex items-center justify-between pb-5 border-b">
-        <div class="flex items-center border-default rounded">
+      <section class="flex items-center justify-between p-2 border-b border-gray-400">
+        <div class="flex items-center border-default rounded-md">
           <div class="">
             <button
               @click="changeData"
-              class="p-1"
+              class=""
               :class="{
-                'bg-green-800': curData === 'stats',
-                'text-white': curData === 'stats',
+                'button-light-blue': curData === 'stats'
+                // 'text-white': curData === 'stats',
               }">
               Stats
             </button>
           </div>
           <!-- add shots -->
-          <div class="flex items-cetner">
+          <div class="flex items-center">
             <button
-              class="p-1"
+              class=""
               @click="changeData"
               :class="{
-                'bg-green-800': curData === 'games',
-                'text-white': curData === 'games',
+                'button-light-blue': curData === 'games'
               }">
               Games
             </button>
           </div>
         </div>
         <!-- add a course -->
-        <div class="border border-white rounded">
+        <div class="">
           <button
             @click="
               {
                 routeToHere('create-course');
               }
             "
-            class="font-semibold rounded text-white bg-green-800 p-1">
+            class="text-white button-light-blue rounded-md">
             Add Course
             <!-- <i class="bi bi-plus text-2xl text-white"></i> -->
           </button>
         </div>
       </section>
 
-      <section v-if="curData === 'games'" class="mt-3 flex">
+      <section v-if="curData === 'games'" class="mt-3 flex px-2">
         <div class="flex items-center border-default rounded">
           <div class="">
             <button
               @click="changeView"
               class="p-1"
               :class="{
-                'bg-green-800': curView === 'history',
-                'text-white': curView === 'history',
+                'button-light-blue': curView === 'history',
+                // 'text-white': curView === 'history',
               }">
               History
             </button>
@@ -260,8 +262,8 @@ onMounted(async () => {
               class="p-1"
               @click="changeView"
               :class="{
-                'bg-green-800': curView === 'current',
-                'text-white': curView === 'current',
+                'button-light-blue': curView === 'current',
+                // 'text-white': curView === 'current',
               }">
               Current
             </button>
@@ -273,17 +275,23 @@ onMounted(async () => {
       <section
         v-if="inProgressGames && curData === 'games' && curView === 'current'"
         class="mt-3">
-        <h4 class="section-header">Current Games</h4>
+        <h4 class="section-header px-2">Current Games</h4>
         <game-overview :game-data="inProgressGames" link_type="scorecard-link"/>
       </section>
 
       <!-- GAMES table / stats -->
       <section
         v-if="curData === 'games' && completedGames && curView === 'history'"
-        class="mt-3 flex flex-col grow">
-        <div class="mb-1">
-          <h4 class="section-header">Game History</h4>
-          <gameSearch />
+        class="mt-2 flex flex-col grow">
+        <div class="mb-1 px-2">
+          <div class="flex gap-5 items-center">
+            <h4 class="section-header">Game History</h4>
+          <div class="" @click="searchToggle">
+             <i class="bi bi-search text-xl color-01"></i>
+          </div>
+        </div>
+          
+          <gameSearch v-if="search_bar_toggle"/>
           <!-- <div class="flex gap-5 border-default">
             <input id="gameSearch" type="text" placeholder="Search Games..." @input="searchInput($event.target)" class="p-2 w-full"></input>
             <button @click="setSearchToEmpty"><i class="bi bi-x text-3xl"></i></button>
