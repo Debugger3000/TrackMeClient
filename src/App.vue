@@ -24,11 +24,11 @@ let username = ref("");
 let isLoggedIn = ref("");
 
 // nav bar at bottom
-const navBar: { page: string; icon: string }[] = [
-  { page: "home", icon: "bi-bar-chart" },
-  { page: "games", icon: "bi-controller" },
-  { page: "stats-main", icon: "bi-bar-chart" },
-  { page: "profile", icon: "bi-person" },
+const navBar: { page: string; icon: string, display_text: string }[] = [
+  { page: "home", icon: "bi-bar-chart", display_text: "Home" },
+  { page: "games", icon: "bi-controller", display_text: "Games"  },
+  { page: "stats-main", icon: "bi-bar-chart", display_text: "Range"  },
+  { page: "profile", icon: "bi-person", display_text: "Me"  },
 ];
 
 // control menu click
@@ -90,7 +90,7 @@ router.beforeEach((_to, _from, next) => {
         </div>
       </nav>
     </header> -->
-    <main class="relative h-[90%] overflow-y-auto app-main-bg">
+    <main class="relative overflow-y-auto app-main-bg">
       <!-- global pop up... -->
       <section
         v-if="globalPopUp"
@@ -113,7 +113,8 @@ router.beforeEach((_to, _from, next) => {
     <!-- Navigation bar at bottom of screen -->
     <section
       v-if="isLoggedIn.valueOf() === 'true'"
-      class="h-[10%] grid grid-cols-4 bg-gray-800">
+      class="grid grid-cols-4"
+      id="footer-menu">
       <!-- home tab -->
       <div
         v-for="value in navBar"
@@ -122,12 +123,15 @@ router.beforeEach((_to, _from, next) => {
             menuClicked(value.page);
           }
         "
-        class="flex justify-center items-center p-1"
-        :class="{
-          'bg-gray-700': selectedTab.valueOf() === `${value.page}`,
-          'bg-gray-800': selectedTab.valueOf() !== `${value.page}`,
-        }">
-        <i class="bi text-2xl text-white" :class="value.icon"></i>
+        class="flex flex-col justify-center items-center p-1 bg-white"
+        >
+        <i class="bi text-2xl font-medium" :class="[value.icon, {
+          'text-main-theme': selectedTab.valueOf() === `${value.page}`,
+          'color-01': selectedTab.valueOf() !== `${value.page}`
+        }]" ></i>
+        <h4 class="font-medium" :class="{
+          'text-main-theme': selectedTab.valueOf() === `${value.page}`
+        }">{{ value.display_text }}</h4>
       </div>
     </section>
   </section>

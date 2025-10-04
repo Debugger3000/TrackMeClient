@@ -77,6 +77,20 @@ onMounted(() => {
       options: {
         maintainAspectRatio: false, // allows it to fill parent div height
         responsive: true,
+        plugins: {
+          tooltip: {
+            bodyFont: {
+              size: 20, // bigger body text
+            },
+          },
+          legend: {
+            labels: {
+              font: {
+                size: 16, // make legend text bigger
+              },
+            },
+          },
+        },
         onClick: (e) => {
           console.log("e", e);
         },
@@ -88,7 +102,7 @@ onMounted(() => {
 
 <template>
   <!-- Home page -->
-  <section class="p-2 h-[500px]">
+  <section class="h-[200px]">
     <canvas id="donut"></canvas>
   </section>
 </template>
