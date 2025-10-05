@@ -337,7 +337,7 @@ onMounted(() => {
         <!-- map shot comp -->
         <map-plugin
         class=" bg-color-card card-main-border p-2 mt-3"
-          v-if="props.current_shots"
+          v-if="props.current_shots && game_status === 'IN-PROGRESS'"
           :current_shots="props.current_shots" />
 
         <!-- notes -->

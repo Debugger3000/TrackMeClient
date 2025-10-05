@@ -117,7 +117,7 @@ onMounted(() => {
   <!-- Home page -->
   <section class="">
     <!-- top bar on page -->
-    <section class="flex justify-between items-center bg-01 px-4 pt-4 pb-2">
+    <section class="flex justify-between items-center bg-01 px-2 py-1 h-[55px]">
       <div class="">
         <button
           @click="
@@ -129,7 +129,7 @@ onMounted(() => {
           <i class="bi bi-arrow-left text-2xl text-white"></i>
         </button>
       </div>
-      <h4 class="font-semibold text-3xl text-white">Create Game</h4>
+      <h4 class="font-semibold text-white text-xl">Create Game</h4>
       
     </section>
 
@@ -137,13 +137,6 @@ onMounted(() => {
     <section class="px-4 pt-2">
 
       <!-- other functionality above table -->
-
-     
-      
-      
-
-
-
 
       <section class="justify-center items-center pb-3">
         

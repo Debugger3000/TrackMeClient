@@ -101,7 +101,7 @@ onMounted(() => {
   <!-- Home page -->
   <section class="">
     <!-- top bar on page -->
-    <section class="flex justify-between items-center bg-01 p-2">
+    <section class="flex justify-between items-center bg-01 p-2 h-[55px]">
       <div>
         <button
           @click="
@@ -113,7 +113,7 @@ onMounted(() => {
           <i class="bi bi-arrow-left text-3xl text-white"></i>
         </button>
       </div>
-      <h4 class="font-semibold text-3xl text-white">Create Course</h4>
+      <h4 class="font-semibold text-white text-xl">Create Course</h4>
       
     </section>
 
@@ -143,7 +143,7 @@ onMounted(() => {
         
         
 
-          <div class="flex items-center w-fit border-default rounded-md mt-3">
+        <div class="flex items-center w-fit border-default rounded-md mt-3">
           <div class="">
             <button
             type="button"

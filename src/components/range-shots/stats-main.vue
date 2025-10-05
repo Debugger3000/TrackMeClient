@@ -37,7 +37,7 @@ onMounted(() => {
   <section class="">
     <!-- contains specs of form (shotpath, contact, clubtype) -->
     <section class="overflow-x-auto">
-      <div class="flex p-2 bg-01">
+      <div class="flex items-center p-2 bg-01 h-[55px]">
         <h3 class="font-semibold text-3xl text-white">Range</h3>
       </div>
 

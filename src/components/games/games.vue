@@ -15,6 +15,9 @@ const router = useRouter();
 let curData = ref<"games" | "stats">("games");
 let curView = ref<"history" | "current">("history");
 
+// variable to hold current limit amount for GET Completed games query
+let get_limit = ref<number>(10);
+
 // hold in progress games
 let inProgressGames = ref<IGameView[]>();
 let completedGames = ref<IGameView[]>();
@@ -29,6 +32,7 @@ function searchToggle(){
 // for game search
 // let prevDataLength = 0;
 
+// takes game data from search
 function setGamesInjector(gameData: IGameView[]) {
   completedGames.value = gameData;
   console.log("SET GAMEs BY  SEARCH INJECT: ", completedGames.value);
@@ -85,10 +89,12 @@ async function getCurrentGames() {
 }
 
 // GET COMPLETE games
+// should grab 10 games at a time...
+// user scrolls down below container and it will prompt to fetch more data, and append it
 async function getCompleteGames() {
   try {
     // should return new game object ID so i can use it in params for new route
-    const res = await useFetch<IGameView[]>("/game/completed", "GET");
+    const res = await useFetch<IGameView[]>(`/game/completed?limit=${get_limit.value}`, "GET");
 
     if (res === 401) {
       localStorage.setItem("isLoggedIn", "false");
@@ -120,7 +126,7 @@ onMounted(async () => {
   <!-- games page -->
   <section class="flex flex-col h-full">
     <!-- top bar on page -->
-    <section class="flex justify-between items-center bg-01 px-2 py-1">
+    <section class="flex justify-between items-center bg-01 px-2 py-1 h-[55px]">
         <h4 class="font-semibold text-3xl text-white">Games</h4>
 
       <!-- right side of top bar -->

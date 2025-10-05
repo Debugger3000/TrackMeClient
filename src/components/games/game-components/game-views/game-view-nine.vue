@@ -57,7 +57,7 @@ let game_status = ref<GameStatus>("IN-PROGRESS");
 // ---------------
 
 // this can be changed by clicking on whatever hole on the scoreboard
-let current_hole_state = ref<number>(0);
+let current_hole_state = ref<number>(1);
 // let holeKey = ref<NineHoleKey>("hole_one");
 
 let keyyer = ref<EightHoleKey>("hole_one");
@@ -155,18 +155,29 @@ async function getGameData() {
       // console.log("hole state: ", game_data.value);
       // console.log("hole state: ", game_data.value.hole_state);
       //   set current hole
-      if (game_data.value.hole_state) {
+      if (game_data.value.hole_state && game_data.value.status === 'IN-PROGRESS') {
         const hole_stater = game_data.value.hole_state;
-        current_hole_state.value = hole_stater;
-        // set global current game hole_state
-        game_hole_state.value = hole_stater;
-        current_hole.value =
-          hole_data.value[getNineKeyFromIndex(game_data.value.hole_state)];
-        current_shots.value =
-          hole_data.value[
-            getNineKeyFromIndex(game_data.value.hole_state)
-          ].hole_shot_data!;
+        setCurrentHoleData(hole_stater);
+        // current_hole_state.value = hole_stater;
+        
+        // // set global current game hole_state
+        // game_hole_state.value = hole_stater;
+        // current_hole.value =
+        //   hole_data.value[getNineKeyFromIndex(game_data.value.hole_state)];
+        // current_shots.value =
+        //   hole_data.value[
+        //     getNineKeyFromIndex(game_data.value.hole_state)
+        //   ].hole_shot_data!;
       }
+      else if(game_data.value.hole_state && game_data.value.status === 'COMPLETE'){
+        setCurrentHoleData(1);
+        console.log('setting hole data for complete game with hole 1...');
+      }
+
+      // if games completed then make current_hole_state set to 0
+      // if (game_data.value.status === "COMPLETE") {
+      //   current_hole_state.value = 1;
+      // }
 
       // console.log("new game data SET...", current_hole.value);
       // console.log("new game data SET...", hole_data.value);
@@ -175,6 +186,24 @@ async function getGameData() {
     }
   } catch (error) {
     console.log("Error in getGameData in game-view component: ", error);
+  }
+}
+
+// set game / hole data for current hole
+function setCurrentHoleData(hole_stater: number) {
+  if (game_data.value?.hole_state) {
+    current_hole_state.value = hole_stater;
+    // set global current game hole_state
+    game_hole_state.value = hole_stater;
+
+    if (hole_data.value) {
+      current_hole.value =
+        hole_data.value[getNineKeyFromIndex(hole_stater)];
+      current_shots.value =
+        hole_data.value[
+          getNineKeyFromIndex(hole_stater)
+        ].hole_shot_data!;
+    }
   }
 }
 
@@ -202,7 +231,7 @@ onMounted(async () => {
   <section class="">
     <!-- top bar on page -->
 
-    <section class="flex items-center justify-between p-2 bg-color-card">
+    <section class="flex items-center justify-between p-2 bg-color-card h-[55px]">
       <div class="flex items-center justify-center">
         <button
           @click="
@@ -210,7 +239,7 @@ onMounted(async () => {
               routeToHere();
             }
           "
-          class="font-semibold text-xs rounded border text-white bg-gray-300 p-1">
+          class="font-semibold text-xs text-white  p-1">
           <i class="bi bi-arrow-left text-2xl color-01"></i>
         </button>
       </div>
@@ -243,9 +272,9 @@ onMounted(async () => {
         <NineScoreBoard
           :card-data="score_card!"
           :hole-data="hole_data!"
-          :holes="18"
           :score_board_change_hole="score_board_change_hole"
-          :hole_state="game_data.hole_state!" />
+          :hole_state="current_hole_state" 
+          :game_hole_state="game_data.hole_state!"/>
       </section>
 
       <!-- Hole data, depending on what hole you are currently on... -->

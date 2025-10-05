@@ -35,14 +35,13 @@
 * {
   box-sizing: border-box;
 }
-
+/* 
 h1,
 h2,
 h3,
 h4,
 p {
-  /* color: rgb(63, 63, 63); */
-}
+} */
 
 html {
   font-size: 16px; /* 1rem = 16px */
@@ -77,10 +76,6 @@ a:hover {
 body {
   margin: 0;
   font-family: "PlusJakarta", sans-serif;
-  /* display: flex; */
-  /* place-items: center; */
-  /* min-width: 320px; */
-  /* min-height: 100vh; */
 }
 
 h1 {
@@ -227,9 +222,9 @@ button:focus-visible {
   background-color: #2563eb;
 }
 
-.bg-light-gray{
+/* .bg-light-gray{
 
-}
+} */
 
 
 .bg-02 {

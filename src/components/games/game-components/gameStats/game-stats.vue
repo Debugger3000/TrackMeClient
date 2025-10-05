@@ -14,6 +14,7 @@ import gridCard from "../helpers/grid-card.vue";
 
 import polarChart from "./polar-chart.vue";
 import clubStats from "./club-stats.vue";
+import type { THoles } from "../../../../types/course";
 
 const router = useRouter();
 
@@ -28,6 +29,9 @@ let games_searched = ref<IGameView[]>();
 
 // variable ref to control when a single game is choosen from search
 let game_choosen = ref<IGameView>();
+
+// current holes selected 9 or 18
+let curHoles = ref<THoles>(18);
 
 
 // Injections
@@ -77,10 +81,12 @@ const isOpen = ref<boolean>(false);
 // Selected option (default: 1 month)
 const selectedOption = ref(options[0]);
 
-// Method to choose option
-function selectOption(option: string) {
+// Method to choose time filter option
+async function selectOption(option: string) {
   selectedOption.value = option;
   isOpen.value = false;
+  // call new data
+  await getGameStats();
 }
 
 let game_stats_data = ref<IGame_Stats>();
@@ -102,7 +108,7 @@ async function getGameStats() {
   try {
     // should return new game object ID so i can use it in params for new route
     const res = await useFetch<IGame_Stats>(
-      `/game/stats/${selectedOption.value}`,
+      `/game/stats/${selectedOption.value}?holes=${curHoles.value}`,
       "GET"
     );
 
@@ -152,6 +158,17 @@ async function getSoloGameStats() {
 
 }
 
+async function changeHoles(){
+  
+  if(curHoles.value === 9){
+    curHoles.value = 18;
+  }
+  else{
+    curHoles.value = 9;
+  }
+  await getGameStats();
+}
+
 // -----------------
 // Display games as card / list view to click on complete game for stats, or in-progress game
 // --------
@@ -191,11 +208,11 @@ onMounted(async () => {
     </section>
 
     <!-- another menu bar -->
-    <section class="flex items-center py-3">
+    <section class="flex items-center justify-between py-3">
       <div v-if="!game_choosen" class="relative w-24">
         <!-- Selected option -->
         <div
-          class="cursor-pointer border-default rounded p-1 bg-white shadow text-center"
+          class="cursor-pointer border-default rounded p-1 bg-white shadow text-center color-01 font-semibold"
           @click="isOpen = !isOpen">
           {{ selectedOption }}
         </div>
@@ -207,12 +224,40 @@ onMounted(async () => {
           <div
             v-for="option in options"
             :key="option"
-            class="p-1 cursor-pointer hover:bg-gray-100 text-base text-center"
+            class="p-1 cursor-pointer hover:bg-gray-100 text-base text-center color-01 font-semibold"
             @click="selectOption(option)">
             {{ option }}
           </div>
         </div>
       </div>
+
+      <div class="flex items-center w-fit border-default rounded">
+          <div class="">
+            <div
+            
+               @click="changeHoles"
+              class="text-xl px-2 py-1 w-[40px] text-center"
+              :class="{
+                'button-light-blue': curHoles === 9,
+                'color-light-grey': curHoles !== 9
+              }">
+              9
+            </div>
+          </div>
+          <!-- add shots -->
+          <div class="flex items-center">
+            <div
+            
+              class="text-xl px-2 py-1 w-[40px] text-center"
+              @click="changeHoles"
+              :class="{
+                'button-light-blue': curHoles === 18,
+                'color-light-grey': curHoles !== 18
+              }">
+              18
+            </div>
+          </div>
+        </div>
 
       <!-- display game name and date and such if a singl game is selected ! -->
       <section v-if="game_choosen" class="w-full pb-3 border-b border-gray-300 border-0.5">
