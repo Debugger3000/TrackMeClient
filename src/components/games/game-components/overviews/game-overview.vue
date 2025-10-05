@@ -71,31 +71,38 @@ onMounted(() => {
     <div
       v-for="(value, index) in props.gameData"
       :key="index"
-      class="grid grid-cols-3 gap-3 border-b border-gray-300 min-h-[75px]"
+      class="grid grid-cols-3 gap-3 border-b border-gray-300 min-h-[75px] bg-white py-1"
       @click="
         {
           gameSelected(value.id, value.holes, index);
         }
       ">
       <div class="flex flex-col justify-center pl-2">
-        <h4 class="font-semibold text-xl">{{ value.club_name }}</h4>
-        <div class="flex gap-1">
-          <h4 class="m-0">Par {{ value.par }} -</h4>
-          <h4 class="m-0">{{ value.holes }}</h4>
-        </div>
-      </div>
-      <div class="flex flex-col items-center justify-center">
-        <h4 class="">Score</h4>
-        <div class="flex items-center gap-1">
-          <h4>{{ value.score }}</h4>
-          <h4 v-if="value.status === 'COMPLETE'" class="">
-            ({{ value.par + value.score }})
-          </h4>
+        <!-- club name -->
+        <h4 class="font-semibold text-xl color-01">{{ value.club_name }}</h4>
+        <!-- par and hole -->
+        <div class="flex items-center">
+          <h4 class="color-light-grey text-sm">{{ value.holes }}</h4>
+          <i class="bi bi-dot text-xl color-light-grey"></i>
+          <h4 class="color-light-grey text-sm">Par {{ value.par }}</h4>
+           <!-- <i class="bi bi-dot text-xl color-light-grey"></i> -->
         </div>
       </div>
 
+      <!-- score  -->
+        <div class="flex items-center justify-center">
+          <div class="flex items-center gap-1">
+            <h4 class="color-light-grey text-medium">Score: </h4>
+            <h4 class="color-light-grey text-medium">{{ value.score }} </h4>
+            <h4 v-if="value.status === 'COMPLETE'" class="color-light-grey text-medium">
+              ({{ value.par + value.score }})
+            </h4>
+          </div> 
+        </div>
+      
+
       <div class="flex items-center justify-end pr-2">
-        <h4 class="font-semibold">{{ formatDate(value.created_at) }}</h4>
+        <h4 class="font-semibold color-01 text-sm">{{ formatDate(value.created_at) }}</h4>
       </div>
     </div>
   </section>

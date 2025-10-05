@@ -169,15 +169,15 @@ onUnmounted(() => {
 
 <template>
   <!-- Stats page page -->
-  <section class="p-2 overflow-x-auto bg-white shadow-md rounded">
+  <section class="overflow-x-auto">
     <!-- contains specs of form (shotpath, contact, clubtype) -->
     <section class="overflow-x-auto">
       <!-- shot path div -->
-      <div class="grid grid-cols-8">
+      <div class="grid grid-cols-8 bg-white shadow-md rounded p-2">
         <!-- Contact type -->
         <section class="col-start-1 col-span-2 grid grid-rows-5">
           <div
-            class="shot-path-buttons"
+            class="shot-path-buttons border-default"
             v-for="[_, contact] in contacts"
             :class="{ 'button-light-blue': curContactType === `${contact}` }">
             <button @click="changeContact(contact)" class="w-full h-full">
@@ -189,7 +189,7 @@ onUnmounted(() => {
       </div>
 
       <!-- control buttons for club shot path -->
-      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll mt-3 rounded">
+      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll mt-3 bg-white shadow-md rounded scroll-container">
         <div
           v-for="[_, path] in paths"
           class="shot-path-buttons min-w-[75px]"
@@ -201,7 +201,7 @@ onUnmounted(() => {
       </section>
 
       <!-- club type selection -->
-      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll mt-3 rounded">
+      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll mt-3 bg-white shadow-md rounded scroll-container">
         <div
           class="shot-path-buttons min-w-[75px]"
           v-for="[_, club] in clubs"

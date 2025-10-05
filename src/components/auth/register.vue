@@ -47,7 +47,7 @@ const registerSubmit = async () => {
           localStorage.setItem("isLoggedIn","true");
           // const log = useLoggedStore();
           // log.login();
-          routeTo('/home', router)
+          routeTo('/games', router)
         }
         else{
           errorMessage.value = res.message || "Something went wrong";

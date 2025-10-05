@@ -120,9 +120,9 @@ onMounted(() => {
     <!-- main section of page... -->
     <section class="p-2 mt-3">
       <!-- other functionality above table -->
-      <section class="justify-center items-center">
+      <section class="justify-center items-center bg-white shadow-md rounded">
 
-        <form @submit.prevent="submitCourseData" class="flex flex-col color-light-grey justify-center rounded-md p-4 border-default">
+        <form @submit.prevent="submitCourseData" class="flex flex-col color-light-grey justify-center rounded-md p-4">
           <!-- club name -->
           
             <h4 class="font-semibold mb-1 mt-3">Club Name</h4>

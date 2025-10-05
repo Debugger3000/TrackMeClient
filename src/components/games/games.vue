@@ -107,66 +107,6 @@ async function getCompleteGames() {
   }
 }
 
-// async function getGameBySearch(searchValue: string) {
-//     try {
-//         const res = await useFetch<IGameView[]>(`/game/grab/${searchValue}`,"GET");
-
-//         if (res === 401) {
-//             localStorage.setItem("isLoggedIn", "false");
-//             routeTo("/login", router);
-//         } else if (res === undefined) {
-//             throw new Error("Error from getcoursebySearch res, is undefined");
-//         }
-//         // good response...
-//         else {
-
-//             // set course view data...
-//             completedGames.value = res;
-//             console.log("Game SEARCH DATA: ", res);
-//         }
-
-//     } catch (error) {
-//          console.log("Error in getCourseBySearch in create Game...", error);
-//     }
-// }
-
-// async function searchInput(value: EventTarget | null) {
-//     console.log("new search input is: ", value);
-//     console.log("search input ; ", typeof value);
-//     if(value){
-//         const val = value as HTMLInputElement;
-//         const searchValue = val.value;
-//         console.log("Value: ", searchValue);
-//         // user did not backspace, so we can query on added character...
-//         if(prevDataLength < searchValue.length && searchValue !== "") {
-//             await getGameBySearch(searchValue);
-//             prevDataLength = searchValue.length;
-//             // courseSelected.value = false;
-//         }
-//         else if(searchValue === ""){
-//           await getCompleteGames()
-//       // completedGames.value = oldCompletedGames.value;
-//        console.log("field is empty returning complete game data... ", completedGames.value);
-//         }
-
-//     }
-// }
-
-// async function setSearchToEmpty() {
-//   const input = document.getElementById("gameSearch") as HTMLInputElement;
-//   if(input !== null) {
-//   input.value = ""; // clears the input
-
-//   }
-//   await getCompleteGames()
-
-// }
-
-// call users game data and fill game data table
-// function getUsersGamesData() {
-
-// }
-
 // lifecycle hooks
 onMounted(async () => {
   // grab in-progress games
@@ -292,12 +232,7 @@ onMounted(async () => {
         </div>
           
           <gameSearch v-if="search_bar_toggle"/>
-          <!-- <div class="flex gap-5 border-default">
-            <input id="gameSearch" type="text" placeholder="Search Games..." @input="searchInput($event.target)" class="p-2 w-full"></input>
-            <button @click="setSearchToEmpty"><i class="bi bi-x text-3xl"></i></button>
-        </div> -->
         </div>
-        <!-- <h4 class="font-semibold pb-1">Completed Games</h4> -->
         <game-overview :game-data="completedGames" link_type="scorecard-link"/>
       </section>
 
@@ -306,8 +241,6 @@ onMounted(async () => {
         <gameStats />
       </section>
 
-      <!-- map comp testing -->
-      <!-- <map-plugin /> -->
     </section>
   </section>
 </template>

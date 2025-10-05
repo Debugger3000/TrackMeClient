@@ -67,7 +67,7 @@ onMounted(() => {
         responsive: true,
         layout: {
           padding: {
-            left: 20, // adjust until all labels show
+            left: 10, // adjust until all labels show
           },
         },
         indexAxis: "y",
@@ -81,6 +81,14 @@ onMounted(() => {
               stepSize: 1,
             },
           },
+          y: {
+        ticks: {
+          font: {
+            size: 18, // <--- increase this for bigger labels
+            weight: "bold", // optional for better readability
+          },
+        },
+      },
         },
         onClick: (e) => {
           console.log("e", e);
@@ -93,7 +101,7 @@ onMounted(() => {
 
 <template>
   <!-- Home page -->
-  <section class="h-[300px]">
+  <section class="h-[300px] w-full">
     <canvas id="bar"></canvas>
   </section>
 </template>

@@ -17,7 +17,7 @@ const globalPopUp = ref("");
 // const { username } = storeToRefs(userStore);
 
 // let selectedTab: string = "home";
-let selectedTab = ref("home");
+let selectedTab = ref("games");
 
 // refs for username and logged in
 let username = ref("");
@@ -25,7 +25,7 @@ let isLoggedIn = ref("");
 
 // nav bar at bottom
 const navBar: { page: string; icon: string, display_text: string }[] = [
-  { page: "home", icon: "bi-bar-chart", display_text: "Home" },
+  // { page: "home", icon: "bi-bar-chart", display_text: "Home" },
   { page: "games", icon: "bi-controller", display_text: "Games"  },
   { page: "stats-main", icon: "bi-bar-chart", display_text: "Range"  },
   { page: "profile", icon: "bi-person", display_text: "Me"  },
@@ -113,7 +113,7 @@ router.beforeEach((_to, _from, next) => {
     <!-- Navigation bar at bottom of screen -->
     <section
       v-if="isLoggedIn.valueOf() === 'true'"
-      class="grid grid-cols-4"
+      class="grid grid-cols-3"
       id="footer-menu">
       <!-- home tab -->
       <div

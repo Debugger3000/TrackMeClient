@@ -135,7 +135,7 @@ onMounted(() => {
     
     
       <!-- search bar for individual games -->
-        <div class="flex gap-5 border-default">
+        <div class="flex gap-5 bg-white shadow-lg rounded-lg">
             <input id="gameSearch" type="text" placeholder="Search Games..." @input="searchInput($event.target)" class="p-2 w-full"></input>
             <button @click="setSearchToEmpty"><i class="bi bi-x text-3xl"></i></button>
         </div>
