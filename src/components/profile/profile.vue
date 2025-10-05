@@ -48,7 +48,7 @@ onMounted(() => {
   <!-- Home page -->
   <section class="">
     <!-- display contact stats -->
-    <section class="flex justify-between items-center bg-01 p-2">
+    <section class="flex justify-between items-center bg-01 p-2 h-[55px]">
       <h4 class="font-semibold text-3xl text-white">Profile</h4>
       <div class="text-white rounded-lg">
         <button @click="logout">Logout</button>

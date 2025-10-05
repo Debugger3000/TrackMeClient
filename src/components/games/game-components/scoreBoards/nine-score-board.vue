@@ -1,23 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { inject, onMounted, ref, type Ref } from "vue";
 import {
   NINE_HOLES_MAP,
   type nine_hole_card,
   type T9_MAP,
 } from "../../../../types/course";
-import type { Nine_Hole_Data } from "../../../../types/game";
+import type { GameStatus, Nine_Hole_Data } from "../../../../types/game";
 
-// type NineGameData = {
-//   holes: 9;
-//   cardData: nine_hole_card;
-//   holeData: Nine_Hole_Data;
-// };
-// type EighteenGameData = {
-//   holes: 18;
-//   cardData: eighteen_hole_card;
-//   holeData: Eighteen_Hole_Data;
-// };
-// type GameData = NineGameData | EighteenGameData;
 
 // const router = useRouter();
 
@@ -28,38 +17,32 @@ const props = defineProps<{
   holeData: Nine_Hole_Data;
 
   hole_state: number;
+  game_hole_state: number;
   // cardData?: nine_hole_card;
   // holeData?: Nine_Hole_Data;
   score_board_change_hole: (index: number) => void;
   //   course?: ICourseView;
 }>();
 
-// const map = computed(() =>
-//   props.gameData.holes === 9 ? NINE_HOLES_MAP : EIGHTEEN_HOLES_MAP
-// );
-// const scores = computed(() => props.gameData.cardData);
+const game_status = inject<Ref<GameStatus, GameStatus>>("game_status");
 
-// let refMap = ref<MapType<typeof props.holes>>(EIGHTEEN_HOLES_MAP);
-// let curArray = ref<Number[]>(EIGHTEEN_ARRAY);
-// let card_data = ref<CardType<typeof props.holes>>();
 let nine_map: T9_MAP = NINE_HOLES_MAP;
 
 // holds index of hole
 let current_hole = ref<number>(props.hole_state - 1);
 
-// watch(
-//   () => props.holes,
-//   () => {
-//     console.log("course overview watcher triggered");
-//   }
-// );
+
 
 // course selected to create game on
 function changeHole(hole: number) {
   // callback to parent to change current hole...
 
   // only allow users to go backwards on holes... They shouldnt be allowed to add shots on hole 7 when they are currently on hole 3..
-  if (hole + 1 <= props.hole_state) {
+  if(game_status?.value === 'COMPLETE'){
+    props.score_board_change_hole(hole);
+    current_hole.value = hole;
+  }
+  else if (hole + 1 <= props.game_hole_state) {
     props.score_board_change_hole(hole);
     current_hole.value = hole;
   }
@@ -70,11 +53,7 @@ function changeHole(hole: number) {
 // --------
 //
 onMounted(() => {
-  // console.log("game data in score board: ", props.holes);
-  // call get user info...
-  //   refMap.value = props.holes === 9 ? NINE_HOLES_MAP as any : EIGHTEEN_HOLES_MAP as any;
-  //   curArray.value = props.holes === 9 ? NINE_ARRAY : EIGHTEEN_ARRAY
-  // card_data.value = props.holes === 9 ? props.cardData as any : props.cardData as any;
+
 });
 </script>
 <!-- :class="{ 'bg-green-300': curHoles === 9 }" -->

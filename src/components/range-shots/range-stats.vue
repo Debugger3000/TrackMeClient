@@ -28,7 +28,7 @@ const router = useRouter();
 // }>();
 
 // this will be used to filter chart to ONE CLUB at a time...
-let selectedClub = ref<IShotType>(CLUBTYPE.ThreeWood);
+let selectedClub = ref<IShotType>(CLUBTYPE.Driver);
 
 function selectClubCallBack(club: IShotType) {
   selectedClub.value = club;

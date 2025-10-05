@@ -158,22 +158,13 @@ async function getGameData() {
       // console.log("hole state: ", game_data.value);
       // console.log("hole state: ", game_data.value.hole_state);
       //   set current hole
-      if (game_data.value.hole_state) {
+      if (game_data.value.hole_state && game_data.value.status === 'IN-PROGRESS') {
         const hole_stater = game_data.value.hole_state;
-        // current hole state for switch between hole data
-        current_hole_state.value = hole_stater;
-        // set master hole_state to drop some display on holes
-        game_hole_state.value = hole_stater;
-        // console.log(
-        //   "curr_hole data: ",
-        //   hole_data.value[getEightKeyFromIndex(game_data.value.hole_state)]
-        // );
-        current_hole.value =
-          hole_data.value[getEightKeyFromIndex(game_data.value.hole_state)];
-        current_shots.value =
-          hole_data.value[
-            getEightKeyFromIndex(game_data.value.hole_state)
-          ].hole_shot_data!;
+        setCurrentHoleData(hole_stater);
+      }
+      else if(game_data.value.hole_state && game_data.value.status === 'COMPLETE'){
+        setCurrentHoleData(1);
+        console.log('setting hole data for complete game with hole 1...');
       }
 
       // console.log("new game data SET...", current_hole.value);
@@ -186,6 +177,25 @@ async function getGameData() {
   }
 }
 
+// set game / hole data for current hole
+function setCurrentHoleData(hole_stater: number) {
+  if (game_data.value?.hole_state) {
+    current_hole_state.value = hole_stater;
+        // set master hole_state to drop some display on holes
+        game_hole_state.value = hole_stater;
+
+    if (hole_data.value) {
+      current_hole.value =
+          hole_data.value[getEightKeyFromIndex(hole_stater)];
+        current_shots.value =
+          hole_data.value[
+            getEightKeyFromIndex(hole_stater)
+          ].hole_shot_data!;
+    }
+  }
+}
+
+
 function routeToHere() {
   // routeTo(`/${tabClicked}`, router);
   router.go(-1);
@@ -196,47 +206,27 @@ function routeToHere() {
 // ------
 // or should i have two separate components. I can re use components for shots / scoreboard
 onMounted(async () => {
-  // set hole Type for fetch call
-
-  // grab all game Data on mount ???
-  // const callGameData = async () => {
-  //   await getGameData();
-  // };
   await getGameData();
 
   console.log("current hole value: ", current_hole_state.value);
 
-  //   const key = getEightKeyFromIndex(currentHole.value);
-  //   console.log(
-  //     "key to make sure non submitted hole scores are updated from shots...",
-  //     key
-  //   );
-
-  //   if (key && hole_data.value) {
-  //     console.log("Tallying score for 18 01");
-  //     const hole = hole_data.value[key];
-  //     if (hole.hole_shot_data!.length > 0 && hole.score === 0) {
-  //       tallyScoreInMem();
-  //       //   console.log("Tallying score for 1803", hole_data.score);
-  //     }
-  //   }
 });
 </script>
 
 <template>
   <section class="">
     <!-- top bar on page -->
-    <section class="flex items-center justify-between p-2 bg-color-card">
+    <section class="flex items-center justify-between p-2 bg-01 h-[55px]">
       <div>
         <button
           @click="{ routeToHere(); }"
-          class="font-semibold text-xs rounded border text-white bg-gray-300 p-1">
-          <i class="bi bi-arrow-left text-2xl color-01"></i>
+          class="font-semibold text-xs p-1">
+          <i class="bi bi-arrow-left text-2xl text-white"></i>
         </button>
       </div>
 
       <div class="text-center">
-        <h4 class="font-semibold color-01 text-xl">GameView</h4>
+        <h4 class="font-semibold text-white text-xl">GameView</h4>
       </div>
     </section>
 
@@ -260,16 +250,16 @@ onMounted(async () => {
           v-if="score_card && hole_data"
           :card-data="score_card!"
           :hole-data="hole_data!"
-          :holes="18"
           :score_board_change_hole="score_board_change_hole"
-          :hole_state="game_data.hole_state!" />
+          :hole_state="current_hole_state" 
+          :game_hole_state="game_data.hole_state!"/>
       </section>
 
       <!-- Hole data -->
       <section v-if="current_hole && game_data" class="mt-3">
         <holeComp
           :game_status="game_data?.status!"
-          :current_hole="current_hole!"
+          :current_hole="current_hole"
           :current_shots="current_shots!"
           :update-game-shots="updateGameShots"
           :game_score="game_data.score" />
