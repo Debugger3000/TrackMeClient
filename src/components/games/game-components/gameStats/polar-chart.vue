@@ -128,7 +128,7 @@ onMounted(() => {
 
 <template>
   <!-- Home page -->
-  <section class="p-2 h-[400px] w-full">
+  <section class="h-[300px] w-full bg-white rounded-lg shadow-lg">
     <canvas id="scorePolar"></canvas>
   </section>
 </template>

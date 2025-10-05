@@ -216,22 +216,23 @@ onMounted(() => {
 });
 </script>
 
-<style src="../../../../components/range-shots/shotshape.css"></style>
+<style lang="css" src="../../../../components/range-shots/shotshape.css"></style>
+<style lang="css" src="./mainstyles.css"></style>
 
 <template>
   <!-- Stats page page -->
-  <section class="overflow-x-auto">
+  <section class="overflow-x-auto border-t border-gray-300">
     <!-- contains specs of form (shotpath, contact, clubtype) -->
-    <section class="overflow-x-auto">
+    <section class="">
       <!-- shot path div -->
-      <div class="grid grid-cols-8 h-[300px] p-1 border-default mb-3">
+      <div class="grid grid-cols-8 h-[300px] p-2">
         <!-- club type selection -->
         <section
-          class="grid grid-cols-2 col-start-1 col-span-3 overflow-y-scroll">
+          class="grid grid-cols-2 col-start-1 col-span-3 overflow-y-scroll border border-gray-200 scroll-container">
           <div
             class="shot-path-buttons"
             v-for="[_, club] in clubs"
-            :class="{ 'bg-gray-400': shotDataForm.club_type === `${club}` }">
+            :class="{ 'button-light-blue': shotDataForm.club_type === `${club}` }">
             <button @click="changeClub(club)" class="w-full h-full">
               {{ club }}
             </button>
@@ -242,12 +243,12 @@ onMounted(() => {
       </div>
 
       <!-- control buttons for club shot path -->
-      <h4 class="text-sub-header color-01 ">Shot Shape</h4>
-      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll mb-3">
+      <h4 class="text-medium font-semibold mb-1 color-01 mt-6">Shot Shape</h4>
+      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll bg-white shadow-md rounded scroll-container border border-gray-300">
         <div
           v-for="[_, path] in paths"
           class="shot-path-buttons min-w-[75px]"
-          :class="{ 'bg-gray-400': shotDataForm.shot_path === `${path}` }">
+          :class="{ 'button-light-blue': shotDataForm.shot_path === `${path}` }">
           <button @click="changePath(path)" class="w-full h-full">
             {{ path }}
           </button>
@@ -255,13 +256,13 @@ onMounted(() => {
       </section>
 
       <!-- Contact type -->
-      <h4 class="text-xl mb-1">Contact Type</h4>
-      <section class="grid grid-cols-5 mb-3">
+      <h4 class="text-medium font-semibold mb-1 color-01 mt-3">Contact Type</h4>
+      <section class="grid grid-cols-5 bg-white shadow-md rounded border border-gray-300">
         <div
           class="shot-path-buttons"
           v-for="[_, contact] in contacts"
           :class="{
-            'bg-gray-400': shotDataForm.shot_contact === `${contact}`,
+            'button-light-blue': shotDataForm.shot_contact === `${contact}`,
           }">
           <button @click="changeContact(contact)" class="w-full h-full">
             {{ contact }}
@@ -270,12 +271,12 @@ onMounted(() => {
       </section>
 
       <!-- Land Type (fairway, green, rough... OB)-->
-      <h4 class="text-xl mb-1">Land Type</h4>
-      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll mb-3">
+      <h4 class="text-medium font-semibold mb-1 color-01 mt-3">Lie</h4>
+      <section class="grid grid-flow-col auto-cols-min overflow-x-scroll bg-white rounded scroll-container shadow-md border border-gray-300">
         <div
           v-for="[_, path] in land_types"
           class="shot-path-buttons min-w-[75px]"
-          :class="{ 'bg-gray-400': shotDataForm.land_type === `${path}` }">
+          :class="{ 'button-light-blue': shotDataForm.land_type === `${path}` }">
           <button @click="changeLandType(path)" class="w-full h-full">
             {{ path }}
           </button>
@@ -283,11 +284,11 @@ onMounted(() => {
       </section>
 
       <!-- feedback to let user know there coordinates have been gathered... -->
-      <section class="flex gap-3">
-        <div>
+      <section class="flex justify-center gap-3 mt-3">
+        <div class="">
           <!-- disable if -->
           <button
-            class="p-1 rounded border-default"
+            class="p-1 rounded button-light-blue text-white flex items-center"
             @click="fetchCoordinates('from')">
             From Coordinate
             <i
@@ -300,9 +301,9 @@ onMounted(() => {
         </div>
         <div>
           <button
-            class="p-1 rounded border-default"
+            class="p-1 rounded button-light-blue text-white flex items-center"
             @click="fetchCoordinates('land')">
-            Land Coordinate
+            Lie Coordinate
             <i
               v-if="shotDataForm.end_lat && shotDataForm.end_lng"
               class="bi bi-check-lg text-3xl text-green-800"></i>
@@ -314,16 +315,16 @@ onMounted(() => {
       </section>
 
       <!-- error -->
-      <section class="p-2">
-        <h4 v-if="message" class="font-semibold text-red-800">{{ message }}</h4>
+      <section v-if="message" class="p-2">
+        <h4 class="font-semibold text-red-800">{{ message }}</h4>
       </section>
 
       <!-- submit button -->
-      <section class="flex justify-center mt-4">
+      <section class="flex justify-center mt-5">
         <button
           :disabled="loading"
           @click="sendShotData"
-          class="p-4 rounded-xl mt-4 text-white"
+          class="rounded text-white bg-01"
           :class="{ 'bg-gray-400': loading, 'bg-red-800': !loading }">
           Submit
         </button>

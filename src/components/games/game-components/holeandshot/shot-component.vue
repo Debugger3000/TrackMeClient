@@ -297,7 +297,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <div v-if="addShotDrop" class="border border-0.5 mt-5">
+      <div v-if="addShotDrop" class="mt-3">
         <gameShot
           :closeAddShotMenu="dropAddShotMenu"
           :hole_id="props.hole_data?.id"

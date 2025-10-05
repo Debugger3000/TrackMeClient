@@ -164,12 +164,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="mt-3">
+  <section class=" p-2">
     <div>
       <h4 class="section-header">Game Stats</h4>
     </div>
     <!-- menu bar -->
-    <section class="pb-3 border-b border-0.5 border-gray-400">
+    <section class=" border-gray-400">
       <!-- dropdown for how much data to show for -->
 
       <!-- search bar for individual games -->
@@ -215,13 +215,11 @@ onMounted(async () => {
       </div>
 
       <!-- display game name and date and such if a singl game is selected ! -->
-      <section v-if="game_choosen" class="w-full">
+      <section v-if="game_choosen" class="w-full pb-3 border-b border-gray-300 border-0.5">
         <gameOverview :game-data="[game_choosen]" link_type="scorecard-link"/>
-        <div class="flex items-center justify-center mt-3"
-           @click="removeGameSelected">
-          
-            <h4 class="p-1 border-default">Remove game</h4>
-        </div>
+        
+        <button type="button"  @click="removeGameSelected" class="bg-01 mt-3 rounded-md w-full text-white">Remove Game</button>
+        
 
       </section>
 
@@ -265,7 +263,7 @@ onMounted(async () => {
       </section>
 
       <!-- individual club stats -->
-      <section class="mt-5">
+      <section class="mt-3">
         <clubStats v-if="game_stats_data" :game="game_choosen" :time_filter="selectedOption"/>
 
         

@@ -8,7 +8,7 @@ import Stats from "./Stats.vue";
 
 // const router = useRouter();
 
-let curData = ref<"add-shots" | "stats">("stats");
+let curData = ref<"add-shots" | "stats">("add-shots");
 
 function changeData() {
   if (curData.value === "stats") {
@@ -58,7 +58,8 @@ onMounted(() => {
               class=""
               @click="changeData"
               :class="{ 'button-light-blue': curData === 'add-shots' }">
-              Add Shots
+              <!-- <i class="bi bi-plus text-2xl font-bold"></i> -->
+              Shots
             </button>
           </div>
         </div>

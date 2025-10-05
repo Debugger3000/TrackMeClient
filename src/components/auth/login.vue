@@ -40,7 +40,7 @@ const login = async () => {
           localStorage.setItem("isLoggedIn","true");
           // const log = useLoggedStore();
           // log.login();
-          routeTo('/home', router)
+          routeTo('/games', router)
         }
         else{
           errorMessage.value = res.message || "Something went wrong";
@@ -83,7 +83,7 @@ async function checkRefreshTokenOnLoad() {
         if(res.success){
           // const log = useLoggedStore();
           // log.login();
-          routeTo('/home', router)
+          routeTo('/games', router)
           console.log("refresh token detected: ", res);
         }
         else{

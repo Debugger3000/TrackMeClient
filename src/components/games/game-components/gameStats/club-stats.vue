@@ -186,38 +186,43 @@ onMounted(async () => {
 <template>
   <!-- Home page -->
   <section class="">
-    <section class="flex justify-between items-center mb-1">
+    <section class="flex justify-between items-center">
+      <div class="">
+        <h4 class="font-semibold section-header">Club Stats</h4>
+      </div>
       <!-- select club to show stats for... -->
       <!-- callback to this component to set selected Club... -->
-      <selectClub :change-club="selectClubCallBack" />
-    </section>
-
-    <section class="grid grid-cols-3 gap-3" v-if="game_shots">
-        <gridCard title="Total Shots" :data_point="game_shots?.total_shots!"/>
-    </section>
-
-
-    <section class="mt-5">
-      <div class="border-b pb-1">
-        <h4 class="font-semibold text-3xl text-02">Club Stats</h4>
-      </div>
-      <section class="mt-5"  v-if="game_shots">
-      <div class="border-b pb-1">
-        <h4 class="font-semibold text-3xl text-02">Path</h4>
-      </div>
-      <!-- display path stats -->
-      <bar :path-data="game_shots?.shot_paths!" />
-    </section>
-
-    <!-- display contact stats -->
-    <section class="mt-5" v-if="game_shots">
-      <div class="border-b pb-1">
-        <h4 class="font-semibold text-3xl text-02">Contact</h4>
-      </div>
-      <donut :contact-data="game_shots?.shot_contact!" />
-    </section>
       
     </section>
 
+    <section class="" v-if="game_shots">
+      <selectClub :change-club="selectClubCallBack" />
+      <div class="mt-2 grid grid-cols-2 gap-5">
+          <gridCard title="Club Type" :data_point="selectedClub"/>
+          <gridCard title="Total Shots" :data_point="game_shots?.total_shots!"/>
+      </div>
+      <section class="mt-2 grid-card bg-white">
+        <h4 class="font-semibold color-01 text-xl text-center">Contact</h4>
+        <donut :contact-data="game_shots?.shot_contact!" />
+      </section>
+    </section>
+
+    <section class="pt-1 px-2" v-if="game_shots">
+      <div class="grid-card bg-white">
+        <h4 class="font-semibold text-xl color-01">Path</h4>
+        <bar :path-data="game_shots?.shot_paths!" />
+      </div>
+    </section>
+
+      
+    <!-- <section class="mt-5"  v-if="game_shots">
+      <div class="border-b pb-1">
+        <h4 class="font-semibold text-3xl text-02">Path</h4>
+      </div>
+      
+      <bar :path-data="game_shots?.shot_paths!" />
+    </section> -->
+      
+    
   </section>
 </template>
