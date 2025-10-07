@@ -73,7 +73,7 @@ router.beforeEach((_to, _from, next) => {
 </script>
 
 <template>
-  <section class="h-screen grid grid-rows-[1fr_auto]">
+  <section class="h-[100dvh] grid grid-rows-[1fr_auto]">
     <!-- header -->
     <!-- <header v-if="isLoggedIn.valueOf() === 'true'">
       <nav class="flex p-2 justify-between">
