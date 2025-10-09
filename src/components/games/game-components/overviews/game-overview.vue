@@ -56,6 +56,12 @@ function gameSelected(game_id: number, holes: number, index: number) {
   }
 }
 
+
+// function deleteGame(id: number){
+//   console.log('Delete game:', id);
+// };
+
+
 // -----------------
 // Display games as card / list view to click on complete game for stats, or in-progress game
 // --------
@@ -63,6 +69,42 @@ function gameSelected(game_id: number, holes: number, index: number) {
 onMounted(() => {
   // call get user info...
   console.log("Hole in game-overview: ", props.gameData);
+
+  // const cards = Array.from(document.querySelectorAll<HTMLDivElement>('.swipeable-card'));
+  
+  // cards.forEach((card) => {
+  //   let startX = 0;
+  //   let currentX = 0;
+  //   let isDragging = false;
+
+  //   const wrapper = card.parentElement as HTMLDivElement;
+
+  //   card.addEventListener('pointerdown', (e: PointerEvent) => {
+  //     startX = e.clientX;
+  //     isDragging = true;
+  //     card.setPointerCapture(e.pointerId);
+  //   });
+
+  //   card.addEventListener('pointermove', (e: PointerEvent) => {
+  //     if (!isDragging) return;
+  //     currentX = e.clientX - startX;
+  //     if (currentX < 0) card.style.transform = `translateX(${currentX}px)`;
+  //   });
+
+  //   card.addEventListener('pointerup', () => {
+  //     isDragging = false;
+  //     if (currentX < -40) card.style.transform = 'translateX(-80px)';
+  //     else card.style.transform = 'translateX(0)';
+  //   });
+
+  //   card.addEventListener('pointercancel', () => {
+  //     isDragging = false;
+  //     card.style.transform = 'translateX(0)';
+  //   });
+  // });
+
+
+
 });
 </script>
 
@@ -77,6 +119,13 @@ onMounted(() => {
           gameSelected(value.id, value.holes, index);
         }
       ">
+
+      <!-- Delete button -->
+      <!-- <div class="delete-btn" @click="deleteGame(value.id)">Delete</div> -->
+
+      
+
+      
       <div class="flex flex-col justify-center pl-2">
         <!-- club name -->
         <h4 class="font-semibold text-xl color-01">{{ value.club_name }}</h4>
@@ -104,7 +153,7 @@ onMounted(() => {
       <div class="flex items-center justify-end pr-2">
         <h4 class="font-semibold color-01 text-sm">{{ formatDate(value.created_at) }}</h4>
       </div>
-    </div>
+      </div>
   </section>
 </template>
 

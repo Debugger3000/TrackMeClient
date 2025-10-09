@@ -37,8 +37,8 @@ watch(
   () => {
     // updateData(props.holes);
 
-    console.log("game-shot updated  hole id....", props.hole_id);
-    console.log("game-shot updated user_id....", props.game_id);
+    // console.log("game-shot updated  hole id....", props.hole_id);
+    // console.log("game-shot updated user_id....", props.game_id);
   }
 );
 
@@ -79,7 +79,7 @@ function changePath(path: IShotPaths) {
 }
 function changeClub(club: IShotType) {
   shotDataForm.value.club_type = club;
-  console.log("club type chose: ", shotDataForm.value.club_type);
+  // console.log("club type chose: ", shotDataForm.value.club_type);
 }
 function changeContact(contact: IShotContact) {
   shotDataForm.value.shot_contact = contact;
@@ -149,13 +149,13 @@ async function sendShotData() {
           shotDataForm.value.end_lng
         );
 
-        console.log("SHOT distances after converting: ", distances);
+        // console.log("SHOT distances after converting: ", distances);
         // set yards and metres in shot object
         shotDataForm.value.yards = distances.yards;
         shotDataForm.value.metres = distances.metres;
       }
 
-      console.log("outgoing game shot object: ", shotDataForm.value);
+      // console.log("outgoing game shot object: ", shotDataForm.value);
       const res = await useFetch<IAuthResponse, Game_Shot_Data_Submit>(
         "/data/game-shot",
         "POST",
@@ -212,7 +212,7 @@ async function fetchCoordinates(type: string) {
 
 // lifecycle hooks
 onMounted(() => {
-  console.log("Game shotpage just mounted");
+  // console.log("Game shotpage just mounted");
 });
 </script>
 

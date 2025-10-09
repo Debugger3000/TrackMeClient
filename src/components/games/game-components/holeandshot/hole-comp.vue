@@ -129,8 +129,11 @@ async function submitHole() {
 
   const shot_plus_putts = current_hole_score.value + holeForm.value.putt_count;
 
+  console.log("shot count score: ", current_hole_score.value);
+  console.log("curr putt count: ", holeForm.value.putt_count);
+
   const new_game_score =
-    shot_plus_putts - props.current_hole.par + props.game_score;
+    (shot_plus_putts - props.current_hole.par) + props.game_score;
   // set hole score (stroke)
   holeForm.value.score = shot_plus_putts;
   // set hole id
@@ -158,7 +161,7 @@ async function submitHole() {
     }
     // good response...
     else {
-      console.log("hole was submitted, and patch properly !");
+      // console.log("hole was submitted, and patch properly !");
       // now we set current hole to next hole, and we do a full data grab to update everything...
 
       if (game_hole_state?.value === 18 || game_hole_state?.value === 9) {
@@ -176,7 +179,7 @@ async function submitHole() {
     console.log("error in Hole form submit: ", error);
   }
 
-  console.log("holeForm value: ", holeForm.value);
+  // console.log("holeForm value: ", holeForm.value);
 }
 
 function flipEdit() {
@@ -189,7 +192,7 @@ function flipEdit() {
     // set notes too
     holeForm.value.notes = props.current_hole.notes;
   }
-  console.log("edit state value: ", edit_state.value);
+  // console.log("edit state value: ", edit_state.value);
 }
 
 // edit a previous hole for some reason haha
@@ -231,7 +234,7 @@ async function submitEditPreviousHole() {
 
       goNextHole?.();
 
-      console.log("Updating game object data now !");
+      // console.log("Updating game object data now !");
     }
   } catch (error) {
     console.log("error in previous Hole form submit: ", error);
@@ -268,7 +271,7 @@ onMounted(() => {
   // grab whatever shots are in hole shot array and tally strokes to display current hole score
   updateHoleScore();
 
-  console.log("shots array in hole-comp: ", props.current_shots);
+  // console.log("shots array in hole-comp: ", props.current_shots);
 });
 </script>
 

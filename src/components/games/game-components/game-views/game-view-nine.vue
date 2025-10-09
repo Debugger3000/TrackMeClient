@@ -23,6 +23,9 @@ import holeComp from "../holeandshot/hole-comp.vue";
 import { formatDate, getNineKeyFromIndex } from "../helpers/helpers";
 import type { IGameObjectReturn } from "../../../../types/game";
 import NineScoreBoard from "../scoreBoards/nine-score-board.vue";
+import gameDelete from "./game-delete.vue";
+
+
 const router = useRouter();
 
 const route = useRoute();
@@ -75,7 +78,7 @@ watch(
   (newHole) => {
     keyyer.value = EIGHTEEN_HOLES_MAP[newHole - 1];
 
-    console.log("game view update triggers hopefully watcher triggered");
+    // console.log("game view update triggers hopefully watcher triggered");
   }
 );
 
@@ -95,24 +98,24 @@ function score_board_change_hole(index: number) {
 }
 
 function completeGame() {
-  console.log("Game completed in nine!");
+  // console.log("Game completed in nine!");
   router.push("/games");
 }
 
 function deleteGameShot(index: number) {
-  console.log("delete game shots in GAMEVIEW ", current_shots.value);
+  // console.log("delete game shots in GAMEVIEW ", current_shots.value);
   const new_shots = current_shots.value.filter((_, i) => i !== index);
   current_shots.value = new_shots;
 
-  console.log("delete game shots POST deleter", current_shots.value);
+  // console.log("delete game shots POST deleter", current_shots.value);
 }
 
 // runs when a shot is POST from game-shot...
 function updateGameShots(shot_data: Game_Shot_Data_Submit) {
-  console.log(
-    "UPDATE HOLE SHOTS IN GAME-VIEW EIGHT callewd from provide... ",
-    shot_data
-  );
+  // console.log(
+  //   "UPDATE HOLE SHOTS IN GAME-VIEW EIGHT callewd from provide... ",
+  //   shot_data
+  // );
   current_shots.value = [...current_shots.value, shot_data];
 
   // tally score
@@ -121,14 +124,14 @@ function updateGameShots(shot_data: Game_Shot_Data_Submit) {
 
 // hole submit was good, now we need to grab fresh game data, and next hole will be ready to be posted within
 async function goNextHole() {
-  console.log("go next hole function in game-view-eight called !");
+  // console.log("go next hole function in game-view-eight called !");
   await getGameData();
-  console.log("go next hole data updated: ", game_data.value);
+  // console.log("go next hole data updated: ", game_data.value);
 }
 
 // if else to break between
 async function getGameData() {
-  console.log("calling useFetch for getGameData");
+  // console.log("calling useFetch for getGameData");
   try {
     const res = await useFetch<IGameReturnNine>(
       `/game/data/${game_id}?holes=9`,
@@ -171,7 +174,7 @@ async function getGameData() {
       }
       else if(game_data.value.hole_state && game_data.value.status === 'COMPLETE'){
         setCurrentHoleData(1);
-        console.log('setting hole data for complete game with hole 1...');
+        // console.log('setting hole data for complete game with hole 1...');
       }
 
       // if games completed then make current_hole_state set to 0
@@ -217,11 +220,11 @@ function routeToHere() {
 // ------
 // or should i have two separate components. I can re use components for shots / scoreboard
 onMounted(async () => {
-  console.log("MOUNTED GAME VIEW NINER");
+  // console.log("MOUNTED GAME VIEW NINER");
 
   await getGameData();
 
-  console.log("current hole value: ", current_hole_state.value);
+  // console.log("current hole value: ", current_hole_state.value);
 });
 </script>
 
@@ -251,9 +254,13 @@ onMounted(async () => {
 
     <section class="mt-3 px-4">
       <section class="p-2 bg-color-card card-main-border">
-        <h4 class="text-01 text-title mb-0">
+        <div class="flex justify-between">
+<h4 class="text-01 text-title mb-0">
           {{ game_data?.course.club_name }}
         </h4>
+        <gameDelete v-if="game_data?.id" :game_id="game_data?.id"/>
+        </div>
+        
         <h4
           v-if="game_data?.course.course_name"
           class="color-light-grey text-normal">
@@ -265,6 +272,7 @@ onMounted(async () => {
         <h4 class="text-01 text-normal">{{ formatDate(game_data?.date!) }}</h4>
         <h4 class="text-01 text-normal">Par: {{ game_data?.course.par }}</h4>
         <h4 class="text-01 text-normal">Score: {{ game_data?.score }}</h4>
+        
       </section>
 
       <!-- Display scorecard, probably 9 over 9 for mobile -->

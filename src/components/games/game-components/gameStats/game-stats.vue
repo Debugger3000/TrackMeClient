@@ -231,7 +231,7 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="flex items-center w-fit border-default rounded">
+      <div v-if="!game_choosen" class="flex items-center w-fit border-default rounded">
           <div class="">
             <div
             

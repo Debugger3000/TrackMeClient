@@ -43,8 +43,10 @@ watch(
     // }
     if (props.current_shots) {
       shotCount.value = props.current_shots.length + 1;
+      // restset current shots counter, because if we get new current_shots, then it should go to index 0... 
+      currentShot.value = 0;
     }
-    console.log("update hole data for shot component: ", props.current_shots);
+    // console.log("update hole data for shot component: ", props.current_shots);
   }
 );
 
@@ -70,7 +72,7 @@ function dropDown(type: string) {
   } else if (type === "currentShot") {
     displayShot.value = !displayShot.value;
   }
-  console.log("dispaly shoht: ", displayShot.value);
+  // console.log("dispaly shoht: ", displayShot.value);
 }
 
 // change current shot
@@ -83,7 +85,7 @@ function changeCurrentShot(index: number) {
     // }
     // click on current shot view to close it
     if (currentShot.value === index) {
-      console.log("changing current shot displayer...");
+      // console.log("changing current shot displayer...");
       dropDown("currentShot");
     } else {
       displayShot.value = true;
@@ -163,9 +165,9 @@ let delete_popup = ref<boolean>(false);
 //
 onMounted(() => {
   // call get user info...
-  console.log("SHOT comp: ", props.hole_data);
+  // console.log("SHOT comp: ", props.hole_data);
 
-  console.log("current shots: ", props.current_shots);
+  // console.log("current shots: ", props.current_shots);
   if (props.current_shots) {
     shotCount.value = props.current_shots.length + 1;
   }
@@ -270,6 +272,7 @@ onMounted(() => {
         <gridCard class="inner-bg"  title="Path" :data_point="props.current_shots[currentShot].shot_path!"/>
         <gridCard class="inner-bg"  title="Yards" :data_point="props.current_shots[currentShot].yards!"/>
         <gridCard class="inner-bg"  title="Metres" :data_point="props.current_shots[currentShot].metres!"/>
+        <gridCard class="inner-bg"  title="Stroke" :data_point="props.current_shots[currentShot].stroke"/>
       </div>
     </section>
 

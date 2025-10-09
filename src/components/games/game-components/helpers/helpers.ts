@@ -7,14 +7,14 @@ import {
 
 // hole number and not index
 export function getEightKeyFromIndex(hole_number: number) {
-  console.log("values given to get key for indexer: ", hole_number);
+  // console.log("values given to get key for indexer: ", hole_number);
 
-  console.log("valuer: ", EIGHTEEN_HOLES_MAP[hole_number - 1]);
+  // console.log("valuer: ", EIGHTEEN_HOLES_MAP[hole_number - 1]);
   return EIGHTEEN_HOLES_MAP[hole_number - 1];
 }
 
 export function getNineKeyFromIndex(hole_number: number) {
-  console.log("values given to get key for indexer: ", hole_number);
+  // console.log("values given to get key for indexer: ", hole_number);
 
   return NINE_HOLES_MAP[hole_number - 1];
 }
