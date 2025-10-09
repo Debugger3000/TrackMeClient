@@ -1,0 +1,31 @@
+.card-wrapper {
+  position: relative;
+  overflow: hidden;
+  /* margin-bottom: 10px; */
+}
+
+.delete-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  background: #e74c3c;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.swipeable-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  touch-action: pan-y;
+  position: relative;
+  z-index: 2;
+}

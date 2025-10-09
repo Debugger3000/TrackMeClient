@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onMounted, ref, type Ref } from "vue";
+import { inject, onMounted, ref, watch, type Ref } from "vue";
 import {
   NINE_HOLES_MAP,
   type nine_hole_card,
@@ -30,6 +30,15 @@ let nine_map: T9_MAP = NINE_HOLES_MAP;
 
 // holds index of hole
 let current_hole = ref<number>(props.hole_state - 1);
+
+watch(
+  () => props.hole_state,
+  () => {
+    console.log('current hole state changed...');
+    current_hole.value = props.hole_state-1;
+    // console.log("game view update triggers hopefully watcher triggered");
+  }
+);
 
 
 
