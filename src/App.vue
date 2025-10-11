@@ -26,9 +26,9 @@ let isLoggedIn = ref("");
 // nav bar at bottom
 const navBar: { page: string; icon: string, display_text: string }[] = [
   // { page: "home", icon: "bi-bar-chart", display_text: "Home" },
-  { page: "games", icon: "bi-controller", display_text: "Games"  },
-  { page: "stats-main", icon: "bi-bar-chart", display_text: "Range"  },
-  { page: "profile", icon: "bi-person", display_text: "Me"  },
+  { page: "/games", icon: "bi-controller", display_text: "Games"  },
+  { page: "/stats-main", icon: "bi-bar-chart", display_text: "Range"  },
+  { page: "/profile", icon: "bi-person", display_text: "Me"  },
 ];
 
 // control menu click

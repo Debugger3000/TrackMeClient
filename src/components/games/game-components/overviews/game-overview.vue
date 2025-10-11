@@ -57,11 +57,6 @@ function gameSelected(game_id: number, holes: number, index: number) {
 }
 
 
-// function deleteGame(id: number){
-//   console.log('Delete game:', id);
-// };
-
-
 // -----------------
 // Display games as card / list view to click on complete game for stats, or in-progress game
 // --------
@@ -70,38 +65,6 @@ onMounted(() => {
   // call get user info...
   console.log("Hole in game-overview: ", props.gameData);
 
-  // const cards = Array.from(document.querySelectorAll<HTMLDivElement>('.swipeable-card'));
-  
-  // cards.forEach((card) => {
-  //   let startX = 0;
-  //   let currentX = 0;
-  //   let isDragging = false;
-
-  //   const wrapper = card.parentElement as HTMLDivElement;
-
-  //   card.addEventListener('pointerdown', (e: PointerEvent) => {
-  //     startX = e.clientX;
-  //     isDragging = true;
-  //     card.setPointerCapture(e.pointerId);
-  //   });
-
-  //   card.addEventListener('pointermove', (e: PointerEvent) => {
-  //     if (!isDragging) return;
-  //     currentX = e.clientX - startX;
-  //     if (currentX < 0) card.style.transform = `translateX(${currentX}px)`;
-  //   });
-
-  //   card.addEventListener('pointerup', () => {
-  //     isDragging = false;
-  //     if (currentX < -40) card.style.transform = 'translateX(-80px)';
-  //     else card.style.transform = 'translateX(0)';
-  //   });
-
-  //   card.addEventListener('pointercancel', () => {
-  //     isDragging = false;
-  //     card.style.transform = 'translateX(0)';
-  //   });
-  // });
 
 
 
@@ -110,6 +73,7 @@ onMounted(() => {
 
 <template>
   <section class="grow border-default overflow-y-scroll">
+    <h4 class="pl-2 color-01" v-if="!props.gameData.length">No Game Data...</h4>
     <div
       v-for="(value, index) in props.gameData"
       :key="index"
@@ -156,28 +120,3 @@ onMounted(() => {
       </div>
   </section>
 </template>
-
-<!-- 
-<div
-        v-if="game_choosen"
-      class="grid grid-cols-4 gap-3 border-b border-gray-300 min-h-[75px]"
-      >
-      <div class="flex flex-col justify-center pl-2">
-        <h4 class="font-semibold text-xl">{{ game_choosen.club_name }}</h4>
-        <div class="flex gap-1">
-          <h4 class="m-0">Par {{ game_choosen.par }} -</h4>
-          <h4 class="m-0">{{ game_choosen.score }}</h4>
-        </div>
-      </div>
-      <div class="flex flex-col items-center justify-center">
-        <h4 class="">Score</h4>
-        <div class="flex items-center gap-1">
-          <h4>{{ game_choosen.score }}</h4>
-        </div>
-      </div>
-
-      <div class="flex items-center justify-end pr-2">
-        <h4 class="font-semibold">{{ formatDate(game_choosen.created_at) }}</h4>
-      </div>
-      
-    </div> -->
