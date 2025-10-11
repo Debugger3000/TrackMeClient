@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import { routeTo } from "../../router";
 import { useRouter } from "vue-router";
 import { useFetch } from "../../api/authFetch";
-import type { ICourseView } from "../../types/course";
+import type { ICourseView, THoles } from "../../types/course";
 import courseOverview from "./game-components/overviews/course-overview.vue";
 import type { ICreate_Game_Return } from "../../types/game";
 
@@ -96,8 +96,14 @@ async function createGame() {
   // good response...
   else {
     // set course view data...
+    if(selectedCourse.value?.holes === 9){
+      routeTo(`/game-view-nine/${res.id}`, router);
+    }
+    else{
+      routeTo(`/game-view-eight/${res.id}`, router);
+    }
     console.log("Create game response: ", res);
-    routeTo(`/game-view/${res.id}`, router);
+    
   }
 
   } catch (error) {

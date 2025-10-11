@@ -220,7 +220,7 @@ onMounted(async () => {
       <!-- in-progress games right here -->
       <section
         v-if="inProgressGames && curData === 'games' && curView === 'current'"
-        class="mt-3">
+        class="mt-2">
         <h4 class="section-header px-2">Current Games</h4>
         <game-overview :game-data="inProgressGames" link_type="scorecard-link"/>
       </section>
