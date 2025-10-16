@@ -216,8 +216,8 @@ onMounted(() => {
 });
 </script>
 
-<style lang="css" src="../../../../components/range-shots/shotshape.css"></style>
-<style lang="css" src="./mainstyles.css"></style>
+<style src="../../../../components/range-shots/shotshape.css"></style>
+<style src="./mainstyles.css"></style>
 
 <template>
   <!-- Stats page page -->

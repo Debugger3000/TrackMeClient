@@ -2,12 +2,34 @@
 import { ref, onMounted } from "vue";
 import { routeTo } from "../../router";
 import { useRouter } from "vue-router";
-import {  NINE_HOLES, type ICourse, type THoles, EIGHTEEN_HOLES, NINE_ARRAY, EIGHTEEN_ARRAY, EIGHTEEN_HOLES_MAP, NINE_HOLES_MAP, type T9_MAP, type T18_MAP, type TEIGHTEEN_HOLES } from "../../types/course";
+import {  NINE_HOLES, type ICourse, type THoles, EIGHTEEN_HOLES, NINE_ARRAY, EIGHTEEN_ARRAY, EIGHTEEN_HOLES_MAP, NINE_HOLES_MAP, type T9_MAP, type T18_MAP, type TEIGHTEEN_HOLES, type ICourseView } from "../../types/course";
 import { useFetch } from "../../api/authFetch";
 import alertMessage from "../helper/alertMessage.vue";
 import type { IAuthResponse } from "../../types/Iauth";
 
+import courseOverview from "./game-components/overviews/course-overview.vue";
+
+
 const router = useRouter();
+
+
+let courseData = ref<ICourseView[]>([{
+  id: -99,
+  club_name: "",
+  holes: 9,
+  par: 0,
+  location: "hehe",
+  course_name: ""
+}]);
+
+// {
+//   id: -99,
+//   club_name: "",
+//   holes: 9,
+//   par: 0,
+//   location: "hehe",
+//   course_name: ""
+// }
 
 
 let curHoles = ref<THoles>(18);
@@ -17,6 +39,11 @@ let curArray = ref<Number[]>(EIGHTEEN_ARRAY);
 
 // message 
 let message = ref("");
+
+let curView = ref<"Courses" | "Add">("Courses");
+
+let courseSelected = ref<boolean>(true);
+let selectedCourse = ref<ICourseView>();
 
 
 function changeHoleData() {
@@ -37,11 +64,50 @@ function changeHoleData() {
 }
 
 
+let search_bar_toggle = ref<boolean>(false);
+function searchToggle(){
+    search_bar_toggle.value = !search_bar_toggle.value;
+}
 
 
 function routeToHere(tabClicked: string) {
   routeTo(tabClicked, router);
 }
+
+
+
+async function getCourses() {
+    try {
+        const res = await useFetch<ICourseView[]>(`/course`,"GET");
+
+        if (res === 401) {
+            localStorage.setItem("isLoggedIn", "false");
+            routeTo("/login", router);
+        } else if (res === undefined) {
+            throw new Error("Error from getcoursebySearch res, is undefined");
+        }
+        // good response...
+        else {
+            // set course view data...
+            courseData.value = res;
+            console.log("COURSE SEARCH DATA: ", res);
+        }
+        
+    } catch (error) {
+         console.log("Error in getCourseBySearch in create Game...", error);
+    }
+}
+
+function coursePicked(index: number) {
+  console.log("'course index picked: ", index);
+    // display course picked...
+    courseSelected.value = true;
+    if(courseData.value) {
+    selectedCourse.value = courseData.value[index];
+
+    }
+}
+
 
 const courseForm = ref<ICourse<TEIGHTEEN_HOLES>>({
   club_name: "",
@@ -54,13 +120,17 @@ const courseForm = ref<ICourse<TEIGHTEEN_HOLES>>({
 
 
 
-
 // submit course data
 // 
 // Potentially, add Country, and City
 async function submitCourseData() {
 
       try {
+
+        if(!courseForm.value.club_name || !courseForm.value.par || !courseForm.value.location){
+          return;
+        }
+
       const res = await useFetch<IAuthResponse,ICourse>("/course/add","POST",courseForm.value);
 
       // bad 401 
@@ -90,10 +160,22 @@ async function submitCourseData() {
       } 
 }
 
+async function changeView() {
+  if (curView.value === "Add") {
+    curView.value = "Courses";
+    await getCourses();
+  } else {
+    curView.value = "Add";
+  }
+}
+
 
 // lifecycle hooks
-onMounted(() => {
+onMounted(async () => {
   // call get user info...
+  console.log("courdata length : ", courseData.value);
+  await getCourses();
+  console.log("courdata length : ", courseData.value);
 });
 </script>
 
@@ -113,14 +195,60 @@ onMounted(() => {
           <i class="bi bi-arrow-left text-3xl text-white"></i>
         </button>
       </div>
-      <h4 class="font-semibold text-white text-xl">Create Course</h4>
+      <h4 class="font-semibold text-white text-xl">Courses</h4>
       
     </section>
 
     <!-- main section of page... -->
-    <section class="p-2 mt-3">
+    <section class="">
+
+      <section class="flex p-2 border-b border-gray-400">
+        <div class="flex items-center border-default rounded">
+          <div class="">
+            <button
+              @click="changeView"
+              class="p-1"
+              :class="{
+                'button-light-blue': curView === 'Courses',
+                // 'text-white': curView === 'history',
+              }">
+              Courses
+            </button>
+          </div>
+          <!-- add shots -->
+          <div class="flex items-cetner">
+            <button
+              class="p-1"
+              @click="changeView"
+              :class="{
+                'button-light-blue': curView === 'Add',
+                // 'text-white': curView === 'current',
+              }">
+              Add
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section
+        v-if="curView === 'Courses' && courseData.length > 0"
+        class="mt-3 flex flex-col grow">
+        <div class="mb-1 px-2">
+          <div class="flex gap-5 items-center">
+            <h4 class="section-header">Courses</h4>
+          <div class="" @click="searchToggle">
+             <i class="bi bi-search text-xl color-01"></i>
+          </div>
+        </div>
+          
+          <!-- <gameSearch v-if="search_bar_toggle"/> -->
+        </div>
+        <course-overview :course-data="courseData" :course-selector="coursePicked"/>
+      </section>
+
+
       <!-- other functionality above table -->
-      <section class="justify-center items-center bg-white shadow-md rounded">
+      <section v-if="curView === 'Add'" class="justify-center items-center bg-white shadow-md rounded">
 
         <form @submit.prevent="submitCourseData" class="flex flex-col color-light-grey justify-center rounded-md p-4">
           <!-- club name -->

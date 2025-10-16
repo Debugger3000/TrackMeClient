@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, watch } from "vue";
-import type { ICourseView, THoles } from "../../../../types/course";
+import { onMounted, ref, watch } from "vue";
+import type { ICourseView } from "../../../../types/course";
 // import type { IGameView } from "../../../../types/game";
 
 const props = defineProps<{
@@ -10,8 +10,14 @@ const props = defineProps<{
 }>();
 
 watch([() => props.courseData, () => props.course], () => {
-  console.log("course overview watcher triggered");
+  console.log("course overview watcher triggered: ", props.courseData);
+  if(props.courseData) {
+  course_data.value = props.courseData;
+
+  }
 });
+
+let course_data = ref<ICourseView[]>();
 
 // course selected to create game on
 function courseSelectedCallBack(index: number) {
@@ -27,12 +33,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="props.courseData">
+  <div v-if="course_data">
     <section
-      v-if="props.courseData[0].club_name.length !== 0"
+      v-if="course_data"
       class="bg-white shadow-lg">
       <div
-        v-for="(value, index) in props.courseData"
+        v-for="(value, index) in course_data"
         :key="index"
         class="border-b border-gray-300 p-2"
         @click="courseSelectedCallBack(index)">
