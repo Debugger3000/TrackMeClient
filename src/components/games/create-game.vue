@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import { routeTo } from "../../router";
 import { useRouter } from "vue-router";
 import { useFetch } from "../../api/authFetch";
-import type { ICourseView, THoles } from "../../types/course";
+import type { ICourseView } from "../../types/course";
 import courseOverview from "./game-components/overviews/course-overview.vue";
 import type { ICreate_Game_Return } from "../../types/game";
 
@@ -158,7 +158,7 @@ onMounted(() => {
       <section class="">
         <!-- search results are here -->
         <section v-if="!courseSelected" class="active:bg-gray-300">
-            <course-overview :course-data="courseData" :course-selector="coursePicked" class="active:bg-gray-300"/>
+            <course-overview :course-data="courseData" :course-selector="coursePicked"/>
         </section>
       </section>
 
