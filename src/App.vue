@@ -67,7 +67,13 @@ function syncStorage(usernameRef: string) {
 // router guard, check whether user is logged in before every re route
 router.beforeEach((_to, _from, next) => {
   // syncStorage(); // re-sync before navigating
-  isLoggedIn.value = localStorage.getItem("isLoggedIn") || "";
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+  if (_to.meta.requiresAuth && !isLoggedIn) {
+    // If route requires auth and user is not logged in, redirect to login
+    return next({ name: "login" });
+  }
+
   next();
 });
 </script>
