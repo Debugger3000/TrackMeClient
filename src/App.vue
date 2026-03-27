@@ -2,15 +2,15 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { routeTo } from "./router";
-import { useLoggedStore, useUserStore } from "./stores/globalStore";
+import { useLoggedStore } from "./stores/globalStore";
 import { storeToRefs } from "pinia";
 
 const router = useRouter();
 const logStore = useLoggedStore();
-const userStore = useUserStore();
+// const userStore = useUserStore();
 
 const { isLoggedIn } = storeToRefs(logStore);
-const { user } = storeToRefs(userStore);
+// const { user } = storeToRefs(userStore);
 
 const globalPopUp = ref("");
 let selectedTab = ref("games");

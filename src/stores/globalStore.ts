@@ -3,26 +3,28 @@ import type { IUser } from "../types/user";
 
 export const useLoggedStore = defineStore("logged", {
   state: () => ({
-    isLoggedIn: false as boolean,
+    isLoggedIn: localStorage.getItem("isLoggedIn") === "true",
   }),
   actions: {
     login() {
       this.isLoggedIn = true;
+      localStorage.setItem("isLoggedIn", "true");
     },
     logout() {
       this.isLoggedIn = false;
+      localStorage.removeItem("isLoggedIn");
     },
   },
 });
 
-// user credentials
 export const useUserStore = defineStore("user", {
   state: () => ({
-    user: { id: -9, username: "" },
+    user: JSON.parse(localStorage.getItem("user") || '{"id": -9, "username": ""}'),
   }),
   actions: {
     setUser(user: IUser) {
       this.user = user;
+      localStorage.setItem("user", JSON.stringify(user));
     },
     getUser() {
       return this.user;
