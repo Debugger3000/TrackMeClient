@@ -1,15 +1,17 @@
 <script setup lang="ts">
+//import { computed } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { routeTo } from "./router";
 import { useLoggedStore } from "./stores/globalStore";
-import { storeToRefs } from "pinia";
+//import { storeToRefs } from "pinia";
 
 const router = useRouter();
 const logStore = useLoggedStore();
+//const isLoggedIn = computed(() => logStore.isLoggedIn);
 // const userStore = useUserStore();
 
-const { isLoggedIn } = storeToRefs(logStore);
+// const { isLoggedIn } = storeToRefs(logStore);
 // const { user } = storeToRefs(userStore);
 
 const globalPopUp = ref("");
@@ -57,7 +59,7 @@ router.beforeEach((_to, _from, next) => {
     </main>
 
     <section
-      v-if="isLoggedIn"
+      
       class="grid grid-cols-3"
       id="footer-menu">
       <div
