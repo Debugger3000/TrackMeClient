@@ -1,5 +1,5 @@
 <script setup lang="ts">
-//import { computed } from "vue";
+import { computed } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { routeTo } from "./router";
@@ -10,6 +10,10 @@ const router = useRouter();
 const logStore = useLoggedStore();
 //const isLoggedIn = computed(() => logStore.isLoggedIn);
 // const userStore = useUserStore();
+
+const showNavBar = computed(() => {
+  return router.currentRoute.value.name !== "login";
+});
 
 // const { isLoggedIn } = storeToRefs(logStore);
 // const { user } = storeToRefs(userStore);
@@ -59,7 +63,7 @@ router.beforeEach((_to, _from, next) => {
     </main>
 
     <section
-      
+      v-if="showNavBar"
       class="grid grid-cols-3"
       id="footer-menu">
       <div
